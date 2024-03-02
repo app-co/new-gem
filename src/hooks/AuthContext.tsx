@@ -117,6 +117,7 @@ export function AuthContextProvider({ children }: TAuthContext) {
   }, []);
 
   const logOut = useCallback(async () => {
+    console.log('logount')
     await storageToken.removeToken();
     setData({} as AuthState);
   }, [data]);

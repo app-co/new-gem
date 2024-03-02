@@ -84,8 +84,8 @@ export function SingIn() {
         <Logo source={logo} />
       </BoxLogo>
 
-      <BoxInput>
-        <Form ref={formRef} onSubmit={handleSubmit}>
+      <Form ref={formRef} onSubmit={handleSubmit}>
+        <BoxInput>
           <Input
             name="membro"
             autoCapitalize="none"
@@ -106,8 +106,8 @@ export function SingIn() {
           <View style={{ marginTop: 32 }}>
             <Button pres={() => formRef.current?.submitForm()} title="ENTRAR" />
           </View>
-        </Form>
-      </BoxInput>
+        </BoxInput>
+      </Form>
     </Container>
   );
 }

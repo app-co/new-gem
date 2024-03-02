@@ -11,11 +11,10 @@ export const Box = styled.View<Props>`
   padding: 2px 10px;
   background-color: ${h => h.theme.colors.imput.bg};
 
-  width: ${RFValue(270)}px;
+  width: 100%;
   height: ${RFValue(40)}px;
   border-width: 1px;
   justify-content: center;
-  margin-bottom: 30px;
   flex-direction: row;
   border-radius: ${RFValue(10)}px;
   border-color: ${h => h.theme.colors.bg_color[2]};

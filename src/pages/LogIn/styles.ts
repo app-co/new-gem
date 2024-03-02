@@ -18,6 +18,8 @@ export const BoxLogo = styled.View`
 export const BoxInput = styled.View`
   padding: 20px;
   align-items: center;
+
+  gap: 15px;
 `;
 
 export const Title = styled.Text`

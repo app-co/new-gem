@@ -134,6 +134,7 @@ export function Solicitaions() {
             setItemId('');
           });
       } catch (err) {
+        console.log(err)
         setItemId('');
       }
     },

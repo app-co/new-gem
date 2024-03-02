@@ -95,7 +95,7 @@ export default function App() {
         <QueryClientProvider client={queryClient}>
           <SafeAreaProvider>
             <Box flex="1">
-              <StatusBar style="light" />
+              <StatusBar style="light" hidden />
               <Modal visible={showModalUpdate}>
                 <Center p="5" bg={theme.colors.primary}>
                   <Box>

@@ -9,14 +9,12 @@ import { ListPresenca } from '../pages/ADM/ValidatePresenca';
 import { Consumo } from '../pages/Consumo';
 import { Donates } from '../pages/Donates';
 import { FindUser } from '../pages/FindMembro';
-import { Indicacoes } from '../pages/Indicacoes';
 import { Inicio } from '../pages/Inicio';
 import { Padrinho } from '../pages/Padrinho';
 import { Profile } from '../pages/Profile';
 import { Solicitaions } from '../pages/Solicitaions';
 import { Valide } from '../pages/ValidePresenca';
 import { Visitante } from '../pages/Visitante';
-import { StackB2b } from '../routes/StackB2b';
 import { StacKMembros } from '../routes/StackMembros';
 import { TabBarApp } from '../routes/TabBarApp';
 
@@ -66,24 +64,11 @@ export const rotas = [
   {
     focus: theme.colors.focus[1],
     color: theme.colors.bg_color[2],
-    name: 'LANÇAR CONSUMO',
+    name: 'NEGOCIAR',
     component: StacKMembros,
     icon: 'handshake-o',
   },
-  {
-    focus: theme.colors.focus[1],
-    color: theme.colors.bg_color[2],
-    name: 'INDICAÇÕES',
-    component: Indicacoes,
-    icon: 'exchange',
-  },
-  {
-    focus: theme.colors.focus[1],
-    color: theme.colors.bg_color[2],
-    name: 'B2B',
-    component: StackB2b,
-    icon: 'coffee',
-  },
+
 
   {
     focus: theme.colors.focus[1],

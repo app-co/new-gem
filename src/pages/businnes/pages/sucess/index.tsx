@@ -4,11 +4,11 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useCallback } from 'react';
 import { Modal } from 'react-native';
 
-import logo from '../../assets/logo.png';
-import { StarModal } from '../../components/StarModal';
-import { IUserDtos } from '../../dtos';
-import { useAuth } from '../../hooks/useAuth';
-import { api } from '../../services/api';
+import logo from '../../../../assets/logo.png';
+import { StarModal } from '../../../../components/StarModal';
+import { IUserDtos } from '../../../../dtos';
+import { useAuth } from '../../../../hooks/useAuth';
+import { api } from '../../../../services/api';
 import { Button, Container, Image, Message, Title } from './styles';
 
 interface RouteParams {
@@ -29,7 +29,7 @@ export function Sucess() {
     const message = {
       to: prestador.token,
       sound: 'default',
-      title: 'Alguem esta consumindo seu produto',
+      title: 'Você foi solicitado',
       body: `cliente ${user.nome} está adiquirindo: ${description}`,
     };
 
@@ -45,18 +45,24 @@ export function Sucess() {
   }, []);
 
   const navigateToHome = useCallback(async () => {
-    await api
-      .post('/star/assest', {
-        star,
-        fk_id_user: prestador.id,
-      })
-      .then(() => {
-        sendPushNotification();
-        setModal(false);
-        reset({
-          routes: [{ name: 'INÍCIO' }],
+
+    try {
+      await api
+        .post('/star/assest', {
+          star,
+          fk_id_user: prestador.id,
+        })
+        .then(() => {
+          sendPushNotification();
+          setModal(false);
+          reset({
+            routes: [{ name: 'INÍCIO' }],
+          });
         });
-      });
+      
+    } catch (error) {
+      console.log({error})
+    }
   }, [reset, star]);
 
   return (

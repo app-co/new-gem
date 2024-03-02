@@ -22,7 +22,7 @@ export function Route() {
   };
 
   if (loading) {
-    return <ActivityIndicator />;
+    return <ActivityIndicator color={clubMentoriaTheme.colors.focus[1]} size={45} />;
   }
 
   return (
