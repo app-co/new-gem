@@ -1,4 +1,5 @@
 import { useQuery } from "react-query"
+import { useAuth } from "../../hooks/useAuth"
 import { api } from "../../services/api"
 import { IMetricUser, TGlobalMetric } from "./dto"
 
@@ -15,16 +16,18 @@ async function fatchGloablMetric(): Promise<TGlobalMetric> {
 }
 
 export function useMetricas() {
+   const { user } = useAuth()
 
-   const user = useQuery('getmetric:user', fatchUserMetric)
+   const get = useQuery(`getmetric:${user.id}`, fatchUserMetric)
    const gloabl = useQuery('getmetric:global', fatchGloablMetric)
 
 
    return {
       getSelfMetric: {
-         isLoading: user.isLoading,
-         isError: user.isError,
-         data: user.data
+         isLoading: get.isLoading,
+         isError: get.isError,
+         data: get.data,
+         fetch: get.refetch
       },
 
       getGlobalMetric: {

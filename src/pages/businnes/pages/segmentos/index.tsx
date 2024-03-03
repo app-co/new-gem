@@ -125,20 +125,20 @@ export function Segments() {
                 </TouchableOpacity>
             </Box>
 
-            <HStack space={6} p={4} mt='8' >
-                <Avatar alignItems={'center'} size='xl' source={{ uri: params.avatar }} />
-
-                <Box w='220px' >
-                    <S.title>{params.name}</S.title>
-                    <S.text>{params.workname}</S.text>
-                </Box>
-            </HStack>
-
-            <Center mt='8'>
-                <S.title>Escolha qual negócios irá realizar</S.title>
-            </Center>
-
             <ScrollView>
+                <HStack space={6} p={4} mt='2' >
+                    <Avatar alignItems={'center'} size='xl' source={{ uri: params.avatar }} />
+
+                    <Box w='220px' >
+                        <S.title>{params.name}</S.title>
+                        <S.text>{params.workname}</S.text>
+                    </Box>
+                </HStack>
+
+                <Center mt='4'>
+                    <S.title>Escolha qual negócios irá realizar</S.title>
+                </Center>
+
 
                 <VStack mt='4' space={3} p='4' >
                     <TouchableOpacity onPress={() => selecSegment('b2b')} >

@@ -64,7 +64,7 @@ export const rotas = [
   {
     focus: theme.colors.focus[1],
     color: theme.colors.bg_color[2],
-    name: 'NEGOCIAR',
+    name: 'LANÇAMENTOS',
     component: StacKMembros,
     icon: 'handshake-o',
   },

@@ -9,8 +9,7 @@ interface I {
 export const Container = styled.View`
   flex: 1;
 
-  align-items: center;
-  justify-content: center;
+  background-color: ${h => h.theme.colors.bg_color[1]}
 `;
 
 export const text = styled.Text`
@@ -21,6 +20,7 @@ export const text = styled.Text`
 export const title = styled.Text`
   font-size: ${_subTitle}px;
   font-family: 'regular';
+  color: ${h => h.theme.colors.color_text.ligh}
 `;
 
 export const subTitle = styled.Text<I>`
@@ -36,7 +36,7 @@ export const content = styled.View`
   width: 100%;
   padding: 20px;
 
-  background-color: #4a66b3;
+  background-color: ${h => h.theme.colors.bg_color[3]};
   border-radius: 8px;
 
   margin-bottom: 20px;

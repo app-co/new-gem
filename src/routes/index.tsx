@@ -4,10 +4,9 @@ import { ThemeProvider } from 'styled-components';
 
 import { Center } from 'native-base';
 import { LoadData } from '../contexts/LoadDataContext';
-import { PadrinhoContext } from '../contexts/padrinho/context';
+import { TokenContext } from '../contexts/Token/context';
 import { Pontos } from '../contexts/pontos/context';
 import { RelationContex } from '../contexts/relation/context';
-import { TokenContext } from '../contexts/Token/context';
 import clubMentoriaTheme from '../global/styles/club-mentoria';
 import gebTheme from '../global/styles/geb';
 import { useAuth } from '../hooks/useAuth';
@@ -36,13 +35,11 @@ export function Route() {
         {user ? (
           <LoadData>
             <Pontos>
-              <PadrinhoContext>
-                <TokenContext>
-                  <RelationContex>
-                    <DrawerApp />
-                  </RelationContex>
-                </TokenContext>
-              </PadrinhoContext>
+              <TokenContext>
+                <RelationContex>
+                  <DrawerApp />
+                </RelationContex>
+              </TokenContext>
             </Pontos>
           </LoadData>
         ) : (

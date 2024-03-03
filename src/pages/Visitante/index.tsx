@@ -96,7 +96,7 @@ export function Visitante() {
     <S.Container>
       <Header />
       <Modal visible={showModal}>
-        <Center bg={theme.colors.bg_color[1]} flex="1">
+        <Center p='4' bg={theme.colors.bg_color[1]} flex="1">
           <Form>
             <Input
               onChangeText={setNameConvidado}
@@ -105,7 +105,11 @@ export function Visitante() {
               value={name_convidado}
             />
 
-            <Button pres={handleSave} title="SALVAR" />
+            <Center mt='8' >
+              <Button pres={handleSave} title="SALVAR" />
+
+            </Center>
+
           </Form>
         </Center>
       </Modal>
@@ -174,7 +178,7 @@ export function Visitante() {
             mt="3"
             data={invitPending}
             renderItem={({ item: h }) => (
-              <Box bg="gray.300" mt={2} p={3}>
+              <Box bg="gray.500" mt={2} p={3}>
                 <S.title
                   style={{
                     fontFamily: theme.fonts.regular,

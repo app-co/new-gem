@@ -22,7 +22,7 @@ export const BoxAvatar = styled.Image`
 
 export const BoxEventos = styled.View`
   padding: 0 10px;
-  gap: 5px;
+  gap: 10px;
 `;
 
 export const BoxContainer = styled.View`
@@ -34,6 +34,12 @@ export const BoxContainer = styled.View`
   padding: 0 20px;
   border-radius: 8px;
 `;
+
+export const text = styled.Text`
+    font-family: ${h => h.theme.fonts.regular};
+    font-size: ${RFValue(12)}px;
+    color: ${h => h.theme.colors.color_text.dark};
+`
 
 export const BoxPosition = styled.View`
   width: 20%;

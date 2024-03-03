@@ -2,173 +2,45 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { useFocusEffect } from '@react-navigation/native';
-import React, { useCallback } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import React from 'react';
 
+import { FlatList, HStack } from 'native-base';
+import { useMetricas } from '../../contexts/metricas';
 import { usePontos } from '../../contexts/pontos';
-import { ISelfPonts } from '../../dtos';
-import {
-  BoxContainer,
-  BoxEventos,
-  BoxPosition,
-  Container,
-  Title,
-} from './styles';
+import { Loading } from '../Loading';
+import * as S from './styles';
 
 export function Classificacao() {
   const { pontosListMe } = usePontos();
+  const { getSelfMetric } = useMetricas()
 
-  const item = pontosListMe.data as ISelfPonts;
-
-  useFocusEffect(
-    useCallback(() => {
-      pontosListMe.refetch();
-    }, []),
-  );
-
-  if (pontosListMe.isLoading) {
-    return <ActivityIndicator size={30} />;
+  if (getSelfMetric.isLoading) {
+    return <Loading />;
   }
 
   return (
-    <Container>
-      <BoxEventos>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
+    <S.Container>
+      <S.BoxEventos>
+        <FlatList
+          data={getSelfMetric.data?.classification}
+          keyExtractor={(h, i) => String(i)}
+          renderItem={({ item: h, index }) => (
 
-          }}
-        >
-          <BoxContainer>
-            <Title>COMPRAS</Title>
-            <Title>{item?.compras?.pontos} pts</Title>
-          </BoxContainer>
+            <HStack key={index} my='3px' justifyContent={'space-between'} >
+              <S.BoxContainer>
+                <S.Title>{h.segment}</S.Title>
+                <S.Title>{h.ponts} pts</S.Title>
+              </S.BoxContainer>
 
-          <BoxPosition>
-            <Title>{item?.compras?.rank}</Title>
-          </BoxPosition>
-        </View>
+              <S.BoxPosition>
+                <S.Title>{h.rank}</S.Title>
+                <S.text>rank</S.text>
+              </S.BoxPosition>
+            </HStack>
+          )}
+        />
 
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-
-          }}
-        >
-          <BoxContainer>
-            <Title>VENDAS</Title>
-            <Title>{item?.vendas?.pontos} pts</Title>
-          </BoxContainer>
-
-          <BoxPosition>
-            <Title>{item?.vendas?.rank}</Title>
-          </BoxPosition>
-        </View>
-
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-
-          }}
-        >
-          <BoxContainer>
-            <Title>INDICAÇÕES</Title>
-            <Title>{item?.indication?.pontos} pts</Title>
-          </BoxContainer>
-
-          <BoxPosition>
-            <Title>{item?.indication?.rank}</Title>
-          </BoxPosition>
-        </View>
-
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-
-          }}
-        >
-          <BoxContainer>
-            <Title>PRESENÇA</Title>
-            <Title>{item?.presenca?.pontos} pts</Title>
-          </BoxContainer>
-
-          <BoxPosition>
-            <Title>{item?.presenca?.rank}</Title>
-          </BoxPosition>
-        </View>
-
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-
-          }}
-        >
-          <BoxContainer>
-            <Title>PADRINHO</Title>
-            <Title>{item?.padrinho?.pontos}pts</Title>
-          </BoxContainer>
-
-          <BoxPosition>
-            <Title>{item?.padrinho?.rank}</Title>
-          </BoxPosition>
-        </View>
-
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-
-          }}
-        >
-          <BoxContainer>
-            <Title>B2B</Title>
-            <Title>{item?.b2b?.pontos}pts</Title>
-          </BoxContainer>
-
-          <BoxPosition>
-            <Title>{item?.b2b?.rank}</Title>
-          </BoxPosition>
-        </View>
-
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}
-        >
-          <BoxContainer>
-            <Title>CONVIDADOS</Title>
-            <Title>{item?.convidado?.pontos}pts</Title>
-          </BoxContainer>
-
-          <BoxPosition>
-            <Title>{item?.convidado?.rank}</Title>
-          </BoxPosition>
-        </View>
-
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-
-          }}
-        >
-          <BoxContainer>
-            <Title>DONATIVOS</Title>
-            <Title>{item?.donates?.pontos}pts</Title>
-          </BoxContainer>
-
-          <BoxPosition>
-            <Title>{item?.donates?.rank}</Title>
-          </BoxPosition>
-        </View>
-      </BoxEventos>
-    </Container>
+      </S.BoxEventos>
+    </S.Container>
   );
 }

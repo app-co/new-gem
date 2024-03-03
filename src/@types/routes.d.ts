@@ -8,7 +8,7 @@ interface ISegments {
 }
 
 interface ISucess {
-  prestador: string 
+  prestador: string
   description: string
 }
 
@@ -18,6 +18,7 @@ export declare global {
       home: undefined;
       segments: ISegments
       sucess: ISucess
+      'SOLICITAÇÕES': undefined
     }
   }
 }

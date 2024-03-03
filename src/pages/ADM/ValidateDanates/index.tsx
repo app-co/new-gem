@@ -9,7 +9,7 @@ import { Header } from '../../../components/Header';
 import { useRelation } from '../../../contexts/relation';
 import { useData } from '../../../contexts/useData';
 import { IRelashionship, IUserDtos } from '../../../dtos';
-import theme from '../../../global/styles/geb';
+import theme from '../../../global/styles/club-mentoria';
 import { api } from '../../../services/api';
 import * as S from './styles';
 
@@ -77,7 +77,7 @@ export function ValidateDanates() {
 
   if (listAllRelation.isLoading) {
     <Center bg="gray.700" flex="1">
-      <ActivityIndicator size={40} color={theme.colors.focus[2]} />
+      <ActivityIndicator size={40} color={theme.colors.focus[1]} />
     </Center>;
   }
 
@@ -97,7 +97,7 @@ export function ValidateDanates() {
         data={list}
         keyExtractor={h => String(h.id)}
         renderItem={({ item: h }) => (
-          <Box px="4" mt="1" bg={theme.colors.focus[2]} borderRadius="8" py="4">
+          <Box px="4" mt="1" bg={theme.colors.bg_color[3]} borderRadius="8" py="4">
             <HStack mb="2" justifyContent="space-between" alignItems="center">
               <S.title>{h.nome}</S.title>
               <S.title>{h.data}</S.title>

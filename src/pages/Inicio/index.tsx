@@ -60,12 +60,11 @@ export function Inicio() {
   const { navigate } = useNavigation();
   const { indRank } = useData();
   const { mytoken } = useToken();
-  const [setModalAuth] = React.useState(false);
 
   const [permissionFingerprint, setPermissionFingerprinte] =
     React.useState(false);
 
-  const [load, setLoad] = React.useState(false);
+  const [handshak, setHandshak] = React.useState(0)
 
   const [showModalSolicitations, setModalSolicitations] = React.useState(false);
   const [modalPresenca, setModalPresenca] = React.useState(false);
@@ -86,18 +85,25 @@ export function Inicio() {
     }
   }, [mytoken, updateUser, user]);
 
+
   useFocusEffect(
     useCallback(() => {
+      getSelfMetric.fetch()
 
-      if (getSelfMetric.isLoading) {
-        if (getSelfMetric.data?.handshak ?? 0 > 0) {
-          setModalSolicitations(true);
-        } else {
-          setModalSolicitations(false);
-        }
-      }
-    }, [getSelfMetric.isLoading]),
+      setHandshak(getSelfMetric.data?.handshak || 0)
+
+    }, [handshak, getSelfMetric.data?.handshak]),
   );
+
+  React.useEffect(() => {
+    console.log(handshak)
+    if (handshak > 0) {
+      setModalSolicitations(true)
+    } else {
+      setModalSolicitations(false)
+    }
+  }, [handshak])
+
 
   // const handleSavePass = React.useCallback(
   //   async ({ pass }: { pass: string }) => {
@@ -129,7 +135,6 @@ export function Inicio() {
   //   [user.membro],
   // );
 
-  console.log(getSelfMetric.isLoading)
 
   if (getSelfMetric.isLoading) {
     return <Loading />;
@@ -326,6 +331,7 @@ export function Inicio() {
                 <TouchableOpacity
                   onPress={() => {
                     setModalSolicitations(false);
+                    setHandshak(0)
                     navigate('SOLICITAÇÕES');
                   }}
                   style={{

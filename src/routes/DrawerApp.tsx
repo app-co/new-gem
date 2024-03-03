@@ -47,8 +47,11 @@ export function DrawerApp() {
           <Screen
             key={h.name}
             options={{
+              drawerActiveBackgroundColor: theme.colors.bg_color[1],
+              drawerActiveTintColor: theme.colors.focus[1],
+              drawerInactiveTintColor: theme.colors.color_text.ligh,
               drawerIcon: ({ focused, size }) => (
-                <Feather name={h.icon} size={size} color="red" />
+                <Feather name={h.icon} size={size} color={focused} />
               ),
             }}
             name={h.name}

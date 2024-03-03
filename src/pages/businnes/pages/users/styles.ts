@@ -5,4 +5,7 @@ export const container = styled.View`
     background-color: ${h => h.theme.colors.bg_color[1]}
 `
 
-export const title = styled.Text``
+export const title = styled.Text`
+    color: ${h => h.theme.colors.color_text.ligh};
+    font-family: 'bold';
+`
