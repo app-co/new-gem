@@ -1,6 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-import React from 'react';
-import { TextInputProps } from 'react-native';
 
 export function cep(e: string) {
   let value = e;
@@ -88,3 +86,8 @@ export function date(e: string) {
 export function texto(e: string) {
   return e;
 }
+
+export const currencyFormatter = Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+});

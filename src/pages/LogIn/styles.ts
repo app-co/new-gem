@@ -32,7 +32,7 @@ export const Title = styled.Text`
 const wid = 180;
 const hei = wid - 70;
 export const Logo = styled.Image`
-  width: ${RFValue(wid)}px;
-  height: ${RFValue(hei)}px;
+  width: ${RFValue(350)}px;
+  height: ${RFValue(250)}px;
   margin-top: ${RFValue(50)}px;
 `;

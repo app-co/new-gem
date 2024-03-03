@@ -5,21 +5,16 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { format } from 'date-fns';
 import React, { useCallback, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList } from 'react-native';
+import { Alert } from 'react-native';
 
 import { Header } from '../../../components/Header';
-import { ListMembro } from '../../../components/ListMembro';
 import { Loading } from '../../../components/Loading';
 import { useRelation } from '../../../contexts/relation';
 import { useData } from '../../../contexts/useData';
 import {
-  IPresencaDto,
-  IPresensaRelation,
-  IProfileDto,
-  IUserDtos,
+  IPresensaRelation
 } from '../../../dtos';
 import { api } from '../../../services/api';
-import { ListaPresença } from '../ListaPresensa';
 import * as S from './styles';
 
 export interface ProsPresenca {
@@ -99,7 +94,7 @@ export function ListPresenca() {
   return (
     <S.Container>
       <Header />
-      <FlatList
+      {/* <FlatList
         contentContainerStyle={{
           paddingBottom: 200,
         }}
@@ -117,7 +112,7 @@ export function ListPresenca() {
             pres={() => handleValidatePresensa(h.id!)}
           />
         )}
-      />
+      /> */}
     </S.Container>
   );
 }

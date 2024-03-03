@@ -1,13 +1,11 @@
-import fire from '@react-native-firebase/firestore';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, FlatList, View } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { Alert, View } from 'react-native';
 
 import { Header } from '../../../components/Header';
-import { ListMembro } from '../../../components/ListMembro';
-import { IProfileDto, IUserDtos } from '../../../dtos';
+import { IUserDtos } from '../../../dtos';
 import { api } from '../../../services/api';
-import { Container, Title } from './styles';
+import { Container } from './styles';
 
 export function DeletUser() {
   const [respnse, setResponse] = useState<IUserDtos[]>([]);
@@ -38,7 +36,7 @@ export function DeletUser() {
           onPress: async () => {
             await api
               .delete(`user/delete/${id}`)
-              .then(h => {})
+              .then(h => { })
               .catch(h => {
                 console.log('err ao deletar usuario', h);
                 Alert.alert('Erro', h.response.data.message);
@@ -60,21 +58,7 @@ export function DeletUser() {
     <Container>
       <Header />
       <View>
-        <FlatList
-          contentContainerStyle={{ paddingBottom: 200 }}
-          data={respnse}
-          keyExtractor={h => h.id}
-          renderItem={({ item: h }) => (
-            <ListMembro
-              confirmar="Excluir"
-              avatar={h.profile.avatarUrl}
-              nome={h.nome}
-              pres={() => {
-                handleDelete(h.membro);
-              }}
-            />
-          )}
-        />
+
       </View>
     </Container>
   );

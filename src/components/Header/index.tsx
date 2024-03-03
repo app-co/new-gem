@@ -7,6 +7,7 @@ import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Warning } from 'phosphor-react-native';
 import theme from '../../global/styles/club-mentoria';
 import { CartaMessagem } from '../CartaMessagem';
 import * as S from './styles';
@@ -16,9 +17,10 @@ interface IProps {
   title?: string;
   orders?: number;
   openMail?: () => void;
+  openAtenction?: () => void;
 }
 
-export function Header({ title, orders = 0, openMail, type = 'menu' }: IProps) {
+export function Header({ title, orders = 0, openAtenction, openMail, type = 'menu' }: IProps) {
   const { dispatch, goBack } = useNavigation();
   const insets = useSafeAreaInsets();
 
@@ -48,7 +50,21 @@ export function Header({ title, orders = 0, openMail, type = 'menu' }: IProps) {
             )}
           </TouchableOpacity>
 
-          {orders > 0 && <CartaMessagem pres={openMail} quantity={orders} />}
+
+          {orders > 0 ? (<CartaMessagem pres={openMail} quantity={orders} />) : (
+            <Box>
+              {title === 'Home' && (
+                <TouchableOpacity onPress={openAtenction} >
+
+                  <Box>
+                    <Warning size={35} color={theme.colors.focus[1]} weight='duotone' />
+                  </Box>
+
+                </TouchableOpacity>
+
+              )}
+            </Box>
+          )}
         </HStack>
       </Box>
     </S.Container>

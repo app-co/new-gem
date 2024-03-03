@@ -6,8 +6,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert } from 'react-native';
 
 import { Header } from '../../components/Header';
-import { useRelation } from '../../contexts/relation';
 import { useToken } from '../../contexts/Token';
+import { useRelation } from '../../contexts/relation';
 import { IPresensaRelation } from '../../dtos';
 import { useAuth } from '../../hooks/useAuth';
 import { useAllUsers } from '../../hooks/user';
@@ -88,8 +88,9 @@ export function Valide() {
       );
     }
 
-    const lat = Number(location.lat.toFixed(3));
-    const log = Number(location.log.toFixed(3));
+    const lat = Number(location.lat.toFixed(4));
+    const log = Number(location.log.toFixed(4));
+
 
     if (local.lat !== lat && local.log !== log) {
       return Alert.alert(

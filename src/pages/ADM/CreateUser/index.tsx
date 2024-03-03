@@ -22,7 +22,6 @@ import * as Yup from 'yup';
 import { Button } from '../../../components/Button';
 import { Header } from '../../../components/Header';
 import { Input } from '../../../components/Inputs';
-import { MembroLista } from '../../../components/MembroLista';
 import { useData } from '../../../contexts/useData';
 import { IUserDtos } from '../../../dtos';
 import { useAuth } from '../../../hooks/useAuth';
@@ -165,17 +164,7 @@ export function SingUp() {
 
       <Modal animationType="fade" visible={modalUser}>
         <View style={{ flex: 1 }}>
-          <FlatList
-            data={listUser}
-            keyExtractor={h => h.id}
-            renderItem={({ item: h }) => (
-              <MembroLista
-                closeModal={() => CloseModalUser(h.id, h.nome)}
-                nome={h.nome}
-                avatar={h.profile.avatar}
-              />
-            )}
-          />
+
         </View>
       </Modal>
 

@@ -38,7 +38,7 @@ export function Classificacao() {
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
-            marginBottom: 8,
+
           }}
         >
           <BoxContainer>
@@ -55,7 +55,7 @@ export function Classificacao() {
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
-            marginBottom: 8,
+
           }}
         >
           <BoxContainer>
@@ -72,7 +72,7 @@ export function Classificacao() {
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
-            marginBottom: 8,
+
           }}
         >
           <BoxContainer>
@@ -89,7 +89,7 @@ export function Classificacao() {
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
-            marginBottom: 8,
+
           }}
         >
           <BoxContainer>
@@ -106,7 +106,7 @@ export function Classificacao() {
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
-            marginBottom: 8,
+
           }}
         >
           <BoxContainer>
@@ -123,7 +123,7 @@ export function Classificacao() {
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
-            marginBottom: 8,
+
           }}
         >
           <BoxContainer>
@@ -140,7 +140,6 @@ export function Classificacao() {
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
-            marginBottom: 8,
           }}
         >
           <BoxContainer>
@@ -157,7 +156,7 @@ export function Classificacao() {
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
-            marginBottom: 8,
+
           }}
         >
           <BoxContainer>

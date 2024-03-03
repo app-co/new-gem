@@ -2,33 +2,31 @@
 /* eslint-disable camelcase */
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { FormHandles } from '@unform/core';
-import { Form } from '@unform/mobile';
-import { getWeek } from 'date-fns';
 import * as Contants from 'expo-constants';
 import {
   Avatar,
   Box,
   Center,
+  Circle,
   HStack,
   Text,
-  useToast,
   VStack,
+  useToast,
 } from 'native-base';
 import React, { useCallback, useRef } from 'react';
 import { ActivityIndicator, Modal, TouchableOpacity } from 'react-native';
-import { useQuery } from 'react-query';
 
+import { RFValue } from 'react-native-responsive-fontsize';
+import { Button } from '../../components/Button';
 import { Classificacao } from '../../components/Classificacao';
 import { Header } from '../../components/Header';
-import { Input } from '../../components/Inputs';
 import { Loading } from '../../components/Loading';
-import { usePontos } from '../../contexts/pontos';
-import { useRelation } from '../../contexts/relation';
 import { useToken } from '../../contexts/Token';
+import { useMetricas } from '../../contexts/metricas';
 import { useData } from '../../contexts/useData';
-import { IRelashionship, ISelfPonts } from '../../dtos';
+import { IRelashionship } from '../../dtos';
 import theme from '../../global/styles/club-mentoria';
-import { useMetric, useOrderRelation } from '../../hooks/relations';
+import { useMetric } from '../../hooks/relations';
 import { useAuth } from '../../hooks/useAuth';
 import { api } from '../../services/api';
 import { IsActiveFingerTokenStorage } from '../../storage/acitve-finger-token';
@@ -56,97 +54,24 @@ export function Inicio() {
   const ref = useRef<FormHandles>(null);
   const toast = useToast();
   const metric = useMetric();
+  const { getSelfMetric, getGlobalMetric } = useMetricas()
 
-  const { user, login, logOut, updateUser } = useAuth();
+  const { user, updateUser } = useAuth();
   const { navigate } = useNavigation();
-  const { pontosListMe } = usePontos();
   const { indRank } = useData();
   const { mytoken } = useToken();
-  const { listAllRelation } = useRelation();
-  const { data, isLoading, error, refetch } = useOrderRelation();
-  const [modalAuth, setModalAuth] = React.useState(false);
+  const [setModalAuth] = React.useState(false);
+
   const [permissionFingerprint, setPermissionFingerprinte] =
     React.useState(false);
+
   const [load, setLoad] = React.useState(false);
 
-  const [showModalSolicitations, setModalSolicitations] = React.useState(true);
+  const [showModalSolicitations, setModalSolicitations] = React.useState(false);
   const [modalPresenca, setModalPresenca] = React.useState(false);
-
-  const validated = useQuery('valid-consumo', async () => {
-    const rs = await api.get('/relation/extrato-valid');
-
-    return rs.data as IResponse;
-  });
-
-  const avaliablePresenca = React.useMemo(() => {
-    const presenca = validated.data?.presenca || [];
-
-    const currencyWeek = getWeek(new Date());
-    const avaliable = currencyWeek - 30;
-    const totalPresenca = 30;
-
-    return { avaliable, totalPresenca, currencyWeek };
-  }, [validated.data?.presenca]);
-
-  React.useEffect(() => {
-    if (avaliablePresenca.avaliable >= 5) {
-      setModalPresenca(true);
-    }
-  }, []);
+  const [modalAtenction, setModalAtenction] = React.useState<boolean>(false)
 
   const version = Contants.default.expoConfig?.version;
-
-  const resumo = React.useMemo(() => {
-    const lastAmount = metric.data?.amount_accumulated ?? 0;
-
-    let pontos = 0;
-    let currency = 'R$ 00,00';
-    const ponts = (pontosListMe.data as ISelfPonts) || ({} as ISelfPonts);
-
-    if (ponts.b2b) {
-      const {
-        b2b,
-        compras,
-        convidado,
-        vendas,
-        indication,
-        donates,
-        padrinho,
-        presenca,
-      } = ponts as ISelfPonts;
-
-      pontos =
-        b2b.pontos +
-        compras.pontos +
-        convidado.pontos +
-        indication.pontos +
-        donates.pontos +
-        padrinho.pontos +
-        presenca.pontos +
-        vendas.pontos;
-    }
-
-    if (listAllRelation?.data) {
-      const relation = listAllRelation.data as IRelashionship[];
-
-      const validated = relation.filter(
-        h => h.situation === true && h.type === 'CONSUMO_OUT',
-      );
-
-
-      const total =
-        validated.reduce((ac, i) => {
-          return ac + i.objto.valor;
-        }, 0) + 1058153178
-
-      currency = (total / 100).toLocaleString('pt-BR', {
-        style: 'currency',
-        currency: 'BRL',
-      });
-    }
-
-    return { pontos, currency };
-  }, [listAllRelation.data, pontosListMe.data]);
 
   React.useEffect(() => {
     if (user.token !== mytoken) {
@@ -163,13 +88,15 @@ export function Inicio() {
 
   useFocusEffect(
     useCallback(() => {
-      refetch();
-      if (data?.relation?.length > 0) {
-        setModalSolicitations(true);
-      } else {
-        setModalSolicitations(false);
+
+      if (getSelfMetric.isLoading) {
+        if (getSelfMetric.data?.handshak ?? 0 > 0) {
+          setModalSolicitations(true);
+        } else {
+          setModalSolicitations(false);
+        }
       }
-    }, [data?.relation?.length]),
+    }, [getSelfMetric.isLoading]),
   );
 
   // const handleSavePass = React.useCallback(
@@ -202,7 +129,9 @@ export function Inicio() {
   //   [user.membro],
   // );
 
-  if (isLoading) {
+  console.log(getSelfMetric.isLoading)
+
+  if (getSelfMetric.isLoading) {
     return <Loading />;
   }
 
@@ -211,7 +140,6 @@ export function Inicio() {
       <Modal transparent visible={false}>
         <Center flex={1}>
           <VStack
-            bg={variationPresensa[avaliablePresenca.avaliable]}
             p="8"
             borderRadius={4}
             space={4}
@@ -220,16 +148,79 @@ export function Inicio() {
               Sua presença está baixa : (
             </S.title>
             <S.subTitle style={{ color: '#fff' }}>
-              Total de eventos do geb: {avaliablePresenca.currencyWeek}
+              Total de eventos do geb:
             </S.subTitle>
 
             <S.subTitle style={{ color: '#fff' }}>
-              Suas presenças até o momento: {avaliablePresenca.totalPresenca}
+              Suas presenças até o momento:
             </S.subTitle>
           </VStack>
         </Center>
       </Modal>
 
+      <Modal visible={modalAtenction} >
+        <Box justifyContent={'space-between'} py='10' flex='1' bg={theme.colors.bg_color[1]}>
+          <VStack p='8' >
+            <S.title style={{ fontFamily: 'bold', textAlign: 'center', color: theme.colors.focus[1], fontSize: RFValue(25) }} >Fique atento aos seus resultados</S.title>
+
+            <Box mt='12' bg={theme.colors.bg_color[3]} p='3' rounded={8} >
+              <S.title style={{ textAlign: 'center' }} >Presença</S.title>
+              <HStack justifyContent={'space-between'} >
+                <Box>
+                  <HStack space={3} alignItems={'center'} >
+                    <S.title>Total: </S.title>
+                    <S.title style={{ color: theme.colors.focus[1] }} >{getSelfMetric.data?.totalPresence}</S.title>
+                  </HStack>
+                  <HStack space={3} alignItems={'center'} >
+                    <S.title>Ideal: </S.title>
+                    <S.title style={{ color: theme.colors.focus[1] }} >{getSelfMetric.data?.IdealPresence} </S.title>
+                  </HStack>
+                </Box>
+
+                <Circle size={'md'} bg='gray.600' >
+                  <S.title style={{ fontSize: RFValue(16) }} >
+                    {getSelfMetric.data?.satisfiedPresence}%
+                  </S.title>
+                </Circle>
+
+              </HStack>
+            </Box>
+
+            <Box mt='12' bg={theme.colors.bg_color[3]} p='3' rounded={8} >
+              <S.title style={{ textAlign: 'center' }} >Seus lançamentos</S.title>
+              <HStack justifyContent={'space-between'} >
+                <Box>
+                  <HStack space={3} alignItems={'center'} >
+                    <S.title>Geral: </S.title>
+                    <S.title style={{ color: theme.colors.focus[1] }} >{getSelfMetric.data?.totalVendas}</S.title>
+                  </HStack>
+                  <HStack space={3} alignItems={'center'} >
+                    <S.title>Vendas no app:</S.title>
+                    <S.title style={{ color: theme.colors.focus[1] }} >
+                      {getSelfMetric.data?.currencyVendas}
+                    </S.title>
+                  </HStack>
+
+                  <HStack space={3} alignItems={'center'} >
+                    <S.title>Satisfação: </S.title>
+                    <S.title style={{ color: theme.colors.focus[1] }} >
+                      {getSelfMetric.data?.satisfiedPorcentege}%
+                    </S.title>
+                  </HStack>
+
+
+                </Box>
+              </HStack>
+            </Box>
+          </VStack>
+
+          <Center>
+            <Button pres={() => setModalAtenction(false)} title='FECHAR' />
+
+          </Center>
+        </Box>
+      </Modal>
+      {/* 
       <Modal visible={false}>
         <Center flex="1">
           <Text style={{ marginBottom: 20 }}>
@@ -297,15 +288,16 @@ export function Inicio() {
             </Form>
           )}
         </Center>
-      </Modal>
+      </Modal> */}
 
       <Box flex={1}>
         <Header
           openMail={() => {
             navigate('SOLICITAÇÕES');
           }}
+          openAtenction={() => setModalAtenction(true)}
           title="Home"
-          orders={data?.relation.length}
+          orders={getSelfMetric.data?.handshak}
         />
 
         <Modal
@@ -366,21 +358,21 @@ export function Inicio() {
           <Box alignItems="flex-end">
             <S.text>Vendas este ano:</S.text>
             <S.text style={{ fontSize: _subTitle, fontFamily: 'medium' }}>
-              {data?.totalValor}
+              {getSelfMetric.data?.currencyVendas}
             </S.text>
 
             <S.text>Meus pontos:</S.text>
             <S.text style={{ fontSize: _subTitle, fontFamily: 'medium' }}>
-              {resumo.pontos}
+              {getSelfMetric.data?.totalPonts}
             </S.text>
           </Box>
         </HStack>
 
         <Center>
           <HStack space={2} alignItems="center">
-            <S.text style={{ fontSize: _subTitle }}>Acumulados do GEB:</S.text>
+            <S.text style={{ fontSize: _subTitle }}>Total geral:</S.text>
             <S.text style={{ fontSize: _subTitle, fontFamily: 'medium' }}>
-              {resumo.currency}
+              {getGlobalMetric.data?.consumoTotal}
             </S.text>
           </HStack>
         </Center>

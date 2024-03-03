@@ -15,10 +15,10 @@ import { ExtratoComp } from '../../components/ExtratoComp';
 import { Header } from '../../components/Header';
 import { Loading } from '../../components/Loading';
 import { IRelashionship } from '../../dtos';
+import theme from '../../global/styles/club-mentoria';
 import { api } from '../../services/api';
 import { months } from '../../utils/month';
 import * as S from './styles';
-import theme from '../../global/styles/club-mentoria'
 
 export interface PropTransactions {
   id: string;
@@ -635,7 +635,7 @@ export function Consumo() {
     <S.Container>
       <Header />
 
-      <HStack w="full" justifyContent="space-between" p="4">
+      <HStack w="full" justifyContent="space-between" p="3">
         <S.toch
           onPress={() => setTypeExtrato('valid')}
           type={typeExtrato === 'valid'}
@@ -695,7 +695,7 @@ export function Consumo() {
         </TouchableOpacity>
 
         <Center>
-          <S.text style={{color: theme.colors.color_text.ligh}} >{currencyDateFormated}</S.text>
+          <S.text style={{ color: theme.colors.color_text.ligh }} >{currencyDateFormated}</S.text>
           <S.title>{months[month]}</S.title>
 
           <S.reloaded onPress={reloaded}>

@@ -13,7 +13,7 @@ export const Container = styled.View.attrs({
   elevation: 5,
 })`
   width: 100%;
-  height: ${RFPercentage(10)}px;
+  height: ${RFPercentage(9)}px;
   background-color: ${h => h.theme.colors.bg_color[1]};
   margin-top: 10px;
   flex-direction: row;
@@ -24,7 +24,7 @@ export const Container = styled.View.attrs({
 
 export const BoxData = styled.View`
   width: ${RFPercentage(14)}px;
-  height: ${RFPercentage(9)}px;
+  height: ${RFPercentage(8)}px;
   border-radius: ${RFValue(30)}px;
   background-color: ${h => h.theme.colors.focus[1]};
   align-items: center;

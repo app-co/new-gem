@@ -2,6 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { ActivityIndicator } from 'react-native';
 import { ThemeProvider } from 'styled-components';
 
+import { Center } from 'native-base';
 import { LoadData } from '../contexts/LoadDataContext';
 import { PadrinhoContext } from '../contexts/padrinho/context';
 import { Pontos } from '../contexts/pontos/context';
@@ -22,7 +23,11 @@ export function Route() {
   };
 
   if (loading) {
-    return <ActivityIndicator color={clubMentoriaTheme.colors.focus[1]} size={45} />;
+    return (
+      <Center flex='1' bg={themes.B.colors.bg_color[1]} >
+        <ActivityIndicator color={clubMentoriaTheme.colors.focus[1]} size={45} />
+      </Center>
+    )
   }
 
   return (

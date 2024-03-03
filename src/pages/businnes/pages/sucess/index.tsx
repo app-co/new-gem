@@ -50,7 +50,7 @@ export function Sucess() {
       await api
         .post('/star/assest', {
           star,
-          fk_id_user: prestador.id,
+          fk_id_user: prestador,
         })
         .then(() => {
           sendPushNotification();
@@ -59,9 +59,9 @@ export function Sucess() {
             routes: [{ name: 'INÍCIO' }],
           });
         });
-      
+
     } catch (error) {
-      console.log({error})
+      console.log({ error })
     }
   }, [reset, star]);
 
