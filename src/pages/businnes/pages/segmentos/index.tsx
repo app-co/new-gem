@@ -119,13 +119,15 @@ export function Segments() {
 
     return (
         <S.container>
+            <ScrollView contentContainerStyle={{
+                paddingBottom: 300
+            }}>
             <Box my='4' mx='8' >
                 <TouchableOpacity onPress={() => goBack()} >
                     <ArrowLeft color={theme.colors.focus[1]} weight='duotone' size={35} />
                 </TouchableOpacity>
             </Box>
 
-            <ScrollView>
                 <HStack space={6} p={4} mt='2' >
                     <Avatar alignItems={'center'} size='xl' source={{ uri: params.avatar }} />
 
