@@ -87,7 +87,7 @@ export function ValidateDanates() {
 
       {list.length === 0 && (
         <Center>
-          <S.title style={{ color: theme.colors.focus[2] }}>
+          <S.title style={{ color: theme.colors.focus[1] }}>
             Ainda não há donativos
           </S.title>
         </Center>

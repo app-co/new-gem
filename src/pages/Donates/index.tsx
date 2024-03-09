@@ -76,7 +76,7 @@ export function Donates() {
     <S.Container>
       <Header />
       <Center w="full" p="10">
-        <S.title>Doe donativos</S.title>
+        <S.title>DONATIVOS</S.title>
 
         <TouchableOpacity
           style={{ margin: 20 }}

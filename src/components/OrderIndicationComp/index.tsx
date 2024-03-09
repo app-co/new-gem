@@ -134,7 +134,7 @@ export function OrderIndicationComp({
           </Center>
 
           <S.boxDescription>
-            <S.title>Descrição do cunsumo</S.title>
+            <S.title>Descrição Compra</S.title>
             <S.text>{item?.objto.description}</S.text>
             <S.textfocus>{item?.objto?.valor}</S.textfocus>
           </S.boxDescription>
@@ -149,7 +149,7 @@ export function OrderIndicationComp({
           </Center>
 
           <S.boxDescription>
-            <S.title>Descrição do cunsumo</S.title>
+            <S.title>Descrição do B2B</S.title>
             <S.text>{item?.objto.description}</S.text>
           </S.boxDescription>
         </HStack>

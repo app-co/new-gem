@@ -159,7 +159,7 @@ export function Segments() {
 
                     <TouchableOpacity onPress={() => selecSegment('indication')} >
                         <Center bg={segmenst === 'indication' ? theme.colors.focus[1] : 'gray.200'} rounded={8} py='2' >
-                            <S.textSegments>INDIÇÃO</S.textSegments>
+                            <S.textSegments>INDICAÇÃO</S.textSegments>
                         </Center>
                     </TouchableOpacity>
                 </VStack>
@@ -220,8 +220,8 @@ export function Segments() {
                                     color='gray.200'
                                     selectionColor='#fff'
                                 />
-                                <Input placeholder='Valor consumido R$' name='cash' />
-                                <Input placeholder='Valor consumido R$' name='cash' />
+                                <Input placeholder='Nome do cliente' name='clien name' />
+                                <Input placeholder='contato' name='tell' />
 
                             </VStack>
                         </Form>

@@ -16,16 +16,16 @@ export const title = styled.Text`
 `;
 
 export const text = styled.Text`
-  color: ${h => h.theme.colors.color_text.ligh};
+  color: ${h => h.theme.colors.color_text.dark};
   font-weight: 600;
-  font-family: ${h => h.theme.fonts.bold};
+  font-family: ${h => h.theme.fonts.regular};
 
   font-size: ${_text}px;
 `;
 
 export const approvedButon = styled.TouchableOpacity`
   padding: 1px 20px;
-  background-color: ${h => h.theme.colors.bg_button[1]};
+  background-color: ${h => h.theme.colors.button.bg.approved};
   align-items: center;
   justify-content: center;
   height: 40px;
@@ -36,7 +36,7 @@ export const reprovedButon = styled.TouchableOpacity`
   padding: 5px 10px;
   height: 40px;
   border-radius: 6px;
-  background-color: ${h => h.theme.colors.bg_button[2]};
+  background-color: ${h => h.theme.colors.button.bg.reproved};
   align-items: center;
   justify-content: center;
 `;

@@ -23,7 +23,7 @@ export const Box = styled.View`
 export const ButtonValidar = styled.TouchableOpacity`
   width: 70%;
   height: 40px;
-  background-color: ${h => h.theme.colors.bg_button[1]};
+  background-color: ${h => h.theme.colors.button.bg.approved};
   align-self: center;
   align-items: center;
   justify-content: center;
@@ -32,7 +32,7 @@ export const ButtonValidar = styled.TouchableOpacity`
 `;
 
 export const TextButtonValidar = styled.Text`
-  font-family: ${h => h.theme.fonts.bold};
+  font-family: ${h => h.theme.fonts.regular};
   font-size: 20px;
   color: ${h => h.theme.colors.color_text.dark};
 `;

@@ -21,6 +21,7 @@ export const title = styled.Text`
 export const text = styled.Text`
   font-size: ${RFValue(14)}px;
   font-family: ${h => h.theme.fonts.regular};
+  color: ${h => h.theme.colors.color_text.ligh}
 `;
 
 export const textButon = styled.Text`

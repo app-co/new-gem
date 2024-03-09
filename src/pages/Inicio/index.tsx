@@ -170,15 +170,15 @@ export function Inicio() {
 
             <Box mt='12' bg={theme.colors.bg_color[3]} p='3' rounded={8} >
               <S.title style={{ textAlign: 'center' }} >Presença</S.title>
-              <HStack justifyContent={'space-between'} >
+              <HStack alignItems={'center'} justifyContent={'space-between'} >
                 <Box>
-                  <HStack space={3} alignItems={'center'} >
-                    <S.title>Total: </S.title>
-                    <S.title style={{ color: theme.colors.focus[1] }} >{getSelfMetric.data?.totalPresence}</S.title>
+                  <HStack w='150px' justifyContent={'space-between'} alignItems={'center'} >
+                    <S.text>Suas presenças:</S.text>
+                    <S.text style={{ color: theme.colors.focus[1] }} >{getSelfMetric.data?.totalPresence}</S.text>
                   </HStack>
-                  <HStack space={3} alignItems={'center'} >
-                    <S.title>Ideal: </S.title>
-                    <S.title style={{ color: theme.colors.focus[1] }} >{getSelfMetric.data?.IdealPresence} </S.title>
+                  <HStack w='154px' justifyContent={'space-between'} alignItems={'center'} >
+                    <S.text>Total de encontros:</S.text>
+                    <S.text style={{ color: theme.colors.focus[1] }} >{getSelfMetric.data?.IdealPresence} </S.text>
                   </HStack>
                 </Box>
 
@@ -193,26 +193,21 @@ export function Inicio() {
 
             <Box mt='12' bg={theme.colors.bg_color[3]} p='3' rounded={8} >
               <S.title style={{ textAlign: 'center' }} >Seus lançamentos</S.title>
-              <HStack justifyContent={'space-between'} >
+              <HStack mt={4} justifyContent={'space-between'} >
                 <Box>
-                  <HStack space={3} alignItems={'center'} >
-                    <S.title>Geral: </S.title>
-                    <S.title style={{ color: theme.colors.focus[1] }} >{getSelfMetric.data?.totalVendas}</S.title>
-                  </HStack>
-                  <HStack space={3} alignItems={'center'} >
-                    <S.title>Vendas no app:</S.title>
-                    <S.title style={{ color: theme.colors.focus[1] }} >
+                    <S.text>Geral:</S.text>
+                    <S.text>Vendas:</S.text>
+                    <S.text>Compensação:</S.text>
+                </Box>
+
+                <Box>
+                    <S.text style={{ color: theme.colors.focus[1] }} >{getSelfMetric.data?.totalVendas}</S.text>
+                    <S.text style={{ color: theme.colors.focus[1] }} >
                       {getSelfMetric.data?.currencyVendas}
-                    </S.title>
-                  </HStack>
-
-                  <HStack space={3} alignItems={'center'} >
-                    <S.title>Satisfação: </S.title>
-                    <S.title style={{ color: theme.colors.focus[1] }} >
-                      {getSelfMetric.data?.satisfiedPorcentege}%
-                    </S.title>
-                  </HStack>
-
+                    </S.text>
+                    <S.text style={{ color: theme.colors.focus[1] }} >
+                      {getSelfMetric.data?.satisfiedPorcentege} %
+                    </S.text>
 
                 </Box>
               </HStack>

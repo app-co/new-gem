@@ -41,8 +41,8 @@ type TType =
   | 'indication';
 
 const types = [
-  { type: 'entrada', name: 'Entrada', id: '1' },
-  { type: 'saida', name: 'Saida', id: '2' },
+  { type: 'entrada', name: 'Vendas', id: '1' },
+  { type: 'saida', name: 'Compras', id: '2' },
   { type: 'indication', name: 'Indicações', id: '8' },
   { type: 'presenca', name: 'Presença', id: '3' },
   { type: 'b2b', name: 'B2B', id: '5' },
@@ -641,7 +641,7 @@ export function Consumo() {
           type={typeExtrato === 'valid'}
         >
           <S.titleToch type={typeExtrato === 'valid'}>
-            Relações validadas
+            Negócios validados
           </S.titleToch>
         </S.toch>
 
@@ -650,7 +650,7 @@ export function Consumo() {
           type={typeExtrato === 'peding'}
         >
           <S.titleToch type={typeExtrato === 'peding'}>
-            Relações pendentes
+            Negócios pendentes
           </S.titleToch>
         </S.toch>
       </HStack>
@@ -710,10 +710,10 @@ export function Consumo() {
 
       <S.BoxTotal>
         {type === 'saida' && (
-          <S.title>Total de consumo no ano</S.title>
+          <S.title style={{color: theme.colors.color_text.dark}} >Total de vendas no ano</S.title>
         )}
         {type === 'entrada' && (
-          <S.title>Total de venda no ano</S.title>
+          <S.title style={{color: theme.colors.color_text.dark}} >Total de compras no ano</S.title>
         )}
         {type === 'entrada' && (
           <S.Text>

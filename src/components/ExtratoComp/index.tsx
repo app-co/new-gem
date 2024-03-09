@@ -3,6 +3,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 
 import { IRelashionship } from '../../dtos';
 import * as S from './styles';
+import { format } from 'date-fns';
 
 interface I {
   day: number;
@@ -25,6 +26,14 @@ function ExtratoCompMemo({ item = [], day }: I) {
               <S.text>{h.objto.description}</S.text>
             )}
           </S.box>
+
+          {h.type === 'PRESENCA' && (
+            <S.text>{format(new Date(h.updated_at), 'dd/MM - HH:mm')}</S.text>
+          )}
+
+          {h.type === 'DONATE' && (
+            <S.text>{format(new Date(h.updated_at), 'dd/MM - HH:mm')}</S.text>
+          )}
 
           {h.objto?.valor && (
             <S.text style={{ fontFamily: 'bold', fontSize: RFValue(16) }}>

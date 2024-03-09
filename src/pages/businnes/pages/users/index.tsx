@@ -43,13 +43,13 @@ export function Businnes() {
 
   return (
     <S.container>
-      <Header />
       {isLoading ? (
         <Center flex='1' >
           <Loading />
         </Center>
       ) : (
         <Box>
+          <Header />
           <Center mt='4' >
             <Form>
               <Box p='4' w='full' >
@@ -61,7 +61,7 @@ export function Businnes() {
                 />
 
                 <Center mt='4' >
-                  <S.title>Escolha um hub para selecionar um membro</S.title>
+                  <S.title>Escolha um Hub para encontrar um membro</S.title>
 
                 </Center>
 

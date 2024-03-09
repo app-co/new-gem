@@ -98,14 +98,14 @@ export function ValidateGuest() {
         data={list}
         keyExtractor={h => String(h.id)}
         renderItem={({ item: h }) => (
-          <Box px="4" mt="1" bg={theme.colors.focus[2]} borderRadius="8" py="4">
+          <Box px="4" mt="1" bg={theme.colors.bg_color[3]} borderRadius="8" py="4">
             <HStack mb="2" justifyContent="space-between" alignItems="center">
               <S.title>{h.nome}</S.title>
               <S.title>{h.data}</S.title>
             </HStack>
 
             <Box m="4">
-              <S.text>Convidado</S.text>
+              <S.text style={{color: theme.colors.color_text.ligh}} >Convidado</S.text>
               <S.title>{h.objto.name_convidado}</S.title>
             </Box>
 

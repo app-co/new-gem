@@ -11,8 +11,7 @@ export const Container = styled.View`
 export const title = styled.Text``;
 
 export const bg = styled(Image)`
-  width: 140px;
-  height: 58px;
-
-  margin-bottom: 20px;
+  width: 100%;
+  height: 100%;
+  position: absolute;
 `;
