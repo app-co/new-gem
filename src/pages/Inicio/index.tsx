@@ -28,6 +28,7 @@ import { IRelashionship } from '../../dtos';
 import theme from '../../global/styles/club-mentoria';
 import { useMetric } from '../../hooks/relations';
 import { useAuth } from '../../hooks/useAuth';
+import { api } from '../../services/api';
 import { IsActiveFingerTokenStorage } from '../../storage/acitve-finger-token';
 import { LocalAuthData } from '../../storage/local-auth-data';
 import { _subTitle } from '../../utils/size';
@@ -55,7 +56,7 @@ export function Inicio() {
   const metric = useMetric();
   const { getSelfMetric, getGlobalMetric } = useMetricas()
 
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const { navigate } = useNavigation();
   const { indRank } = useData();
   const { mytoken } = useToken();
@@ -70,6 +71,19 @@ export function Inicio() {
   const [modalAtenction, setModalAtenction] = React.useState<boolean>(false)
 
   const version = Contants.default.expoConfig?.version;
+
+  React.useEffect(() => {
+    if (user.token !== mytoken) {
+      api
+        .patch('/user/update-membro', {
+          token: user.membro,
+          id: user.id,
+        })
+        .then(h => {
+          updateUser();
+        });
+    }
+  }, [mytoken, updateUser, user]);
 
 
   useFocusEffect(
