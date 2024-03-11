@@ -19,7 +19,7 @@ type PromiseType = {
 };
 
 const api = axios.create({
-  baseURL: dev,
+  baseURL: production,
 }) as APIInstaceProps;
 
 let failedQuery: Array<PromiseType> = [];
