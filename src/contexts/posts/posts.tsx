@@ -10,7 +10,7 @@ export async function fatchPosts(): Promise<IPost[]> {
 }
 
 export function usePosts() {
-  const post = useQuery<IPost[]>('get-posts', fatchPosts)
+  const post = useQuery<IPost[]>('getpost', fatchPosts)
 
   return {
     getPosts: post.data,

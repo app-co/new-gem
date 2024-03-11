@@ -24,7 +24,7 @@ import { Header } from '../../components/Header';
 import { Input } from '../../components/Inputs';
 import { ToglleEnquadramento } from '../../components/ToglleEnquadramento';
 import { ToglleRamo } from '../../components/ToglleRamo';
-import theme from '../../global/styles/geb';
+import theme from '../../global/styles/club-mentoria';
 import { useAuth } from '../../hooks/useAuth';
 import { api } from '../../services/api';
 import {
@@ -65,9 +65,11 @@ export function Profile() {
   const [CPF, setCpf] = useState(user.profile.CPF);
   const [cnpj, setCnpj] = useState(user.profile.CNPJ);
   const [avatarUrl, setAvatarUrl] = useState(user.profile.avatar);
-  const [logoUrl, setLogorUrl] = useState(user.profile.logo);
+  const [logoUrl, setLogorUrl] = useState(user.profile.logotipo);
   const [membro, setMembro] = React.useState(user.membro);
   const [senha, setSenha] = React.useState(null);
+
+  console.log(user.profile.logotipo)
 
   // TODO MODAL
   const [ramo, setRamo] = useState(user.profile.ramo);
@@ -106,14 +108,14 @@ export function Profile() {
     const result = await ImagePiker.launchImageLibraryAsync({
       mediaTypes: ImagePiker.MediaTypeOptions.All,
       allowsEditing: true,
-      quality: 0,
+      quality: 1,
     });
 
-    if (result.cancelled) {
+    if (result.canceled) {
       setLoading(false);
     }
 
-    if (!result.cancelled) {
+    if (!result.canceled) {
       setAvatar(result.assets[0].uri);
 
       try {
@@ -140,10 +142,10 @@ export function Profile() {
         mediaTypes: ImagePiker.MediaTypeOptions.All,
         allowsEditing: true,
         aspect: [4, 4],
-        quality: 0,
+        quality: 1,
       });
 
-      if (!result.cancelled) {
+      if (!result.canceled) {
         setLogo(result.assets[0].uri);
 
         try {
@@ -190,7 +192,7 @@ export function Profile() {
               ...user,
               profile: dados,
             };
-            updateUser(dt);
+            updateUser();
           })
           .finally(() => {
             setLoad(false);
@@ -313,7 +315,7 @@ export function Profile() {
                   }}
                   value={whats!}
                 />
-                <BoxInput h="1" bg={theme.colors.focus[1]} />
+                <BoxInput />
               </BoxInput>
             </BoxFormularios>
 

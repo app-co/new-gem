@@ -3,13 +3,11 @@
 // /* eslint-disable consistent-return */
 // /* eslint-disable react/prop-types */
 // /* eslint-disable camelcase */
-import AsyncStorage from '@react-native-async-storage/async-storage';
 // import { STORAGE_KEY, STORAGE_KEY_TOKEN } from '@types';
-import * as LocalAuthentication from 'expo-local-authentication';
 import { useToast } from 'native-base';
 import React, { ReactNode, createContext, useCallback, useState } from 'react';
-import { Alert } from 'react-native';
 
+import { OneSignal } from 'react-native-onesignal';
 import { IUserDtos } from '../dtos';
 import { api } from '../services/api';
 import { routesScheme } from '../services/schemeRoutes';
@@ -26,7 +24,7 @@ interface IAuthContextData {
   login(credential: ILogin): Promise<void>;
   loading: boolean;
   logOut(): Promise<void>;
-  updateUser(user: IUserDtos): Promise<void>;
+  updateUser(): Promise<void>;
 }
 
 type TAuthContext = {
@@ -52,8 +50,13 @@ export function AuthContextProvider({ children }: TAuthContext) {
     api.defaults.headers.common.Authorization = `Bearer ${token}`;
 
     await api.get('/user/find-user-by-id').then(async h => {
-      const user = h.data;
-      setData({ token, user });
+      const user = h.data as IUserDtos;
+      const dt = {
+        ...user,
+        token: user.membro
+      }
+      setData({ token, user: dt });
+      OneSignal.User.addTag('username', user.membro)
     });
   }, []);
 
@@ -67,7 +70,7 @@ export function AuthContextProvider({ children }: TAuthContext) {
     }
 
     setLoading(false);
-  }, [storageToken, userAndTokenUpdate]);
+  }, []);
 
   React.useEffect(() => {
     LoadingUser();
@@ -86,9 +89,16 @@ export function AuthContextProvider({ children }: TAuthContext) {
 
           await api.get('/user/find-user-by-id').then(async h => {
             const user = h.data;
-            setData({ token, user });
-
+            const dt = {
+              ...user,
+              token: user.id
+            }
+            setData({ token, user: dt });
+            setLoading(false);
             await storageToken.setToken(token);
+            OneSignal.User.addTag('username', user.membro)
+
+
           });
         });
     } catch (error) {
@@ -104,15 +114,22 @@ export function AuthContextProvider({ children }: TAuthContext) {
           placement: 'bottom',
           bgColor: 'red.500',
         });
-      } else {
-        toast.show({
-          title,
-          description:
-            'Estamos com um problema no servidor, tente novamente mais tarde',
-          placement: 'bottom',
-          bgColor: 'red.500',
-        });
+
+        setLoading(false)
+
       }
+
+      setLoading(false)
+
+
+      toast.show({
+        title,
+        description:
+          'Estamos com um problema no servidor, tente novamente mais tarde',
+        placement: 'bottom',
+        bgColor: 'red.500',
+      });
+
     }
   }, []);
 
@@ -123,17 +140,14 @@ export function AuthContextProvider({ children }: TAuthContext) {
   }, [data]);
 
   const updateUser = useCallback(
-    async (user: IUserDtos) => {
-      // await AsyncStorage.setItem(key, JSON.stringify(user));
-
-      const dados = {
-        token: data.token,
-        user,
-      };
-
-      setData(dados);
+    async () => {
+      const token = await storageToken.getToken();
+      console.log({ token }, 'otokf')
+      if (token) {
+        userAndTokenUpdate(token);
+      }
     },
-    [data.token],
+    [],
   );
 
   const tokkenFail = React.useCallback(async () => {

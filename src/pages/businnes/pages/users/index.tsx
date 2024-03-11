@@ -94,7 +94,7 @@ export function Businnes() {
                   userName={h.nome}
                   user_avatar={h.profile.avatar}
                   oficio={h.profile.workName}
-                  imageOfice={h.profile.logo}
+                  imageOfice={h.profile.logotipo}
                 // inativoPres={h..inativo}
                 // inativo={h.inativo}
                 />

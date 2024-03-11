@@ -4,7 +4,7 @@ import styled from 'styled-components/native';
 
 export const Container = styled.View`
   flex: 1;
-  background-color: ${h => h.theme.colors.bg_color[1]}
+  background-color: ${h => h.theme.colors.bg_color[1]};
 `;
 
 export const Header = styled.View`
@@ -73,7 +73,7 @@ export const Button = styled(RectButton)`
   width: 100%;
   height: ${RFValue(45)}px;
   border-radius: ${RFValue(10)}px;
-  background-color: ${h => h.theme.colors.bg_button[1]};
+  background-color: ${h => h.theme.colors.button.bg.approved};
   margin-top: ${RFValue(32)}px;
   align-items: center;
   justify-content: center;
@@ -81,7 +81,7 @@ export const Button = styled(RectButton)`
 
 export const TexBoton = styled.Text`
   font-family: ${h => h.theme.fonts.bold};
-  color: ${h => h.theme.colors.color_text.ligh};
+  color: ${h => h.theme.colors.button.text.dark};
   font-size: ${RFValue(24)}px;
 `;
 

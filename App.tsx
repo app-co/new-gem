@@ -29,11 +29,14 @@ import { AppState, Modal } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
+import { OneSignal } from 'react-native-onesignal';
 import { Loading } from './src/components/Loading';
 import theme from './src/global/styles/geb';
 import { AuthContextProvider } from './src/hooks/AuthContext';
 import { Route } from './src/routes';
 import { update } from './src/utils/updates';
+
+OneSignal.initialize(process.env.APP_ID)
 
 export default function App() {
   const appState = useRef(AppState.currentState);

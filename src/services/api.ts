@@ -10,7 +10,7 @@ type APIInstaceProps = AxiosInstance & {
   registerIntercepTokenManager: (signOut: SignOut) => () => void;
 };
 
-const dev = 'http://192.168.0.100:3333';
+const dev = 'http://192.168.0.108:3333';
 const production = 'https://geb-server.appcom.dev'
 
 type PromiseType = {
@@ -19,7 +19,7 @@ type PromiseType = {
 };
 
 const api = axios.create({
-  baseURL: production,
+  baseURL: dev,
 }) as APIInstaceProps;
 
 let failedQuery: Array<PromiseType> = [];

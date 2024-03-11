@@ -10,7 +10,6 @@ import { View } from 'react-native';
 import logo from '../../assets/logo.png';
 import { Button } from '../../components/Button';
 import { Input } from '../../components/Inputs';
-import { Loading } from '../../components/Loading';
 import { useAuth } from '../../hooks/useAuth';
 import { IsActiveFingerTokenStorage } from '../../storage/acitve-finger-token';
 import { LocalAuthData } from '../../storage/local-auth-data';
@@ -21,21 +20,25 @@ const authStorage = new LocalAuthData();
 const isActiveFingerToken = new IsActiveFingerTokenStorage();
 
 export function SingIn() {
-  const { login } = useAuth();
+  const { login, loading } = useAuth();
   const formRef = useRef<FormHandles>(null);
+  const [load, setLoad] = React.useState<boolean>(false)
 
   const [membro, setMembro] = useState('');
   const [pass, setPass] = useState('');
-  const [load, setLoad] = React.useState(false);
   const [authencationStatus, setAuthenticationStatus] = React.useState<
     boolean | null
   >(null);
 
   const handleSubmit = useCallback(async () => {
-    login({
+    setLoad(true)
+    await login({
       membro,
       senha: pass,
     });
+    setLoad(false)
+    console.log('error');
+
   }, [membro, pass, login]);
 
   // React.useEffect(() => {
@@ -63,9 +66,7 @@ export function SingIn() {
   //   Auth();
   // }, [login]);
 
-  if (load) {
-    return <Loading />;
-  }
+
 
   return (
     <Container behavior="padding">
@@ -104,7 +105,7 @@ export function SingIn() {
           />
 
           <View style={{ marginTop: 32 }}>
-            <Button pres={() => formRef.current?.submitForm()} title="ENTRAR" />
+            <Button loading={load} disabled={load} pres={() => formRef.current?.submitForm()} title="ENTRAR" />
           </View>
         </BoxInput>
       </Form>

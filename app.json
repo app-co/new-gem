@@ -35,6 +35,12 @@
     "plugins": [
       "@react-native-firebase/app",
       [
+        "onesignal-expo-plugin",
+        {
+          "mode": "development"
+        }
+      ],
+      [
         "expo-updates",
         {
           "username": "app-c"

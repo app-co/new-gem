@@ -3,7 +3,7 @@ import { Entypo, FontAwesome5 } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 
-import theme from '../global/styles/geb';
+import theme from '../global/styles/club-mentoria';
 import { InfoGeb } from '../pages/infoGeb';
 import { StackHome } from './StackHome';
 import { StacKMembros } from './StackMembros';
@@ -22,6 +22,7 @@ export function TabBarApp() {
           paddingTop: 5,
           paddingBottom: 10,
           height: 60,
+          backgroundColor: theme.colors.bg_color[3]
         },
       }}
     >

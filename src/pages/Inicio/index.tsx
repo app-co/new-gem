@@ -28,7 +28,6 @@ import { IRelashionship } from '../../dtos';
 import theme from '../../global/styles/club-mentoria';
 import { useMetric } from '../../hooks/relations';
 import { useAuth } from '../../hooks/useAuth';
-import { api } from '../../services/api';
 import { IsActiveFingerTokenStorage } from '../../storage/acitve-finger-token';
 import { LocalAuthData } from '../../storage/local-auth-data';
 import { _subTitle } from '../../utils/size';
@@ -56,7 +55,7 @@ export function Inicio() {
   const metric = useMetric();
   const { getSelfMetric, getGlobalMetric } = useMetricas()
 
-  const { user, updateUser } = useAuth();
+  const { user } = useAuth();
   const { navigate } = useNavigation();
   const { indRank } = useData();
   const { mytoken } = useToken();
@@ -71,19 +70,6 @@ export function Inicio() {
   const [modalAtenction, setModalAtenction] = React.useState<boolean>(false)
 
   const version = Contants.default.expoConfig?.version;
-
-  React.useEffect(() => {
-    if (user.token !== mytoken) {
-      api
-        .patch('/user/update-membro', {
-          token: mytoken,
-          id: user.id,
-        })
-        .then(h => {
-          updateUser({ ...user, token: mytoken });
-        });
-    }
-  }, [mytoken, updateUser, user]);
 
 
   useFocusEffect(
@@ -195,19 +181,19 @@ export function Inicio() {
               <S.title style={{ textAlign: 'center' }} >Seus lançamentos</S.title>
               <HStack mt={4} justifyContent={'space-between'} >
                 <Box>
-                    <S.text>Geral:</S.text>
-                    <S.text>Vendas:</S.text>
-                    <S.text>Compensação:</S.text>
+                  <S.text>Geral:</S.text>
+                  <S.text>Vendas:</S.text>
+                  <S.text>Compensação:</S.text>
                 </Box>
 
                 <Box>
-                    <S.text style={{ color: theme.colors.focus[1] }} >{getSelfMetric.data?.totalVendas}</S.text>
-                    <S.text style={{ color: theme.colors.focus[1] }} >
-                      {getSelfMetric.data?.currencyVendas}
-                    </S.text>
-                    <S.text style={{ color: theme.colors.focus[1] }} >
-                      {getSelfMetric.data?.satisfiedPorcentege} %
-                    </S.text>
+                  <S.text style={{ color: theme.colors.focus[1] }} >{getSelfMetric.data?.totalVendas}</S.text>
+                  <S.text style={{ color: theme.colors.focus[1] }} >
+                    {getSelfMetric.data?.currencyVendas}
+                  </S.text>
+                  <S.text style={{ color: theme.colors.focus[1] }} >
+                    {getSelfMetric.data?.satisfiedPorcentege} %
+                  </S.text>
 
                 </Box>
               </HStack>
