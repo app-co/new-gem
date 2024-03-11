@@ -18,7 +18,8 @@ export declare global {
       home: undefined;
       segments: ISegments
       sucess: ISucess
-      'SOLICITAÇÕES': undefined
+      'SOLICITAÇÕES': undefined,
+      Post: undefined
     }
   }
 }

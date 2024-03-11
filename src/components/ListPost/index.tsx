@@ -2,7 +2,7 @@
 import { AntDesign } from '@expo/vector-icons';
 import { Image } from 'native-base';
 import React from 'react';
-import { Dimensions, View } from 'react-native';
+import { Dimensions } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 import {
@@ -68,11 +68,9 @@ export function ListPost({
         <TextPost>{descriçao}</TextPost>
 
         <ViewLike>
-          {state === false && (
-            <LikePost onPress={presLike}>
-              <AntDesign name="like2" size={30} color={'#fff'} />
-            </LikePost>
-          )}
+          <LikePost onPress={presLike}>
+            <AntDesign name="like2" size={30} color={'#fff'} />
+          </LikePost>
 
           <TextPost>{like}</TextPost>
         </ViewLike>

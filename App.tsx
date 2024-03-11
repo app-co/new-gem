@@ -25,10 +25,11 @@ import {
   Text,
 } from 'native-base';
 import React, { useRef } from 'react';
-import { ActivityIndicator, AppState, Modal } from 'react-native';
+import { AppState, Modal } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
+import { Loading } from './src/components/Loading';
 import theme from './src/global/styles/geb';
 import { AuthContextProvider } from './src/hooks/AuthContext';
 import { Route } from './src/routes';
@@ -84,7 +85,7 @@ export default function App() {
   });
 
   if (!loaded) {
-    return <ActivityIndicator />;
+    return <Loading />;
   }
 
   const queryClient = new QueryClient();

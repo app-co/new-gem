@@ -2,15 +2,19 @@
 /* eslint-disable camelcase */
 /* eslint-disable import/prefer-default-export */
 import { AntDesign } from '@expo/vector-icons';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { Box } from 'native-base';
-import React, { useCallback, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList } from 'react-native';
+import React, { useCallback } from 'react';
+import { FlatList } from 'react-native';
 
+import { format } from 'date-fns';
 import { Header } from '../../components/Header';
 import { ListPost } from '../../components/ListPost';
+import { Loading } from '../../components/Loading';
+import { usePosts } from '../../contexts/posts/posts';
 import { IPostsDtos, IUserDtos } from '../../dtos';
 import theme from '../../global/styles/geb';
+import { useAllUsers } from '../../hooks/user';
 import { api } from '../../services/api';
 import { ButonPost, Container } from './styles';
 
@@ -21,71 +25,34 @@ export interface Res {
 
 export function Home() {
   const navigation = useNavigation();
-
-  const [post, setPost] = useState<Res[]>([]);
-  // const [users, setUsers] = React.useState<IUserDtos[]>([]);
-  const [state, setState] = useState(false);
-  const [load, setLoad] = useState(true);
+  const { getPosts, isLoading } = usePosts()
+  const users = useAllUsers('geb')
 
   const navigateToPost = useCallback(() => {
     navigation.navigate('Post');
   }, [navigation]);
 
-  const posts = React.useCallback(async () => {
-    await api
-      .get('/user/list-all-user/GEB')
-      .then(async us => {
-        const users = us.data as IUserDtos[];
+  const posts = React.useMemo(() => {
+    const post = getPosts || []
 
-        await api
-          .get('/post')
-          .then(h => {
-            const rs = h.data as IPostsDtos[];
-            const fil = rs
-              .filter(p => {
-                if (p !== null) {
-                  return p;
-                }
-              })
-              .map(p => {
-                const filuser = users.find(u => u.id === p.fk_id_user);
+    const postLikeds = post.map(h => {
+      const likes = h.like.length
+      const allUsers = users.data || []
+      const date = format(new Date(h.created_at), 'dd/MM/yy')
+      const user = allUsers.find(p => p.id === h.fk_id_user)
 
-                if (filuser) {
-                  if (filuser.id === p.fk_id_user) {
-                    const date = new Date(p.created_at).getTime();
-                    return {
-                      post: {
-                        ...p,
-                        date,
-                      },
-                      user: filuser,
-                    };
-                  }
-                }
-              })
-              .sort((a, b) => {
-                return b.post.date - a.post.date;
-              });
+      return {
+        ...h,
+        date,
+        likes,
+        username: user?.nome,
+        avatar: user?.profile.avatar
+      }
 
-            const postfil = fil.filter(p => p !== undefined);
+    })
+    return postLikeds
+  }, [getPosts, users.data]);
 
-            setPost(postfil);
-          })
-
-          .catch(h => {
-            console.log('erro ao carregar post na lela home', h);
-            Alert.alert('Erro', h.response.message);
-          })
-          .finally(() => setLoad(false));
-      })
-      .catch(h => console.log(h.response.data, h));
-  }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      posts();
-    }, [posts]),
-  );
 
   const handleLike = useCallback(async (id: string) => {
     await api.post('/post/like', {
@@ -93,8 +60,10 @@ export function Home() {
     });
   }, []);
 
-  if (!post) {
-    <ActivityIndicator />;
+  console.log(posts)
+
+  if (isLoading) {
+    <Loading />;
   }
 
   return (
@@ -102,18 +71,18 @@ export function Home() {
       <Header />
 
       <FlatList
-        data={post}
-        keyExtractor={p => p.post.id}
+        data={posts}
+        keyExtractor={p => p.id}
         renderItem={({ item: h }) => (
           <Box>
             <ListPost
-              state={state}
-              presLike={() => handleLike(h.post.id)}
-              avater={h.user.profile.avatar}
-              user_name={h.user.nome}
-              image={h.post.image}
-              descriçao={h.post.description}
-              like={h.post.like.length + 1}
+              state={true}
+              presLike={() => handleLike(h.id)}
+              avater={h.avatar}
+              user_name={h.username}
+              image={h.image}
+              descriçao={h.description}
+              like={h.likes}
             />
           </Box>
         )}
