@@ -1,11 +1,10 @@
-import { BorderlessButton } from 'react-native-gesture-handler';
 import { RFValue } from 'react-native-responsive-fontsize';
 import styled from 'styled-components/native';
 
 export const Container = styled.View``;
 
 export const Title = styled.Text`
-  color: ${h => h.theme.colors.color_text.ligh}
+  color: ${h => h.theme.colors.color_text.ligh};
 `;
 
 export const BoxPost = styled.View`
@@ -26,6 +25,7 @@ export const HeaderPost = styled.View`
   align-items: center;
   width: 100%;
   height: 60px;
+  gap: 10px;
 `;
 
 export const BoxAvatarPost = styled.View`
@@ -55,24 +55,37 @@ export const ImagePost = styled.Image`
   border-radius: 10px;
 `;
 
-export const LikePost = styled(BorderlessButton)`
-  width: ${RFValue(60)}px;
-  height: 50px;
+export const LikePost = styled.TouchableOpacity`
   align-items: center;
   justify-content: space-between;
-  padding: 0 10px;
   flex-direction: row;
   color: ${h => h.theme.colors.bg_color[2]};
+  padding: 5px;
 `;
 
 export const TextPost = styled.Text`
   font-family: ${h => h.theme.fonts.medium};
-  font-size: ${RFValue(16)}px;
-  color: ${h => h.theme.colors.color_text.ligh}
+  font-size: ${RFValue(14)}px;
+  color: ${h => h.theme.colors.color_text.ligh};
 
+`;
+
+export const TextLike = styled.Text`
+  font-family: ${h => h.theme.fonts.medium};
+  font-size: ${RFValue(16)}px;
+  color: ${h => h.theme.colors.color_text.ligh};
+`;
+
+export const Name = styled.Text`
+  font-family: ${h => h.theme.fonts.bold};
+  font-size: ${RFValue(16)}px;
+  color: ${h => h.theme.colors.color_text.ligh};
 `;
 
 export const ViewLike = styled.View`
   flex-direction: row;
   align-items: center;
+
+  gap: 10px;
+  margin: 10px 0;
 `;

@@ -1,28 +1,26 @@
 /* eslint-disable no-alert */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { AntDesign, Feather } from '@expo/vector-icons';
-import fire from '@react-native-firebase/firestore';
+import { Feather } from '@expo/vector-icons';
 import storage from '@react-native-firebase/storage';
 import { useNavigation } from '@react-navigation/native';
 import {
-  launchImageLibraryAsync,
-  launchCameraAsync,
   MediaTypeOptions,
-  requestMediaLibraryPermissionsAsync,
+  launchCameraAsync,
+  launchImageLibraryAsync
 } from 'expo-image-picker';
-import { Box, Center, Image, VStack } from 'native-base';
-import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Modal, Platform } from 'react-native';
+import { Center, Image, VStack } from 'native-base';
+import React, { useCallback, useState } from 'react';
+import { ActivityIndicator, Alert, Modal } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 
+import { Form } from '@unform/mobile';
+import { Button } from '../../components/Button';
 import { Header } from '../../components/Header';
+import { Input } from '../../components/Inputs';
+import theme from '../../global/styles/club-mentoria';
 import { useAuth } from '../../hooks/useAuth';
 import { api } from '../../services/api';
 import * as S from './styled';
-import { Form } from '@unform/mobile';
-import { Input } from '../../components/Inputs';
-import theme from '../../global/styles/club-mentoria'
-import { Button } from '../../components/Button';
 
 export function Post() {
   const { goBack } = useNavigation();
@@ -74,6 +72,8 @@ export function Post() {
     await reference.putFile(img);
     const photoUrl = await reference.getDownloadURL();
 
+    console.log(photoUrl)
+
     const dados = {
       description: descricao,
       image: photoUrl,
@@ -81,14 +81,13 @@ export function Post() {
       like: 0,
     };
 
-    await api
-      .post('/post', dados)
-      .then(h => {})
-      .catch(h => {
-        console.log('erro na tela para criar post', h);
-        Alert.alert('Post', 'post criado com sucesso!');
-      });
-    setLoad(false);
+    try {
+      await api
+        .post('/post', dados)
+      setLoad(false);
+    } catch (error) {
+    }
+
     goBack();
   }, [descricao, goBack, img, user]);
 

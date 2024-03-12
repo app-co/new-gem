@@ -2,8 +2,9 @@
 import { AntDesign } from '@expo/vector-icons';
 import { Image } from 'native-base';
 import React from 'react';
-import { Dimensions, View } from 'react-native';
+import { ActivityIndicator, Dimensions } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
+import theme from '../../global/styles/club-mentoria';
 
 import {
   Avatar,
@@ -13,6 +14,8 @@ import {
   Container,
   HeaderPost,
   LikePost,
+  Name,
+  TextLike,
   TextPost,
   ViewLike,
 } from './styles';
@@ -29,6 +32,7 @@ interface Props {
   like: number;
   presLike: () => void;
   state: boolean;
+  load: boolean;
 }
 export function ListPost({
   image,
@@ -38,6 +42,7 @@ export function ListPost({
   avater,
   presLike,
   state,
+  load
 }: Props) {
   return (
     <Container>
@@ -54,7 +59,7 @@ export function ListPost({
             )}
             <Avatar source={{ uri: avater }} />
           </BoxAvatarPost>
-          <TextPost style={{ marginLeft: 20 }}> {user_name} </TextPost>
+          <Name> {user_name} </Name>
         </HeaderPost>
 
         <BoxImagePost style={{ width }}>
@@ -68,13 +73,16 @@ export function ListPost({
         <TextPost>{descriçao}</TextPost>
 
         <ViewLike>
-          {state === false && (
-            <LikePost onPress={presLike}>
-              <AntDesign name="like2" size={30} color={'#fff'} />
-            </LikePost>
-          )}
+          <LikePost onPress={presLike}>
+            {load ? (
+              <ActivityIndicator />
+            ) : (
 
-          <TextPost>{like}</TextPost>
+              <AntDesign name="like2" size={30} color={state ? theme.colors.focus[1] : '#b3b3b3'} />
+            )}
+          </LikePost>
+
+          <TextLike>{like}</TextLike>
         </ViewLike>
       </BoxPost>
     </Container>

@@ -89,6 +89,7 @@ export const BoxFormularios = styled.View.attrs({
   margin-bottom: 15px;
 
   padding: ${RFValue(40)}px 10px;
+  gap: 10px;
 `;
 
 export const BoxInput = styled.View`

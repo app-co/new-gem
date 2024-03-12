@@ -38,7 +38,7 @@ export interface IProfileDto {
   web: string;
   face: string;
   whatsApp: string;
-  logo: string;
+  logotipo: string;
   avatar: string;
 }
 

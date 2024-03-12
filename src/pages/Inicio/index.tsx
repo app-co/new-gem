@@ -76,14 +76,14 @@ export function Inicio() {
     if (user.token !== mytoken) {
       api
         .patch('/user/update-membro', {
-          token: mytoken,
+          token: user.membro,
           id: user.id,
         })
         .then(h => {
-          updateUser({ ...user, token: mytoken });
+          updateUser();
         });
     }
-  }, [mytoken, updateUser, user]);
+  }, []);
 
 
   useFocusEffect(
@@ -195,19 +195,19 @@ export function Inicio() {
               <S.title style={{ textAlign: 'center' }} >Seus lançamentos</S.title>
               <HStack mt={4} justifyContent={'space-between'} >
                 <Box>
-                    <S.text>Geral:</S.text>
-                    <S.text>Vendas:</S.text>
-                    <S.text>Compensação:</S.text>
+                  <S.text>Geral:</S.text>
+                  <S.text>Vendas:</S.text>
+                  <S.text>Compensação:</S.text>
                 </Box>
 
                 <Box>
-                    <S.text style={{ color: theme.colors.focus[1] }} >{getSelfMetric.data?.totalVendas}</S.text>
-                    <S.text style={{ color: theme.colors.focus[1] }} >
-                      {getSelfMetric.data?.currencyVendas}
-                    </S.text>
-                    <S.text style={{ color: theme.colors.focus[1] }} >
-                      {getSelfMetric.data?.satisfiedPorcentege} %
-                    </S.text>
+                  <S.text style={{ color: theme.colors.focus[1] }} >{getSelfMetric.data?.totalVendas}</S.text>
+                  <S.text style={{ color: theme.colors.focus[1] }} >
+                    {getSelfMetric.data?.currencyVendas}
+                  </S.text>
+                  <S.text style={{ color: theme.colors.focus[1] }} >
+                    {getSelfMetric.data?.satisfiedPorcentege} %
+                  </S.text>
 
                 </Box>
               </HStack>

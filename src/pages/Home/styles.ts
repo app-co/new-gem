@@ -20,7 +20,7 @@ export const BoxPost = styled.View`
   padding: 10px;
   margin-top: 32px;
   border-radius: ${RFValue(10)}px;
-  background-color: ${h => h.theme.colors.bg_color[1]};
+  background-color: #a9a9a9b9;
   align-self: center;
 
   border-top-color: ${h => h.theme.colors.bg_color[1]};
@@ -77,7 +77,7 @@ export const ButonPost = styled.TouchableOpacity`
   width: ${RFValue(50)}px;
   height: ${RFValue(50)}px;
   border-radius: ${RFValue(30)}px;
-  background-color: ${h => h.theme.colors.bg_button[1]};
+  background-color: #c2b829ab;
   align-items: center;
   justify-content: center;
   top: ${RFValue(550)}px;
