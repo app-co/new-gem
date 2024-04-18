@@ -29,13 +29,13 @@ import { ActivityIndicator, AppState, Modal } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
+import { OneSignal } from 'react-native-onesignal';
 import theme from './src/global/styles/geb';
 import { AuthContextProvider } from './src/hooks/AuthContext';
 import { Route } from './src/routes';
 import { update } from './src/utils/updates';
-import {OneSignal} from 'react-native-onesignal'
 
-OneSignal.Notifications.requestPermission(true)
+// OneSignal.Notifications.requestPermission(true)
 OneSignal.initialize('17dfc23e-e3fa-420c-a8a6-9fc5fecb4884')
 
 export default function App() {

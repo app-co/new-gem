@@ -709,11 +709,11 @@ export function Consumo() {
       </HStack>
 
       <S.BoxTotal>
-        {type === 'saida' && (
-          <S.title style={{color: theme.colors.color_text.dark}} >Total de vendas no ano</S.title>
-        )}
         {type === 'entrada' && (
-          <S.title style={{color: theme.colors.color_text.dark}} >Total de compras no ano</S.title>
+          <S.title style={{ color: theme.colors.color_text.dark }} >Total de vendas no ano</S.title>
+        )}
+        {type === 'saida' && (
+          <S.title style={{ color: theme.colors.color_text.dark }} >Total de compras no ano</S.title>
         )}
         {type === 'entrada' && (
           <S.Text>

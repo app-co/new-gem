@@ -83,27 +83,28 @@ export function Valide() {
 
   const hanldeValidar = useCallback(async () => {
     setLoad(true)
-    if (filPres) {
-      return Alert.alert(
-        'Você não pode validar mais de uma presença no mesmo dia',
-      );
-    }
+    // if (filPres) {
+    //   return Alert.alert(
+    //     'Você não pode validar mais de uma presença no mesmo dia',
+    //   );
+    // }
 
-    const lat = Number(location.lat.toFixed(3));
-    const log = Number(location.log.toFixed(3));
+    // const lat = Number(location.lat.toFixed(3));
+    // const log = Number(location.log.toFixed(3));
 
 
-    if (local.lat !== lat && local.log !== log) {
-      return Alert.alert(
-        'Atenção',
-        'Você precisa estar no local para lançar a sua presença',
-      );
-    }
+    // if (local.lat !== lat && local.log !== log) {
+    //   return Alert.alert(
+    //     'Atenção',
+    //     'Você precisa estar no local para lançar a sua presença',
+    //   );
+    // }
 
     const dados = {
       nome,
       user_id: id,
-      objto: { user_id: id,
+      objto: {
+        user_id: id,
         avatar: user.profile.avatar,
         token: mytoken,
       },

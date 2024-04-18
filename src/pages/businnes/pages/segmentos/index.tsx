@@ -31,6 +31,7 @@ export function Segments() {
     const { user } = useAuth()
     const { mytoken } = useToken()
 
+
     const [description, setDescription] = useState('')
     const [name, setName] = useState('')
     const [cell, setCell] = useState('')
@@ -39,8 +40,8 @@ export function Segments() {
     const [loading, setLoad] = useState(false)
     const [segmenst, setSegmens] = useState<TSegments>()
 
-    const valor =
-        value.length < 6 ? Number(_number(`${value},00`)) : Number(_number(value));
+    let valor = Number(_number(value))
+    valor = String(valor).length < 3 || String(valor).length < 2 ? valor * 100 : valor
 
     function selecSegment(value: TSegments) {
         setSegmens(value)
@@ -51,6 +52,8 @@ export function Segments() {
     }
 
     async function submit() {
+
+        setLoad(true)
 
         const indication = {
             prestador_id: params.providerId,
@@ -98,6 +101,8 @@ export function Segments() {
             indication
         }
 
+        console.log({ valor })
+
         try {
             await api
                 .post(`${routesScheme.relationShip.create}`, modalidade[segmenst])
@@ -105,8 +110,11 @@ export function Segments() {
                     Alert.alert('Sucesso!', 'Continue a incentivar os membros do GEB');
                     navigate('sucess', { prestador: params.providerId, description });
                 })
+            setLoad(false)
 
         } catch (error) {
+            setLoad(false)
+
             if (error instanceof AppError) {
                 console.log(error.message)
             }
@@ -122,11 +130,11 @@ export function Segments() {
             <ScrollView contentContainerStyle={{
                 paddingBottom: 300
             }}>
-            <Box my='4' mx='8' >
-                <TouchableOpacity onPress={() => goBack()} >
-                    <ArrowLeft color={theme.colors.focus[1]} weight='duotone' size={35} />
-                </TouchableOpacity>
-            </Box>
+                <Box my='4' mx='8' >
+                    <TouchableOpacity onPress={() => goBack()} >
+                        <ArrowLeft color={theme.colors.focus[1]} weight='duotone' size={35} />
+                    </TouchableOpacity>
+                </Box>
 
                 <HStack space={6} p={4} mt='2' >
                     <Avatar alignItems={'center'} size='xl' source={{ uri: params.avatar }} />
@@ -234,7 +242,7 @@ export function Segments() {
 
             {segmenst && (
                 <Center>
-                    <Button pres={submit} title='FINALIZAR' />
+                    <Button loading={loading} pres={submit} title='FINALIZAR' />
                 </Center>
 
             )}

@@ -119,6 +119,7 @@ export function ListPresenca() {
               <VStack space={6} >
                 <Center>
                   <S.Title>{h.name}</S.Title>
+                  <S.Title>{h.data}</S.Title>
 
                 </Center>
 
