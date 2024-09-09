@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable camelcase */
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { FormHandles } from '@unform/core';
 import * as Contants from 'expo-constants';
 import {
   Avatar,
@@ -10,10 +9,9 @@ import {
   Circle,
   HStack,
   Text,
-  VStack,
-  useToast,
+  VStack
 } from 'native-base';
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 import { ActivityIndicator, Modal, TouchableOpacity } from 'react-native';
 
 import { RFValue } from 'react-native-responsive-fontsize';
@@ -26,7 +24,6 @@ import { useMetricas } from '../../contexts/metricas';
 import { useData } from '../../contexts/useData';
 import { IRelashionship } from '../../dtos';
 import theme from '../../global/styles/club-mentoria';
-import { useMetric } from '../../hooks/relations';
 import { useAuth } from '../../hooks/useAuth';
 import { api } from '../../services/api';
 import { IsActiveFingerTokenStorage } from '../../storage/acitve-finger-token';
@@ -51,9 +48,6 @@ const variationPresensa: any = {
 };
 
 export function Inicio() {
-  const ref = useRef<FormHandles>(null);
-  const toast = useToast();
-  const metric = useMetric();
   const { getSelfMetric, getGlobalMetric } = useMetricas()
 
   const { user, updateUser } = useAuth();
@@ -104,36 +98,6 @@ export function Inicio() {
     }
   }, [handshak])
 
-
-  // const handleSavePass = React.useCallback(
-  //   async ({ pass }: { pass: string }) => {
-  //     setLoad(true);
-  //     const auth = {
-  //       membro: user.membro,
-  //       senha: pass,
-  //     };
-
-  //     try {
-  //       await api.post('/user/session', auth);
-  //       await isActiveFigerToken.setStorage({
-  //         isActive: true,
-  //       });
-
-  //       await localAuthData.setStorage(auth);
-
-  //       setLoad(false);
-  //       setModalAuth(false);
-  //     } catch (error) {
-  //       setLoad(false);
-  //       const erro = error instanceof AppError;
-
-  //       if (erro) {
-  //         Alert.alert('Erro ao validar sua senha', error.message);
-  //       }
-  //     }
-  //   },
-  //   [user.membro],
-  // );
 
 
   if (getSelfMetric.isLoading) {

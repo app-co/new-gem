@@ -17,7 +17,7 @@ interface FiltroProps {
 
 export const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${h => h.theme.colors.primary};
+  background-color: ${h => h.theme.colors.bg_color[3]};
 `;
 
 export const TitleType = styled.Text<TypePros>`
@@ -36,26 +36,25 @@ export const TitleFiltro = styled.Text<FiltroProps>`
 
 export const TitleList = styled.Text`
   font-family: ${h => h.theme.fonts.bold};
-  color: ${h => h.theme.colors.color_text.dark};
+  color: ${h => h.theme.colors.color_text.ligh};
   font-size: ${RFValue(14)}px;
 `;
 
 export const Box = styled.TouchableOpacity<TypePros>`
   background-color: ${({ type, theme }) =>
-    type ? theme.colors.bg_button[1] : theme.colors.bg_button[2]};
+    type ? theme.colors.focus[1] : theme.colors.bg_button[1]};
   border-radius: 10px;
   align-items: center;
   justify-content: center;
 
   border-width: 1px;
-  border-color: ${h => h.theme.colors.focus[2]};
   padding: 3px ${RFValue(8)}px;
   margin-left: ${RFValue(15)}px;
 `;
 
 export const BoxFiltro = styled.TouchableOpacity<FiltroProps>`
   background-color: ${({ filtro, theme }) =>
-    filtro ? theme.colors.focus[1] : theme.colors.bg_color};
+    filtro ? theme.colors.focus[1] : theme.colors.bg_color[1]};
   width: ${widt - 40}px;
   margin-top: ${RFValue(20)}px;
   align-items: center;

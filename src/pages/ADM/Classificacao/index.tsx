@@ -85,18 +85,6 @@ export function Ranking() {
       <Header />
 
       <>
-        {/* <Modalize ref={modalEntradaSaida}>
-                  {extratoUser.map(h => (
-                     <View key={h.createdAt}>
-                        <ExtratoModal
-                           data={h.createdAt}
-                           descricao={h.descricao}
-                           type={h.type}
-                           valor={h.valor}
-                        />
-                     </View>
-                  ))}
-               </Modalize> */}
         <View
           style={{
             flexDirection: 'row',
@@ -175,48 +163,17 @@ export function Ranking() {
           </View>
         )}
 
-        {/* {type === 'saida' && (
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              marginBottom: RFValue(36),
-            }}
-          >
-            <BoxFiltro
-              onPress={() => setFiltro('mes')}
-              filtro={filtro === 'mes'}
-            >
-              <TitleFiltro filtro={filtro === 'mes'}>MES</TitleFiltro>
-            </BoxFiltro>
-
-            <BoxFiltro
-              onPress={() => setFiltro('ano')}
-              filtro={filtro === 'ano'}
-            >
-              <TitleFiltro filtro={filtro === 'ano'}>Ano</TitleFiltro>
-            </BoxFiltro>
-
-            <BoxFiltro
-              onPress={() => setFiltro('todos')}
-              filtro={filtro === 'todos'}
-            >
-              <TitleFiltro filtro={filtro === 'todos'}>Todos</TitleFiltro>
-            </BoxFiltro>
-          </View>
-        )} */}
-
         <View style={{ marginTop: RFValue(20), paddingBottom: 200 }}>
           {type === 'total' && (
             <FlatList
               data={global.TP}
               keyExtractor={h => h.name}
+
               renderItem={({ item: h, index }) => (
                 <TouchableOpacity
                   onPress={() => { }}
                   style={{
                     paddingBottom: 20,
-                    marginTop: 10,
                   }}
                 >
                   <BoxLista>
@@ -276,13 +233,16 @@ export function Ranking() {
             <FlatList
               data={global.vendas}
               keyExtractor={h => h.id}
+              contentContainerStyle={{
+                gap: 4
+              }}
               renderItem={({ item: h }) => (
                 <BoxLista>
                   <BoxClassificacao>
                     <TitleList
                       style={{
                         fontSize: 26,
-                        color: theme.colors.color_text.dark,
+                        color: theme.colors.color_text.ligh,
                       }}
                     >
                       {h.rank}
@@ -299,6 +259,7 @@ export function Ranking() {
                       style={{
                         fontSize: RFValue(20),
                         fontFamily: theme.fonts.bold,
+                        color: theme.colors.color_text.ligh,
                       }}
                     >
                       {' '}
