@@ -36,4 +36,5 @@ export const _donates = [
   { item: 'Leite' },
   { item: 'Azeite' },
   { item: 'Kit higiene pessoal' },
+  {item: 'Roupas e Calçados'}
 ];

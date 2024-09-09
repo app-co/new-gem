@@ -18,7 +18,7 @@ async function fatchGloablMetric(): Promise<TGlobalMetric> {
 export function useMetricas() {
    const { user } = useAuth()
 
-   const get = useQuery(`getmetric:${user.id}`, fatchUserMetric)
+   const get = useQuery(`getmetric`, fatchUserMetric)
    const gloabl = useQuery('getmetric:global', fatchGloablMetric)
 
 

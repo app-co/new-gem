@@ -16,6 +16,7 @@ import { api } from '../../services/api';
 import { paramsRoutesScheme, routesScheme } from '../../services/schemeRoutes';
 import { _currency, _number } from '../../utils/mask';
 import * as S from './styles';
+import { useQueryClient } from 'react-query';
 
 type TSubmit = {
   item: IRelashionship;
@@ -35,10 +36,12 @@ export function Solicitaions() {
   const [typeIndication, setTypeIndication] =
     React.useState<TTypeValue>('not-yeat');
   const [value, setValue] = React.useState('');
+  const client = useQueryClient()
 
   const currency = _currency(value);
 
   const handleAproved = React.useCallback(
+
     async ({ item }: TSubmit) => {
       try {
         setItemId(item.id);
@@ -75,6 +78,7 @@ export function Solicitaions() {
 
                 setOrders(orders?.filter(h => h.id !== item.id));
                 setItemId('');
+                client.removeQueries('getmetric')
               }
 
               break;
@@ -110,6 +114,8 @@ export function Solicitaions() {
             .then(h => {
               setItemId('');
               setOrders(orders?.filter(h => h.id !== item.id));
+              client.removeQueries('getmetric')
+
             });
         }
       } catch (err: any) {
@@ -133,6 +139,8 @@ export function Solicitaions() {
             setOrders(orders?.filter(h => h.id !== item.id));
             setItemId('');
           });
+          client.removeQueries('getmetric')
+
       } catch (err) {
         console.log(err)
         setItemId('');

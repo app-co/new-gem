@@ -61,7 +61,6 @@ export function Inicio() {
   const [handshak, setHandshak] = React.useState(0)
 
   const [showModalSolicitations, setModalSolicitations] = React.useState(false);
-  const [modalPresenca, setModalPresenca] = React.useState(false);
   const [modalAtenction, setModalAtenction] = React.useState<boolean>(false)
 
   const version = Contants.default.expoConfig?.version;
