@@ -18,7 +18,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.app-c.appGeb",
       "googleServicesFile": "google-ios.plist",
-      "buildNumber": "57",
+      "buildNumber": "58",
       "infoPlist": {
         "NSFaceIDUsageDescription": "Allow $(PRODUCT_NAME) to use Face ID."
       }
@@ -28,7 +28,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#232020"
       },
-      "versionCode": 57,
+      "versionCode": 58,
       "package": "com.appc.gebtraining",
       "googleServicesFile": "google-android.json",
       "permissions": [
@@ -90,7 +90,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "d8372678-9c5c-44e2-9b5d-d19b35716305"
+        "projectId": "3f0c01b7-dfb6-4ce3-a5c8-32950dc2f3b1"
       }
     }
   }
