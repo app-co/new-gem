@@ -5,6 +5,7 @@ import React, { useCallback } from 'react';
 import { Alert } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 
+import { useQueryClient } from 'react-query';
 import { Header } from '../../components/Header';
 import { Input } from '../../components/Inputs';
 import { OrderIndicationComp } from '../../components/OrderIndicationComp';
@@ -16,7 +17,6 @@ import { api } from '../../services/api';
 import { paramsRoutesScheme, routesScheme } from '../../services/schemeRoutes';
 import { _currency, _number } from '../../utils/mask';
 import * as S from './styles';
-import { useQueryClient } from 'react-query';
 
 type TSubmit = {
   item: IRelashionship;
@@ -28,6 +28,7 @@ export function Solicitaions() {
   const { user } = useAuth();
   const { data, refetch } = useOrderRelation();
 
+
   const [orders, setOrders] = React.useState<IRelashionship[] | undefined>([]);
 
   const [itemId, setItemId] = React.useState('');
@@ -35,7 +36,9 @@ export function Solicitaions() {
 
   const [typeIndication, setTypeIndication] =
     React.useState<TTypeValue>('not-yeat');
+
   const [value, setValue] = React.useState('');
+
   const client = useQueryClient()
 
   const currency = _currency(value);
@@ -139,7 +142,7 @@ export function Solicitaions() {
             setOrders(orders?.filter(h => h.id !== item.id));
             setItemId('');
           });
-          client.removeQueries('getmetric')
+        client.removeQueries('getmetric')
 
       } catch (err) {
         console.log(err)

@@ -2,7 +2,7 @@
   "expo": {
     "name": "Geb networking",
     "slug": "aplicativogeb",
-    "version": "3.4.6",
+    "version": "3.5.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -18,18 +18,26 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.app-c.appGeb",
       "googleServicesFile": "google-ios.plist",
-      "buildNumber": "55"
+      "buildNumber": "57",
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Allow $(PRODUCT_NAME) to use Face ID."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#232020"
       },
-      "versionCode": 56,
+      "versionCode": 57,
       "package": "com.appc.gebtraining",
       "googleServicesFile": "google-android.json",
       "permissions": [
-        "android.permission.RECORD_AUDIO"
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT"
       ]
     },
     "plugins": [
@@ -76,14 +84,14 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "extra": {
-      "eas": {
-        "projectId": "3f0c01b7-dfb6-4ce3-a5c8-32950dc2f3b1"
-      }
-    },
     "runtimeVersion": "3.4.0",
     "updates": {
       "url": "https://u.expo.dev/3f0c01b7-dfb6-4ce3-a5c8-32950dc2f3b1"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d8372678-9c5c-44e2-9b5d-d19b35716305"
+      }
     }
   }
 }
