@@ -158,6 +158,8 @@ export function Solicitaions() {
     }
   }, [orders]);
 
+  console.log('orders', orders);
+
   useFocusEffect(
     useCallback(() => {
       setOrders(data?.relation);
