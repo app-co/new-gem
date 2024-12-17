@@ -10,12 +10,9 @@ export default {
       bg: {
         approved: '#FFCD00',
         reproved: '#DDDDE1',
-        common: 'rgba(12, 60, 24, 1)',
-        destak: 'rgba(7, 21, 102, 1)',
       },
       text: {
         light: 'rgba(237,241,244, 1)',
-        dark: 'rgba(6, 28, 14, 1)',
       },
     },
 
@@ -31,12 +28,10 @@ export default {
 
     focus: {
       1: '#FFCD00',
-      2: 'rgba(103, 161, 89, 1)',
     },
 
     bg_button: {
       1: 'rgba(162, 167, 181, 1)',
-      2: 'rgba(231, 101, 45, 1)',
     },
 
     bg_modal: {
