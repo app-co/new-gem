@@ -12,6 +12,7 @@ import gebTheme from '../global/styles/geb';
 import { useAuth } from '../hooks/useAuth';
 import { SingIn } from '../pages/LogIn';
 import { DrawerApp } from './DrawerApp';
+import { Loading } from '../components/Loading';
 
 export function Route() {
   const { user, loading } = useAuth();
@@ -24,7 +25,7 @@ export function Route() {
   if (loading) {
     return (
       <Center flex='1' bg={themes.B.colors.bg_color[1]} >
-        <ActivityIndicator color={clubMentoriaTheme.colors.focus[1]} size={45} />
+        <Loading />
       </Center>
     )
   }

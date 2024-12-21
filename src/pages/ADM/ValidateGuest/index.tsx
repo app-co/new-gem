@@ -24,7 +24,6 @@ export function ValidateGuest() {
       h => h.type === 'INVIT' && h.situation === false,
     );
 
-    console.log(gues)
     const usersL = (users.data as IUserDtos[]) || [];
     const li: IInviteRelation[] = [];
 
@@ -105,7 +104,7 @@ export function ValidateGuest() {
             </HStack>
 
             <Box m="4">
-              <S.text style={{color: theme.colors.color_text.ligh}} >Convidado</S.text>
+              <S.text style={{ color: theme.colors.color_text.ligh }} >Convidado</S.text>
               <S.title>{h.objto.name_convidado}</S.title>
             </Box>
 

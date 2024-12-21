@@ -8,64 +8,40 @@ import { View } from 'react-native';
 
 // import { Input } from "../../components/Inputs";
 import logo from '../../assets/logo.png';
-import { Button } from '../../components/Button';
-import { Input } from '../../components/Inputs';
 import { useAuth } from '../../hooks/useAuth';
 import { IsActiveFingerTokenStorage } from '../../storage/acitve-finger-token';
 import { LocalAuthData } from '../../storage/local-auth-data';
 import { version } from '../../utils/updates';
 import { BoxInput, BoxLogo, Container, Logo } from './styles';
-
+import { FormInput } from '../../components/forms/FormInput';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod'
+import { validation } from '../../hooks/dto/validations';
+import { TSession } from '../../hooks/dto/types';
+import { Button } from '../../components/forms/Button';
+import { make } from '../../hooks';
 const authStorage = new LocalAuthData();
 const isActiveFingerToken = new IsActiveFingerTokenStorage();
 
+
 export function SingIn() {
+  const { mutations } = make()
+
   const { login, loading } = useAuth();
   const formRef = useRef<FormHandles>(null);
   const [load, setLoad] = React.useState<boolean>(false)
 
-  const [membro, setMembro] = useState('');
-  const [pass, setPass] = useState('');
-  const [authencationStatus, setAuthenticationStatus] = React.useState<
-    boolean | null
-  >(null);
+  const { control, handleSubmit: submit, formState: { errors } } = useForm<TSession>({
+    resolver: zodResolver(validation.session),
+    mode: 'onChange'
+  })
 
-  const handleSubmit = useCallback(async () => {
-    setLoad(true)
-    await login({
-      membro,
-      senha: pass,
-    });
+  const handleSubmit = useCallback(async (obj: TSession) => {
+    await login(obj);
     setLoad(false)
     console.log('error');
 
-  }, [membro, pass, login]);
-
-  // React.useEffect(() => {
-  //   async function Auth() {
-  //     const isActive = await isActiveFingerToken.getStorage();
-
-  //     const credentials = await authStorage.getStorage();
-
-  //     if (isActive.isActive) {
-  //       const isAuth = await localAuth();
-  //       console.log(isAuth, 'auth')
-  //       if (credentials) {
-  //         if (isAuth) {
-  //           setLoad(true);
-  //           login(credentials);
-  //         } else {
-  //           setAuthenticationStatus(isAuth);
-  //         }
-  //       } else {
-  //         await isActiveFingerToken.setStorage({ isActive: false });
-  //       }
-  //     }
-  //   }
-
-  //   Auth();
-  // }, [login]);
-
+  }, []);
 
 
   return (
@@ -85,30 +61,23 @@ export function SingIn() {
         <Logo source={logo} />
       </BoxLogo>
 
-      <Form ref={formRef} onSubmit={handleSubmit}>
-        <BoxInput>
-          <Input
-            name="membro"
-            autoCapitalize="none"
-            keyboardType="email-address"
-            onChangeText={h => setMembro(h)}
-            placeholder="MEMBRO"
-            value={membro}
-          />
-          <Input
-            name="membro"
-            value={pass}
-            // selectionColor={theme.colors.color_text.dark}
-            secureTextEntry
-            placeholder="SENHA"
-            onChangeText={setPass}
-          />
+      <BoxInput>
+        <FormInput
+          name='apelido'
+          control={control}
+          error={errors.apelido}
+          placeholder='Usuario'
+        />
 
-          <View style={{ marginTop: 32 }}>
-            <Button loading={load} disabled={load} pres={() => formRef.current?.submitForm()} title="ENTRAR" />
-          </View>
-        </BoxInput>
-      </Form>
+        <FormInput
+          name='senha'
+          control={control}
+          error={errors.senha}
+          placeholder='Sua senha'
+        />
+
+        <Button loading={load} disabled={load} pres={submit(handleSubmit)} title="ENTRAR" />
+      </BoxInput>
     </Container>
   );
 }

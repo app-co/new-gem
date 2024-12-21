@@ -1,9 +1,10 @@
 import { RFValue } from 'react-native-responsive-fontsize';
 import styled from 'styled-components/native';
+import { colors } from '../../global/hub-colors';
 
 export const Container = styled.KeyboardAvoidingView`
   flex: 1;
-  background-color: ${h => h.theme.colors.bg_color[1]};
+  background-color: ${colors.bg_color[2]};
   align-items: center;
   /* padding-bottom: 10px; */
 `;
@@ -16,9 +17,9 @@ export const BoxLogo = styled.View`
 `;
 
 export const BoxInput = styled.View`
-  padding: 20px;
   align-items: center;
-
+  padding: 50px;
+  width: 100%;
   gap: 15px;
 `;
 
@@ -29,8 +30,6 @@ export const Title = styled.Text`
   margin-left: 10px;
 `;
 
-const wid = 180;
-const hei = wid - 70;
 export const Logo = styled.Image`
   width: ${RFValue(350)}px;
   height: ${RFValue(250)}px;

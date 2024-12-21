@@ -50,7 +50,6 @@ export function ListPresenca() {
 
     return listAll.map(respo => {
       const name = listUsers.find(h => h.id === respo.fk_user_id)
-      console.log()
       return {
         ...respo,
         name: name?.nome ?? '',

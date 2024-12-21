@@ -77,15 +77,8 @@ export function SingUp() {
     setModalUser(false);
   }, []);
 
-  // TODO RESTO
-
-  const te = useCallback(() => {
-    console.log('teset');
-  }, []);
-
   const handleSubmit = useCallback(
     async (data: any) => {
-      console.log(data);
 
       try {
         formRef.current?.setErrors({});

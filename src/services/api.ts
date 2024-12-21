@@ -1,7 +1,6 @@
 /* eslint-disable no-async-promise-executor */
 import axios, { AxiosError, AxiosInstance } from 'axios';
 
-import { TokenStorage } from '../storage/token-storage';
 import { AppError } from '../utils/AppError';
 
 type SignOut = () => void;
@@ -20,116 +19,138 @@ type PromiseType = {
 };
 
 const api = axios.create({
-  baseURL: production,
-}) as APIInstaceProps;
+  baseURL: dev,
+})
 
 let failedQuery: Array<PromiseType> = [];
 let isRefreshing = false;
 
-const storageToken = new TokenStorage();
 
-api.registerIntercepTokenManager = signOut => {
-  const registerIntercepToken = api.interceptors.response.use(
-    config => config,
-    async requesRrror => {
-      const erro = requesRrror?.response?.data;
-      console.log(requesRrror);
-      if (requesRrror?.response && erro) {
-        const { message } = erro;
-        if (message === 'token inválido' || message === 'falta o token') {
-          console.log(message, 'token epirou');
-          const originalRequest = requesRrror.config;
+function statusCode(code: number, error: string) {
+  switch (code) {
+    case 401:
+      throw new AppError(error);
+    case 403:
+      throw new AppError('Acesso não permitido');
+    case 404:
+      throw new AppError('Recurso não encontrado');
 
-          if (isRefreshing) {
-            return new Promise((resolve, reject) => {
-              failedQuery.push({
-                onSucess: (token: string) => {
-                  originalRequest.headers = {
-                    Authorization: `Bearer ${token}`,
-                  };
-                  resolve(api(originalRequest));
-                },
-                onFail: (axioxError: AxiosError) => {
-                  reject(axioxError);
-                },
-              });
-            });
-          }
+    case 409:
+      throw new AppError('error');
+    case 500:
+      throw new AppError('Ocorreu um erro interno');
+    default:
+      return code;
+  }
+}
 
-          isRefreshing = true;
+// api.registerIntercepTokenManager = signOut => {
+//   const registerIntercepToken = api.interceptors.response.use(
+//     config => config,
+//     async requesRrror => {
+//       const erro = requesRrror?.response?.data;
+//       console.log('api', requesRrror?.response)
 
-          return new Promise(async (resolve, reject) => {
-            try {
-              const { data } = await api.post('/user/refresh-token');
-              storageToken.setToken(data.token);
+//       statusCode(requesRrror.status)
 
-              if (originalRequest.data) {
-                originalRequest.data = JSON.parse(originalRequest.data);
-              }
+//       // if (requesRrror?.response && erro) {
+//       //   const { message } = erro;
+//       //   if (message === 'token inválido' || message === 'falta o token') {
+//       //     const originalRequest = requesRrror.config;
 
-              originalRequest.headers = {
-                Authorization: `Bearer ${data.token}`,
-              };
+//       //     // if (isRefreshing) {
+//       //     //   return new Promise((resolve, reject) => {
+//       //     //     failedQuery.push({
+//       //     //       onSucess: (token: string) => {
+//       //     //         originalRequest.headers = {
+//       //     //           Authorization: `Bearer ${token}`,
+//       //     //         };
+//       //     //         resolve(api(originalRequest));
+//       //     //       },
+//       //     //       onFail: (axioxError: AxiosError) => {
+//       //     //         reject(axioxError);
+//       //     //       },
+//       //     //     });
+//       //     //   });
+//       //     // }
 
-              api.defaults.headers.common.Authorization = `Bearer ${data.token}`;
+//       //     isRefreshing = true;
 
-              failedQuery.forEach(request => {
-                request.onSucess(data.token);
-              });
+//       //     return new Promise(async (resolve, reject) => {
+//       //       // try {
+//       //       //   const { data } = await api.post('/user/refresh-token');
+//       //       //   storageToken.setToken(data.token);
 
-              console.log('TOKEN ATUALIZADO');
-            } catch (error: any) {
-              failedQuery.forEach(h => {
-                h.onFail(error);
-              });
-              signOut();
-              console.log(error, 'promise');
-              reject(error);
-            } finally {
-              isRefreshing = false;
-              failedQuery = [];
-            }
-          });
+//       //       //   if (originalRequest.data) {
+//       //       //     originalRequest.data = JSON.parse(originalRequest.data);
+//       //       //   }
 
-          // return Promise.reject(requesRrror);
-        }
+//       //       //   originalRequest.headers = {
+//       //       //     Authorization: `Bearer ${data.token}`,
+//       //       //   };
 
-        if (message === 'Sua sessão expirou') {
-          console.log(message);
-          signOut();
-          return Promise.reject(requesRrror);
-        }
+//       //       //   api.defaults.headers.common.Authorization = `Bearer ${data.token}`;
 
-        return Promise.reject(new AppError(message));
-      }
+//       //       //   failedQuery.forEach(request => {
+//       //       //     request.onSucess(data.token);
+//       //       //   });
 
-      return Promise.reject(erro);
-    },
-  );
+//       //       //   console.log('TOKEN ATUALIZADO');
+//       //       // } catch (error: any) {
+//       //       //   failedQuery.forEach(h => {
+//       //       //     h.onFail(error);
+//       //       //   });
+//       //       //   signOut();
+//       //       //   console.log(error, 'promise');
+//       //       //   reject(error);
+//       //       // } finally {
+//       //       //   isRefreshing = false;
+//       //       //   failedQuery = [];
+//       //       // }
+//       //     });
 
-  return () => {
-    api.interceptors.response.eject(registerIntercepToken);
-  };
-};
+//       //     // return Promise.reject(requesRrror);
+//       //   }
 
-export { api };
+
+//       //   return Promise.reject(new AppError(message));
+//       // }
+
+//       return Promise.reject(erro);
+//     },
+//   );
+
+//   return () => {
+//     api.interceptors.response.eject(registerIntercepToken);
+//   };
+// };
+
+
 
 // export const socket = soketio(production);
 
-// api.interceptors.response.use(
-//   res => {
-//     return res;
-//   },
-//   (error: AxiosError) => {
-//     const message = error?.response?.data?.message;
-//     const status = error?.response?.status;
+api.interceptors.response.use(
+  res => {
+    return res;
+  },
+  (error: AxiosError) => {
+    const message = error?.response?.data?.error;
+    const status = error.status
 
-//     console.log(error, 'api');
 
-//     if (status === 401) {
-//       console.log(message, 'api');
-//     }
+    if (status === 409) {
+      return Promise.reject(new AppError(message))
+    }
 
-//     // console.log(error?.response?.data, 'error');
-//   },
-// );
+    if (status === 401) {
+      return Promise.reject(new AppError('Sua sessão expirou, faça login novamente'))
+    }
+
+    return Promise.reject(error)
+
+    // console.log(error?.response?.data, 'error');
+  },
+);
+
+export { api };
+

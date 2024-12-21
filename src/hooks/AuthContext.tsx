@@ -1,9 +1,3 @@
-/* eslint-disable react/jsx-no-constructed-context-values */
-// /* eslint-disable react/jsx-no-constructed-context-values */
-// /* eslint-disable consistent-return */
-// /* eslint-disable react/prop-types */
-// /* eslint-disable camelcase */
-// import { STORAGE_KEY, STORAGE_KEY_TOKEN } from '@types';
 import { useToast } from 'native-base';
 import React, { ReactNode, createContext, useCallback, useState } from 'react';
 
@@ -13,6 +7,10 @@ import { api } from '../services/api';
 import { routesScheme } from '../services/schemeRoutes';
 import { TokenStorage } from '../storage/token-storage';
 import { AppError } from '../utils/AppError';
+import { TSession } from './dto/types';
+import { make } from '.';
+import { IUser } from './dto/interfaces';
+import { showMessage } from './messageError';
 
 interface ILogin {
   membro: string;
@@ -20,8 +18,8 @@ interface ILogin {
 }
 
 interface IAuthContextData {
-  user: IUserDtos;
-  login(credential: ILogin): Promise<void>;
+  user: IUser;
+  login(credential: TSession): Promise<void>;
   loading: boolean;
   logOut(): Promise<void>;
   updateUser(): Promise<void>;
@@ -33,7 +31,7 @@ type TAuthContext = {
 
 type AuthState = {
   token: string;
-  user: IUserDtos;
+  user: IUser;
 };
 
 export const AuthContext = createContext<IAuthContextData>(
@@ -46,18 +44,22 @@ export function AuthContextProvider({ children }: TAuthContext) {
   const [data, setData] = useState<AuthState>({} as AuthState);
   const storageToken = new TokenStorage();
 
+  const { mutations } = make()
+
+  const { mutateAsync: session } = mutations.session()
+  const { mutateAsync: saveOnStorage } = mutations.saveOnStorage()
+  const { mutateAsync: getUserById } = mutations.getUserById()
+  const { mutateAsync: deleteStorage } = mutations.deleteOnStorage()
+
+
+
   const userAndTokenUpdate = React.useCallback(async (token: string) => {
     api.defaults.headers.common.Authorization = `Bearer ${token}`;
 
-    await api.get('/user/find-user-by-id').then(async h => {
-      const user = h.data as IUserDtos;
-      const dt = {
-        ...user,
-        token: user.membro
-      }
-      setData({ token, user: dt });
-      OneSignal.User.addTag('username', user.membro)
-    });
+    const userById = await getUserById()
+
+    setData({ token, user: userById });
+    OneSignal.User.addTag('apelido', userById.apelido)
   }, []);
 
   const LoadingUser = useCallback(async () => {
@@ -76,73 +78,40 @@ export function AuthContextProvider({ children }: TAuthContext) {
     LoadingUser();
   }, []);
 
-  const login = useCallback(async ({ membro, senha }: ILogin) => {
+  const login = useCallback(async (obj: TSession) => {
     try {
-      await api
-        .post(routesScheme.users.login, {
-          membro,
-          senha,
-        })
-        .then(async h => {
-          const { token } = h.data;
-          api.defaults.headers.common.Authorization = `Bearer ${token}`;
+      const { token } = await session(obj)
+      await saveOnStorage({
+        key: 'geb:token',
+        value: token,
+      })
 
-          await api.get('/user/find-user-by-id').then(async h => {
-            const user = h.data;
-            const dt = {
-              ...user,
-              token: user.id
-            }
-            setData({ token, user: dt });
-            setLoading(false);
-            await storageToken.setToken(token);
-            OneSignal.User.addTag('username', user.membro)
+      api.defaults.headers.common.Authorization = `Bearer ${token}`;
+
+      const userById = await getUserById()
+
+      setData({
+        user: userById,
+        token
+      })
+
+      OneSignal.User.addTag('apelido', obj.apelido)
 
 
-          });
-        });
     } catch (error) {
-      const isError = error instanceof AppError;
-      const title = isError
-        ? error.message
-        : 'Não foi possível entrar na sua conta, tente novamente mais tarde';
-
-      if (isError) {
-        toast.show({
-          title,
-          description: title,
-          placement: 'bottom',
-          bgColor: 'red.500',
-        });
-
-        setLoading(false)
-
-      }
-
-      setLoading(false)
-
-
-      toast.show({
-        title,
-        description:
-          'Estamos com um problema no servidor, tente novamente mais tarde',
-        placement: 'bottom',
-        bgColor: 'red.500',
-      });
-
+      showMessage(error)
     }
+
   }, []);
 
   const logOut = useCallback(async () => {
-    console.log('logount')
-    await storageToken.removeToken();
+    await deleteStorage('geb:token')
     setData({} as AuthState);
   }, [data]);
 
   const updateUser = useCallback(
     async () => {
       const token = await storageToken.getToken();
-      console.log({ token }, 'otokf')
       if (token) {
         userAndTokenUpdate(token);
       }
@@ -160,13 +129,7 @@ export function AuthContextProvider({ children }: TAuthContext) {
     });
   }, [logOut, toast]);
 
-  React.useEffect(() => {
-    const out = api.registerIntercepTokenManager(tokkenFail);
 
-    return () => {
-      out();
-    };
-  }, []);
 
   return (
     <AuthContext.Provider

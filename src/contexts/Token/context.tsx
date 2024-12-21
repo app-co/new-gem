@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
 
-import {} from '../../dtos';
+import { } from '../../dtos';
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
@@ -55,8 +55,6 @@ export function TokenContext({ children }: TCreation) {
           projectId: Constants.expoConfig.extra.eas.projectId,
         })
       ).data;
-    } else {
-      console.log('toke');
     }
 
     setMytoken(token);

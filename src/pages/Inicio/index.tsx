@@ -30,6 +30,9 @@ import { IsActiveFingerTokenStorage } from '../../storage/acitve-finger-token';
 import { LocalAuthData } from '../../storage/local-auth-data';
 import { _subTitle } from '../../utils/size';
 import * as S from './styles';
+import { ModalSolicitations } from '../../components/modals/ModalSolicitations';
+import { ModalAtention } from '../../components/modals/ModalAtention';
+import { ModalInfoPresenca } from '../../components/modals/InfoPresenca';
 
 const isActiveFigerToken = new IsActiveFingerTokenStorage();
 const localAuthData = new LocalAuthData();
@@ -48,12 +51,10 @@ const variationPresensa: any = {
 };
 
 export function Inicio() {
-  const { getSelfMetric, getGlobalMetric } = useMetricas()
 
   const { user, updateUser } = useAuth();
   const { navigate } = useNavigation();
   const { indRank } = useData();
-  const { mytoken } = useToken();
 
   const [permissionFingerprint, setPermissionFingerprinte] =
     React.useState(false);
@@ -65,193 +66,14 @@ export function Inicio() {
 
   const version = Contants.default.expoConfig?.version;
 
-  React.useEffect(() => {
-    if (user.token !== mytoken) {
-      api
-        .patch('/user/update-membro', {
-          token: user.membro,
-          id: user.id,
-        })
-        .then(h => {
-          updateUser();
-        });
-    }
-  }, []);
 
-
-  useFocusEffect(
-    useCallback(() => {
-      getSelfMetric.fetch()
-
-      setHandshak(getSelfMetric.data?.handshak || 0)
-
-    }, [handshak, getSelfMetric.data?.handshak]),
-  );
-
-  React.useEffect(() => {
-    console.log(handshak)
-    if (handshak > 0) {
-      setModalSolicitations(true)
-    } else {
-      setModalSolicitations(false)
-    }
-  }, [handshak])
-
-
-
-  if (getSelfMetric.isLoading) {
-    return <Loading />;
-  }
 
   return (
     <S.Container>
-      <Modal transparent visible={false}>
-        <Center flex={1}>
-          <VStack
-            p="8"
-            borderRadius={4}
-            space={4}
-          >
-            <S.title style={{ color: '#fff' }}>
-              Sua presença está baixa : (
-            </S.title>
-            <S.subTitle style={{ color: '#fff' }}>
-              Total de eventos do geb:
-            </S.subTitle>
 
-            <S.subTitle style={{ color: '#fff' }}>
-              Suas presenças até o momento:
-            </S.subTitle>
-          </VStack>
-        </Center>
-      </Modal>
-
-      <Modal visible={modalAtenction} >
-        <Box justifyContent={'space-between'} py='10' flex='1' bg={theme.colors.bg_color[1]}>
-          <VStack p='8' >
-            <S.title style={{ fontFamily: 'bold', textAlign: 'center', color: theme.colors.focus[1], fontSize: RFValue(25) }} >Fique atento aos seus resultados</S.title>
-
-            <Box mt='12' bg={theme.colors.bg_color[3]} p='3' rounded={8} >
-              <S.title style={{ textAlign: 'center' }} >Presença</S.title>
-              <HStack alignItems={'center'} justifyContent={'space-between'} >
-                <Box>
-                  <HStack w='150px' justifyContent={'space-between'} alignItems={'center'} >
-                    <S.text>Suas presenças:</S.text>
-                    <S.text style={{ color: theme.colors.focus[1] }} >{getSelfMetric.data?.totalPresence}</S.text>
-                  </HStack>
-                  <HStack w='154px' justifyContent={'space-between'} alignItems={'center'} >
-                    <S.text>Total de encontros:</S.text>
-                    <S.text style={{ color: theme.colors.focus[1] }} >{getSelfMetric.data?.IdealPresence} </S.text>
-                  </HStack>
-                </Box>
-
-                <Circle size={'md'} bg='gray.600' >
-                  <S.title style={{ fontSize: RFValue(16) }} >
-                    {getSelfMetric.data?.satisfiedPresence}%
-                  </S.title>
-                </Circle>
-
-              </HStack>
-            </Box>
-
-            <Box mt='12' bg={theme.colors.bg_color[3]} p='3' rounded={8} >
-              <S.title style={{ textAlign: 'center' }} >Seus lançamentos</S.title>
-              <HStack mt={4} justifyContent={'space-between'} >
-                <Box>
-                  <S.text>Geral:</S.text>
-                  <S.text>Vendas:</S.text>
-                  <S.text>Compensação:</S.text>
-                </Box>
-
-                <Box>
-                  <S.text style={{ color: theme.colors.focus[1] }} >{getSelfMetric.data?.totalVendas}</S.text>
-                  <S.text style={{ color: theme.colors.focus[1] }} >
-                    {getSelfMetric.data?.currencyVendas}
-                  </S.text>
-                  <S.text style={{ color: theme.colors.focus[1] }} >
-                    {getSelfMetric.data?.satisfiedPorcentege} %
-                  </S.text>
-
-                </Box>
-              </HStack>
-            </Box>
-          </VStack>
-
-          <Center>
-            <Button pres={() => setModalAtenction(false)} title='FECHAR' />
-
-          </Center>
-        </Box>
-      </Modal>
-      {/* 
-      <Modal visible={false}>
-        <Center flex="1">
-          <Text style={{ marginBottom: 20 }}>
-            Deseja ativar acesso com sua biometria?
-          </Text>
-
-          <HStack space={8}>
-            <TouchableOpacity
-              onPress={() => setModalAuth(false)}
-              style={{
-                width: 130,
-                alignItems: 'center',
-                padding: 10,
-                borderRadius: 10,
-                backgroundColor: theme.colors.bg_button[1],
-              }}
-            >
-              <Text style={{ color: '#fff', fontFamily: theme.fonts.bold }}>
-                MAIS TARDE
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => setPermissionFingerprinte(true)}
-              style={{
-                width: 130,
-                alignItems: 'center',
-                padding: 10,
-                borderRadius: 10,
-                backgroundColor: theme.colors.bg_button[1],
-              }}
-            >
-              <Text style={{ color: '#fff', fontFamily: theme.fonts.bold }}>
-                SIM
-              </Text>
-            </TouchableOpacity>
-          </HStack>
-
-          {permissionFingerprint && (
-            <Form ref={ref} onSubmit={handleSavePass}>
-              <Center mt="16">
-                <Input icon="lock" placeholder="Digite sua senha" name="pass" />
-
-                <TouchableOpacity
-                  onPress={() => ref.current?.submitForm()}
-                  style={{
-                    width: 130,
-                    alignItems: 'center',
-                    padding: 10,
-                    borderRadius: 10,
-                    backgroundColor: theme.colors.bg_button[1],
-                  }}
-                >
-                  {load ? (
-                    <ActivityIndicator />
-                  ) : (
-                    <Text
-                      style={{ color: '#fff', fontFamily: theme.fonts.bold }}
-                    >
-                      SALVAR
-                    </Text>
-                  )}
-                </TouchableOpacity>
-              </Center>
-            </Form>
-          )}
-        </Center>
-      </Modal> */}
+      <ModalInfoPresenca openModal={false} />
+      <ModalSolicitations openModal={true} />
+      <ModalAtention openModal={false} />
 
       <Box flex={1}>
         <Header
@@ -260,74 +82,30 @@ export function Inicio() {
           }}
           openAtenction={() => setModalAtenction(true)}
           title="Home"
-          orders={getSelfMetric.data?.handshak}
+          orders={0}
         />
-
-        <Modal
-          animationType="fade"
-          visible={showModalSolicitations}
-          transparent
-        >
-          <Center flex={1}>
-            <Box p="16" bg={theme.colors.bg_color[3]} borderRadius={8}>
-              <S.title style={{ textAlign: 'center' }}>
-                Voce tem negócios para aprovar
-              </S.title>
-              <HStack space={8} mt="4">
-                <TouchableOpacity
-                  onPress={() => setModalSolicitations(false)}
-                  style={{
-                    padding: 8,
-                    backgroundColor: theme.colors.button.bg.reproved,
-                    borderRadius: 8,
-                  }}
-                >
-                  <S.text style={{ color: theme.colors.color_text.dark }}>
-                    APROVAR DEPOIS
-                  </S.text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    setModalSolicitations(false);
-                    setHandshak(0)
-                    navigate('SOLICITAÇÕES');
-                  }}
-                  style={{
-                    padding: 8,
-                    backgroundColor: theme.colors.button.bg.approved,
-                    borderRadius: 8,
-                  }}
-                >
-                  <S.text style={{ color: theme.colors.color_text.dark }}>
-                    APROVAR AGORA
-                  </S.text>
-                </TouchableOpacity>
-              </HStack>
-            </Box>
-          </Center>
-        </Modal>
 
         <Center>
           <S.text style={{ fontFamily: 'medium', fontSize: _subTitle }}>
             {user.nome}
           </S.text>
-          <S.text>{user.profile.workName}</S.text>
+          <S.text>{'empresa'}</S.text>
         </Center>
 
         <HStack space={10} justifyContent="center" my="4" alignItems="center">
-          <Avatar size="xl" source={{ uri: user?.profile.avatar }} />
+          <Avatar size="xl" />
 
           <Box w="1" bg="#bebebe" h="full" />
 
           <Box alignItems="flex-end">
             <S.text>Vendas este ano:</S.text>
             <S.text style={{ fontSize: _subTitle, fontFamily: 'medium' }}>
-              {getSelfMetric.data?.currencyVendas}
+              {0}
             </S.text>
 
             <S.text>Meus pontos:</S.text>
             <S.text style={{ fontSize: _subTitle, fontFamily: 'medium' }}>
-              {getSelfMetric.data?.totalPonts}
+              {0}
             </S.text>
           </Box>
         </HStack>
@@ -336,7 +114,7 @@ export function Inicio() {
           <HStack space={2} alignItems="center">
             <S.text style={{ fontSize: _subTitle }}>Total geral:</S.text>
             <S.text style={{ fontSize: _subTitle, fontFamily: 'medium' }}>
-              {getGlobalMetric.data?.consumoTotal}
+              {0}
             </S.text>
           </HStack>
         </Center>

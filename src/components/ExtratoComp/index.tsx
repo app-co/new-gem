@@ -11,7 +11,6 @@ interface I {
 }
 
 function ExtratoCompMemo({ item = [], day }: I) {
-  console.log({ item: item.map(h => h.objto) })
   return (
     <S.content>
       <S.circle>
