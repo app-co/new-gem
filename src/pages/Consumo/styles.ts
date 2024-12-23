@@ -3,6 +3,7 @@ import { RFPercentage, RFValue } from 'react-native-responsive-fontsize';
 import styled from 'styled-components/native';
 
 import { _subTitle, _text } from '../../utils/size';
+import { colors } from '../../global/hub-colors';
 
 interface PropsFiltro {
   filtro: boolean;
@@ -67,7 +68,7 @@ export const title = styled.Text`
 
 export const BoxTotal = styled.View`
   width: 100%;
-  background-color: ${h => h.theme.colors.focus[1]};
+  background-color: ${h => colors.focus[1]};
   justify-content: center;
   padding: 10px 20px;
 `;

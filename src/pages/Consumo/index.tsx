@@ -4,21 +4,22 @@
 /* eslint-disable consistent-return */
 /* eslint-disable camelcase */
 /* eslint-disable import/prefer-default-export */
-import { useFocusEffect } from '@react-navigation/native';
 import { addMonths, format, getMonth, subMonths } from 'date-fns';
 import { Box, Center, HStack } from 'native-base';
 import React, { useCallback, useState } from 'react';
 import { FlatList, ScrollView, TouchableOpacity, View } from 'react-native';
-import { useQuery } from 'react-query';
 
 import { ExtratoComp } from '../../components/ExtratoComp';
 import { Header } from '../../components/Header';
 import { Loading } from '../../components/Loading';
-import { IRelashionship } from '../../dtos';
-import theme from '../../global/styles/club-mentoria';
 import { api } from '../../services/api';
 import { months } from '../../utils/month';
 import * as S from './styles';
+import { TextStyle } from '../../components/forms/topograph';
+import { colors } from '../../global/hub-colors';
+import { make } from '../../hooks';
+import { IRelationship } from '../../hooks/dto/interfaces';
+import { _convertionType } from '../../components/OrderIndicationComp';
 
 export interface PropTransactions {
   id: string;
@@ -31,67 +32,51 @@ export interface PropTransactions {
 }
 
 type TType =
-  | 'entrada'
-  | 'saida'
-  | 'presenca'
-  | 'padrinho'
-  | 'b2b'
-  | 'guest'
-  | 'donate'
-  | 'indication';
+  | 'VENDA'
+  | 'COMPRA'
+  | 'PRESENÇA'
+  | 'PADRINHO'
+  | 'B2B'
+  | 'CONVITE'
+  | 'DONATIVOS'
+  | 'INDICAÇÃO'
+  | "CORRIDA"
 
-const types = [
-  { type: 'entrada', name: 'Vendas', id: '1' },
-  { type: 'saida', name: 'Compras', id: '2' },
-  { type: 'indication', name: 'Indicações', id: '8' },
-  { type: 'presenca', name: 'Presença', id: '3' },
-  { type: 'b2b', name: 'B2B', id: '5' },
-  { type: 'guest', name: 'Convidados', id: '6' },
-  { type: 'donate', name: 'Donativos', id: '7' },
-  { type: 'padrinho', name: 'Padrinho', id: '4' },
+const types: TType[] = [
+  'VENDA',
+  'COMPRA',
+  'PRESENÇA',
+  'PADRINHO',
+  'B2B',
+  'CONVITE',
+  'DONATIVOS',
+  'INDICAÇÃO',
+  'CORRIDA'
 ];
-
-interface IResponse {
-  consumo: IRelashionship[];
-  venda: IRelashionship[];
-  b2b: IRelashionship[];
-  donate: IRelashionship[];
-  indication: IRelashionship[];
-  padrinho: IRelashionship[];
-  presenca: IRelashionship[];
-  totalConsumo: string;
-  totalVenda: string;
-  invit: IRelashionship[];
-}
 
 interface IExtrato {
   day: number;
-  item: IRelashionship[];
+  item: IRelationship[];
   id: number;
 }
 
 type T = 'valid' | 'peding';
+
 const byDay = Array.from({ length: 31 }, (_, index) => index + 1);
 
+const { querys } = make()
+
 export function Consumo() {
-  const [type, setType] = useState<TType>('entrada');
+  const [type, setType] = useState<TType>('VENDA');
   const [date, setDate] = React.useState(new Date());
   const [typeExtrato, setTypeExtrato] = React.useState<T>('valid');
 
-  const validated = useQuery('valid-consumo', async () => {
-    const rs = await api.get('/relation/extrato-valid');
+  const { data: relations, isLoading, refetch } = querys.useRelationsMetricasUser()
 
-    return rs.data as IResponse;
-  });
-
-  const peding = useQuery('peding-consumo', async () => {
-    const rs = await api.get('/relation/extrato-peding');
-
-    return rs.data as IResponse;
-  });
 
   const reloaded = React.useCallback(async () => {
     setDate(new Date());
+    refetch();
   }, []);
 
   const handlePlus = React.useCallback(async () => {
@@ -110,507 +95,6 @@ export function Consumo() {
 
   const currencyDateFormated = format(date, 'MM/yy');
 
-  const extratoValidated = React.useMemo(() => {
-    const currencyConsumo = validated.data?.totalConsumo;
-    const currenyVenda = validated.data?.totalVenda;
-
-    const vendaByDay: IExtrato[] = [];
-    const consumoByDay: IExtrato[] = [];
-    const indByDay: IExtrato[] = [];
-    const b2bByDay: IExtrato[] = [];
-    const presByDay: IExtrato[] = [];
-    const danateByDay: IExtrato[] = [];
-    const invitByDay: IExtrato[] = [];
-    const padrinhoByDay: IExtrato[] = [];
-
-    const venda = validated?.data?.venda.filter(h => {
-      const updated = format(new Date(h.updated_at), 'MM/yy');
-
-      if (updated === currencyDateFormated) {
-        return h;
-      }
-    });
-
-    const consumo = validated?.data?.consumo.filter(h => {
-      const updated = format(new Date(h.updated_at), 'MM/yy');
-
-      if (updated === currencyDateFormated) {
-        return h;
-      }
-    });
-
-    const b2b = validated?.data?.b2b.filter(h => {
-      const updated = format(new Date(h.updated_at), 'MM/yy');
-
-      if (updated === currencyDateFormated) {
-        return h;
-      }
-    });
-
-    const indication = validated?.data?.indication.filter(h => {
-      const updated = format(new Date(h.updated_at), 'MM/yy');
-
-      if (updated === currencyDateFormated) {
-        return h;
-      }
-    });
-
-    const invit = validated?.data?.invit.filter(h => {
-      const updated = format(new Date(h.updated_at), 'MM/yy');
-
-      if (updated === currencyDateFormated) {
-        return h;
-      }
-    });
-
-    const donate = validated?.data?.donate.filter(h => {
-      const updated = format(new Date(h.updated_at), 'MM/yy');
-
-      if (updated === currencyDateFormated) {
-        return h;
-      }
-    });
-
-    const presenca = validated?.data?.presenca.filter(h => {
-      const updated = format(new Date(h.updated_at), 'MM/yy');
-
-      if (updated === currencyDateFormated) {
-        return h;
-      }
-    });
-
-    const padrinho = validated?.data?.padrinho.filter(h => {
-      const updated = format(new Date(h.updated_at), 'MM/yy');
-
-      if (updated === currencyDateFormated) {
-        return h;
-      }
-    });
-
-    byDay.forEach(day => {
-      const item: IRelashionship[] = [];
-
-      venda?.forEach(venda => {
-        const dayVenda = Number(format(new Date(venda.updated_at), 'dd'));
-
-        if (day === dayVenda) {
-          item.push(venda);
-        }
-      });
-
-      const dt = {
-        id: day + Math.random(),
-        day,
-        item,
-      };
-
-      vendaByDay.push(dt);
-    });
-
-    byDay.forEach(day => {
-      const item: IRelashionship[] = [];
-
-      consumo?.forEach(venda => {
-        const dayVenda = Number(format(new Date(venda.updated_at), 'dd'));
-
-        if (day === dayVenda) {
-          item.push(venda);
-        }
-      });
-
-      const dt = {
-        id: day + Math.random(),
-        day,
-        item,
-      };
-
-      consumoByDay.push(dt);
-    });
-
-    byDay.forEach(day => {
-      const item: IRelashionship[] = [];
-
-      indication?.forEach(venda => {
-        const dayVenda = Number(format(new Date(venda.updated_at), 'dd'));
-
-        if (day === dayVenda) {
-          item.push(venda);
-        }
-      });
-
-      const dt = {
-        id: day + Math.random(),
-        day,
-        item,
-      };
-
-      indByDay.push(dt);
-    });
-
-    byDay.forEach(day => {
-      const item: IRelashionship[] = [];
-
-      b2b?.forEach(venda => {
-        const dayVenda = Number(format(new Date(venda.updated_at), 'dd'));
-
-        if (day === dayVenda) {
-          item.push(venda);
-        }
-      });
-
-      const dt = {
-        id: day + Math.random(),
-        day,
-        item,
-      };
-
-      b2bByDay.push(dt);
-    });
-
-    byDay.forEach(day => {
-      const item: IRelashionship[] = [];
-
-      presenca?.forEach(venda => {
-        const dayVenda = Number(format(new Date(venda.updated_at), 'dd'));
-
-        if (day === dayVenda) {
-          item.push(venda);
-        }
-      });
-
-      const dt = {
-        id: day + Math.random(),
-        day,
-        item,
-      };
-
-      presByDay.push(dt);
-    });
-
-    byDay.forEach(day => {
-      const item: IRelashionship[] = [];
-
-      donate?.forEach(venda => {
-        const dayVenda = Number(format(new Date(venda.updated_at), 'dd'));
-
-        if (day === dayVenda) {
-          item.push(venda);
-        }
-      });
-
-      const dt = {
-        id: day + Math.random(),
-        day,
-        item,
-      };
-
-      danateByDay.push(dt);
-    });
-
-    byDay.forEach(day => {
-      const item: IRelashionship[] = [];
-
-      invit?.forEach(venda => {
-        const dayVenda = Number(format(new Date(venda.updated_at), 'dd'));
-
-        if (day === dayVenda) {
-          item.push(venda);
-        }
-      });
-
-      const dt = {
-        id: day + Math.random(),
-        day,
-        item,
-      };
-
-      invitByDay.push(dt);
-    });
-
-    byDay.forEach(day => {
-      const item: IRelashionship[] = [];
-
-      padrinho?.forEach(venda => {
-        const dayVenda = Number(format(new Date(venda.updated_at), 'dd'));
-
-        if (day === dayVenda) {
-          item.push(venda);
-        }
-      });
-
-      const dt = {
-        id: day + Math.random(),
-        day,
-        item,
-      };
-
-      padrinhoByDay.push(dt);
-    });
-
-    return {
-      totalC: currencyConsumo,
-      totalP: currenyVenda,
-      venda: vendaByDay,
-      consumo: consumoByDay,
-      invit: invitByDay,
-      donate: danateByDay,
-      padrinho: padrinhoByDay,
-      presenca: presByDay,
-      indication: indByDay,
-      b2b: b2bByDay,
-    };
-  }, [currencyDateFormated, validated.data]);
-
-  const extratoPending = React.useMemo(() => {
-    const currencyConsumo = peding.data?.totalConsumo;
-    const currenyVenda = peding.data?.totalVenda;
-
-    const vendaByDay: IExtrato[] = [];
-    const consumoByDay: IExtrato[] = [];
-    const indByDay: IExtrato[] = [];
-    const b2bByDay: IExtrato[] = [];
-    const presByDay: IExtrato[] = [];
-    const danateByDay: IExtrato[] = [];
-    const invitByDay: IExtrato[] = [];
-    const padrinhoByDay: IExtrato[] = [];
-
-    const venda = peding?.data?.venda.filter(h => {
-      const updated = format(new Date(h.updated_at), 'MM/yy');
-
-      if (updated === currencyDateFormated) {
-        return h;
-      }
-    });
-
-    const consumo = peding?.data?.consumo.filter(h => {
-      const updated = format(new Date(h.updated_at), 'MM/yy');
-
-      if (updated === currencyDateFormated) {
-        return h;
-      }
-    });
-
-    const b2b = peding?.data?.b2b.filter(h => {
-      const updated = format(new Date(h.updated_at), 'MM/yy');
-
-      if (updated === currencyDateFormated) {
-        return h;
-      }
-    });
-
-    const indication = peding?.data?.indication.filter(h => {
-      const updated = format(new Date(h.updated_at), 'MM/yy');
-
-      if (updated === currencyDateFormated) {
-        return h;
-      }
-    });
-
-    const invit = peding?.data?.invit.filter(h => {
-      const updated = format(new Date(h.updated_at), 'MM/yy');
-
-      if (updated === currencyDateFormated) {
-        return h;
-      }
-    });
-
-    const donate = peding?.data?.donate.filter(h => {
-      const updated = format(new Date(h.updated_at), 'MM/yy');
-
-      if (updated === currencyDateFormated) {
-        return h;
-      }
-    });
-
-    const presenca = peding?.data?.presenca.filter(h => {
-      const updated = format(new Date(h.updated_at), 'MM/yy');
-
-      if (updated === currencyDateFormated) {
-        return h;
-      }
-    });
-
-    const padrinho = peding?.data?.padrinho.filter(h => {
-      const updated = format(new Date(h.updated_at), 'MM/yy');
-
-      if (updated === currencyDateFormated) {
-        return h;
-      }
-    });
-
-    byDay.forEach(day => {
-      const item: IRelashionship[] = [];
-
-      venda?.forEach(venda => {
-        const dayVenda = Number(format(new Date(venda.updated_at), 'dd'));
-
-        if (day === dayVenda) {
-          item.push(venda);
-        }
-      });
-
-      const dt = {
-        id: day + Math.random(),
-        day,
-        item,
-      };
-
-      vendaByDay.push(dt);
-    });
-
-    byDay.forEach(day => {
-      const item: IRelashionship[] = [];
-
-      consumo?.forEach(venda => {
-        const dayVenda = Number(format(new Date(venda.updated_at), 'dd'));
-
-        if (day === dayVenda) {
-          item.push(venda);
-        }
-      });
-
-      const dt = {
-        id: day + Math.random(),
-        day,
-        item,
-      };
-
-      consumoByDay.push(dt);
-    });
-
-    byDay.forEach(day => {
-      const item: IRelashionship[] = [];
-
-      indication?.forEach(venda => {
-        const dayVenda = Number(format(new Date(venda.updated_at), 'dd'));
-
-        if (day === dayVenda) {
-          item.push(venda);
-        }
-      });
-
-      const dt = {
-        id: day + Math.random(),
-        day,
-        item,
-      };
-
-      indByDay.push(dt);
-    });
-
-    byDay.forEach(day => {
-      const item: IRelashionship[] = [];
-
-      b2b?.forEach(venda => {
-        const dayVenda = Number(format(new Date(venda.updated_at), 'dd'));
-
-        if (day === dayVenda) {
-          item.push(venda);
-        }
-      });
-
-      const dt = {
-        id: day + Math.random(),
-        day,
-        item,
-      };
-
-      b2bByDay.push(dt);
-    });
-
-    byDay.forEach(day => {
-      const item: IRelashionship[] = [];
-
-      presenca?.forEach(venda => {
-        const dayVenda = Number(format(new Date(venda.updated_at), 'dd'));
-
-        if (day === dayVenda) {
-          item.push(venda);
-        }
-      });
-
-      const dt = {
-        id: day + Math.random(),
-        day,
-        item,
-      };
-
-      presByDay.push(dt);
-    });
-
-    byDay.forEach(day => {
-      const item: IRelashionship[] = [];
-
-      donate?.forEach(venda => {
-        const dayVenda = Number(format(new Date(venda.updated_at), 'dd'));
-
-        if (day === dayVenda) {
-          item.push(venda);
-        }
-      });
-
-      const dt = {
-        id: day + Math.random(),
-        day,
-        item,
-      };
-
-      danateByDay.push(dt);
-    });
-
-    byDay.forEach(day => {
-      const item: IRelashionship[] = [];
-
-      invit?.forEach(venda => {
-        const dayVenda = Number(format(new Date(venda.updated_at), 'dd'));
-
-        if (day === dayVenda) {
-          item.push(venda);
-        }
-      });
-
-      const dt = {
-        id: day + Math.random(),
-        day,
-        item,
-      };
-
-      invitByDay.push(dt);
-    });
-
-    byDay.forEach(day => {
-      const item: IRelashionship[] = [];
-
-      padrinho?.forEach(venda => {
-        const dayVenda = Number(format(new Date(venda.updated_at), 'dd'));
-
-        if (day === dayVenda) {
-          item.push(venda);
-        }
-      });
-
-      const dt = {
-        id: day + Math.random(),
-        day,
-        item,
-      };
-
-      padrinhoByDay.push(dt);
-    });
-
-    return {
-      totalC: currencyConsumo,
-      totalP: currenyVenda,
-      venda: vendaByDay,
-      consumo: consumoByDay,
-      invit: invitByDay,
-      donate: danateByDay,
-      padrinho: padrinhoByDay,
-      presenca: presByDay,
-      indication: indByDay,
-      b2b: b2bByDay,
-    };
-  }, [currencyDateFormated, peding.data]);
 
   const handleDeleteOrder = React.useCallback(async (id: string) => {
     await api.delete(`/relation-delete${id}`);
@@ -618,40 +102,148 @@ export function Consumo() {
 
   //* *..........................................................................
 
-  useFocusEffect(
-    useCallback(() => {
-      validated.refetch();
-      peding.refetch();
-    }, []),
-  );
+
 
   const month = getMonth(date);
 
-  if (validated.isLoading) {
+
+
+  const extrato = React.useMemo(() => {
+    const aproveded = relations?.aprovaded
+    const notAprovaded = relations?.notAprovaded
+
+    const relationsTypes = [
+      aproveded?.COMPRA ?? [],
+      aproveded?.VENDA ?? [],
+      aproveded?.B2B ?? [],
+      aproveded?.INDICAÇÃO ?? [],
+      aproveded?.PRESENÇA ?? [],
+      aproveded?.DONATIVOS ?? [],
+      aproveded?.CONVITES ?? [],
+      aproveded?.PADRINHO ?? [],
+      aproveded?.CORRIDAS ?? [],
+    ]
+
+    const relationsTypesNotAproveded = [
+      notAprovaded?.COMPRA ?? [],
+      notAprovaded?.VENDA ?? [],
+      notAprovaded?.B2B ?? [],
+      notAprovaded?.INDICAÇÃO ?? [],
+      notAprovaded?.PRESENÇA ?? [],
+      notAprovaded?.DONATIVOS ?? [],
+      notAprovaded?.CONVITES ?? [],
+      notAprovaded?.PADRINHO ?? [],
+      notAprovaded?.CORRIDAS ?? [],
+    ]
+
+
+    const validos: { [key: string]: IExtrato[] } = {
+      B2B: [] as IExtrato[],
+      COMPRA: [] as IExtrato[],
+      CONVITES: [] as IExtrato[],
+      CORRIDAS: [] as IExtrato[],
+      DONATIVOS: [] as IExtrato[],
+      INDICAÇÃO: [] as IExtrato[],
+      PADRINHO: [] as IExtrato[],
+      PRESENÇA: [] as IExtrato[],
+      VENDA: [] as IExtrato[],
+    }
+
+    const pendente: { [key: string]: IExtrato[] } = {
+      B2B: [] as IExtrato[],
+      COMPRA: [] as IExtrato[],
+      CONVITES: [] as IExtrato[],
+      CORRIDAS: [] as IExtrato[],
+      DONATIVOS: [] as IExtrato[],
+      INDICAÇÃO: [] as IExtrato[],
+      PADRINHO: [] as IExtrato[],
+      PRESENÇA: [] as IExtrato[],
+      VENDA: [] as IExtrato[],
+    }
+
+    byDay.forEach(dia => {
+
+
+      relationsTypes.forEach((type, i) => {
+        let dt: IExtrato = {} as IExtrato
+
+        const tp = _convertionType[i + 1]
+        const itensByDay = type.filter(item => {
+          const day = Number(format(new Date(item!.updated_at), 'dd'));
+          if (day === dia) {
+            return item
+          }
+        })
+
+        if (itensByDay) {
+          dt = {
+            day: dia,
+            id: i,
+            item: itensByDay as IRelationship[],
+          }
+        }
+
+        validos[tp].push(dt)
+      })
+
+      relationsTypesNotAproveded.forEach((type, i) => {
+        let dt: IExtrato = {} as IExtrato
+
+        const tp = _convertionType[i + 1]
+        const itensByDay = type.filter(item => {
+          const day = Number(format(new Date(item!.updated_at), 'dd'));
+          if (day === dia) {
+            return item
+          }
+        })
+
+        if (itensByDay) {
+          dt = {
+            day: dia,
+            id: i,
+            item: itensByDay,
+          }
+        }
+
+        pendente[tp].push(dt)
+      })
+
+
+    })
+
+    return { validos, pendente }
+
+  }, [])
+
+
+  if (isLoading) {
     return <Loading />;
   }
 
   return (
     <S.Container>
-      <Header />
+      <Box my={4}>
+        <Header title='Seus consumos' />
+
+      </Box>
 
       <HStack w="full" justifyContent="space-between" p="3">
         <S.toch
           onPress={() => setTypeExtrato('valid')}
           type={typeExtrato === 'valid'}
         >
-          <S.titleToch type={typeExtrato === 'valid'}>
-            Negócios validados
-          </S.titleToch>
+          <TextStyle style={{ padding: 4 }} colorText={typeExtrato === 'valid' ? colors.text[2] : colors.text[0]} type='defaultSemiBold' >
+            Validados
+          </TextStyle>
         </S.toch>
 
         <S.toch
           onPress={() => setTypeExtrato('peding')}
           type={typeExtrato === 'peding'}
         >
-          <S.titleToch type={typeExtrato === 'peding'}>
+          <TextStyle style={{ padding: 4 }} colorText={typeExtrato === 'peding' ? colors.text[2] : colors.text[0]} type='defaultSemiBold'>
             Negócios pendentes
-          </S.titleToch>
+          </TextStyle>
         </S.toch>
       </HStack>
 
@@ -669,12 +261,12 @@ export function Consumo() {
           <S.BoxTypeTransaction>
             {types.map(h => (
               <S.BoxTypeTransactionTouch
-                type={h.type === type}
-                onPress={() => setType(h.type)}
-                key={h.id}
+                type={h === type}
+                onPress={() => setType(h)}
+                key={h}
               >
-                <S.TextTypeTransaction type={h.type === type}>
-                  {h.name}
+                <S.TextTypeTransaction type={h === type}>
+                  {h}
                 </S.TextTypeTransaction>
               </S.BoxTypeTransactionTouch>
             ))}
@@ -695,8 +287,8 @@ export function Consumo() {
         </TouchableOpacity>
 
         <Center>
-          <S.text style={{ color: theme.colors.color_text.ligh }} >{currencyDateFormated}</S.text>
-          <S.title>{months[month]}</S.title>
+          <TextStyle  >{currencyDateFormated}</TextStyle>
+          <TextStyle>{months[month]}</TextStyle>
 
           <S.reloaded onPress={reloaded}>
             <S.titleReload>ATUALIZAR</S.titleReload>
@@ -708,34 +300,34 @@ export function Consumo() {
         </TouchableOpacity>
       </HStack>
 
-      <S.BoxTotal>
+      {/* <S.BoxTotal>
         {type === 'entrada' && (
-          <S.title style={{ color: theme.colors.color_text.dark }} >Total de vendas no ano</S.title>
+          <TextStyle type='subtitle' colorText={colors.text[0]} >Total de vendas no ano</TextStyle>
         )}
         {type === 'saida' && (
-          <S.title style={{ color: theme.colors.color_text.dark }} >Total de compras no ano</S.title>
+          <TextStyle >Total de compras no ano</TextStyle>
         )}
         {type === 'entrada' && (
-          <S.Text>
+          <TextStyle>
             {typeExtrato === 'valid'
               ? extratoValidated.totalP
               : extratoPending.totalP}
-          </S.Text>
+          </TextStyle>
         )}
         {type === 'saida' && (
-          <S.Text>
+          <TextStyle>
             {typeExtrato === 'valid'
               ? extratoValidated.totalC
               : extratoPending.totalC}
-          </S.Text>
+          </TextStyle>
         )}
-        {type === 'indication' && <S.Text>Suas inidicações</S.Text>}
-        {type === 'presenca' && <S.Text>Suas presenças</S.Text>}
-        {type === 'padrinho' && <S.Text>Seus afilhiados</S.Text>}
-        {type === 'b2b' && <S.Text>Seus B2Bs</S.Text>}
-        {type === 'donate' && <S.Text>Seus donativos</S.Text>}
-        {type === 'guest' && <S.Text>Seus convidados</S.Text>}
-      </S.BoxTotal>
+        {type === 'indication' && <TextStyle>Suas inidicações</TextStyle>}
+        {type === 'presenca' && <TextStyle>Suas presenças</TextStyle>}
+        {type === 'padrinho' && <TextStyle>Seus afilhiados</TextStyle>}
+        {type === 'b2b' && <TextStyle>Seus B2Bs</TextStyle>}
+        {type === 'donate' && <TextStyle>Seus donativos</TextStyle>}
+        {type === 'guest' && <TextStyle>Seus convidados</TextStyle>}
+      </S.BoxTotal> */}
 
       {typeExtrato === 'valid' && (
         <Box>
@@ -744,10 +336,10 @@ export function Consumo() {
               contentContainerStyle={{
                 paddingBottom: 400,
               }}
-              data={extratoValidated.venda}
+              data={extrato.validos.VENDA}
               keyExtractor={h => String(h.id)}
               renderItem={({ item: h }) => (
-                <ExtratoComp day={h.day} item={h.item} />
+                <ExtratoComp day={h?.day} item={h?.item} />
               )}
             />
           )}
@@ -757,7 +349,7 @@ export function Consumo() {
               contentContainerStyle={{
                 paddingBottom: 400,
               }}
-              data={extratoValidated.consumo}
+              data={extrato.validos.COMPRA}
               keyExtractor={h => String(h.id)}
               renderItem={({ item: h }) => (
                 <ExtratoComp day={h.day} item={h.item} />
@@ -770,7 +362,7 @@ export function Consumo() {
               contentContainerStyle={{
                 paddingBottom: 400,
               }}
-              data={extratoValidated.indication}
+              data={extrato.validos.INDICAÇÃO}
               keyExtractor={h => String(h.id)}
               renderItem={({ item: h }) => (
                 <ExtratoComp day={h.day} item={h.item} />
@@ -783,7 +375,7 @@ export function Consumo() {
               contentContainerStyle={{
                 paddingBottom: 400,
               }}
-              data={extratoValidated.presenca}
+              data={extrato.validos.PRESENÇA}
               keyExtractor={h => String(h.id)}
               renderItem={({ item: h }) => (
                 <ExtratoComp day={h.day} item={h.item} />
@@ -796,7 +388,7 @@ export function Consumo() {
               contentContainerStyle={{
                 paddingBottom: 400,
               }}
-              data={extratoValidated.b2b}
+              data={extrato.validos.B2B}
               keyExtractor={h => String(h.id)}
               renderItem={({ item: h }) => (
                 <ExtratoComp day={h.day} item={h.item} />
@@ -809,7 +401,8 @@ export function Consumo() {
               contentContainerStyle={{
                 paddingBottom: 400,
               }}
-              data={extratoValidated.invit}
+
+              data={extrato.validos.CONVITES}
               keyExtractor={h => String(h.id)}
               renderItem={({ item: h }) => (
                 <ExtratoComp day={h.day} item={h.item} />
@@ -822,7 +415,7 @@ export function Consumo() {
               contentContainerStyle={{
                 paddingBottom: 400,
               }}
-              data={extratoValidated.padrinho}
+              data={extrato.validos.PADRINHO}
               keyExtractor={h => String(h.id)}
               renderItem={({ item: h }) => (
                 <ExtratoComp day={h.day} item={h.item} />
@@ -835,7 +428,7 @@ export function Consumo() {
               contentContainerStyle={{
                 paddingBottom: 400,
               }}
-              data={extratoValidated.donate}
+              data={extrato.validos.DONATIVOS}
               keyExtractor={h => String(h.id)}
               renderItem={({ item: h }) => (
                 <ExtratoComp day={h.day} item={h.item} />
@@ -852,7 +445,7 @@ export function Consumo() {
               contentContainerStyle={{
                 paddingBottom: 400,
               }}
-              data={extratoPending.venda}
+              data={extrato.pendente.VENDA}
               keyExtractor={h => String(h.id)}
               renderItem={({ item: h }) => (
                 <ExtratoComp day={h.day} item={h.item} />
@@ -865,7 +458,7 @@ export function Consumo() {
               contentContainerStyle={{
                 paddingBottom: 400,
               }}
-              data={extratoPending.consumo}
+              data={extrato.pendente.COMPRA}
               keyExtractor={h => String(h.id)}
               renderItem={({ item: h }) => (
                 <ExtratoComp day={h.day} item={h.item} />
@@ -878,7 +471,7 @@ export function Consumo() {
               contentContainerStyle={{
                 paddingBottom: 400,
               }}
-              data={extratoPending.indication}
+              data={extrato.pendente.INDICAÇÃO}
               keyExtractor={h => String(h.id)}
               renderItem={({ item: h }) => (
                 <ExtratoComp day={h.day} item={h.item} />
@@ -891,7 +484,7 @@ export function Consumo() {
               contentContainerStyle={{
                 paddingBottom: 400,
               }}
-              data={extratoPending.presenca}
+              data={extrato.pendente.PRESENÇA}
               keyExtractor={h => String(h.id)}
               renderItem={({ item: h }) => (
                 <ExtratoComp day={h.day} item={h.item} />
@@ -904,7 +497,7 @@ export function Consumo() {
               contentContainerStyle={{
                 paddingBottom: 400,
               }}
-              data={extratoPending.b2b}
+              data={extrato.pendente.B2B}
               keyExtractor={h => String(h.id)}
               renderItem={({ item: h }) => (
                 <ExtratoComp day={h.day} item={h.item} />
@@ -917,7 +510,7 @@ export function Consumo() {
               contentContainerStyle={{
                 paddingBottom: 400,
               }}
-              data={extratoPending.invit}
+              data={extrato.pendente.CONVITE}
               keyExtractor={h => String(h.id)}
               renderItem={({ item: h }) => (
                 <ExtratoComp day={h.day} item={h.item} />
@@ -930,7 +523,7 @@ export function Consumo() {
               contentContainerStyle={{
                 paddingBottom: 400,
               }}
-              data={extratoPending.padrinho}
+              data={extrato.pendente.PADRINHO}
               keyExtractor={h => String(h.id)}
               renderItem={({ item: h }) => (
                 <ExtratoComp day={h.day} item={h.item} />
@@ -943,7 +536,20 @@ export function Consumo() {
               contentContainerStyle={{
                 paddingBottom: 400,
               }}
-              data={extratoPending.donate}
+              data={extrato.pendente.DONATIVOS}
+              keyExtractor={h => String(h.id)}
+              renderItem={({ item: h }) => (
+                <ExtratoComp day={h.day} item={h.item} />
+              )}
+            />
+          )}
+
+          {type === 'donate' && (
+            <FlatList
+              contentContainerStyle={{
+                paddingBottom: 400,
+              }}
+              data={extrato.pendente.DONATIVOS}
               keyExtractor={h => String(h.id)}
               renderItem={({ item: h }) => (
                 <ExtratoComp day={h.day} item={h.item} />
