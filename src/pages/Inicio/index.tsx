@@ -34,6 +34,8 @@ import { ModalSolicitations } from '../../components/modals/ModalSolicitations';
 import { ModalAtention } from '../../components/modals/ModalAtention';
 import { ModalInfoPresenca } from '../../components/modals/InfoPresenca';
 import { make } from '../../hooks';
+import { TextStyle } from '../../components/forms/topograph';
+import { colors } from '../../global/hub-colors';
 
 const isActiveFigerToken = new IsActiveFingerTokenStorage();
 const localAuthData = new LocalAuthData();
@@ -91,7 +93,7 @@ export function Inicio() {
           <S.text style={{ fontFamily: 'medium', fontSize: _subTitle }}>
             {user.nome}
           </S.text>
-          <S.text>{'empresa'}</S.text>
+          <TextStyle colorText={colors.alert[0]} type='defaultSemiBold' >{user?.profile?.workName}</TextStyle>
         </Center>
 
         <HStack space={10} justifyContent="center" my="4" alignItems="center">

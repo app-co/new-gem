@@ -28,12 +28,9 @@ import theme from '../../global/styles/club-mentoria';
 import { useAuth } from '../../hooks/useAuth';
 import { api } from '../../services/api';
 import {
-  Avatar,
   Box,
-  BoxButton,
   BoxCamera,
   BoxFormularios,
-  BoxInput,
   BoxLogo,
   BoxTogle,
   Camera,
@@ -43,38 +40,68 @@ import {
   TitleButton,
   TitleHeader,
 } from './styles';
+import { useForm } from 'react-hook-form';
+import { FormInput } from '../../components/forms/FormInput';
+import { TProfile, TUser } from '../../hooks/dto/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { validation } from '../../hooks/dto/validations';
+import { make } from '../../hooks';
+import { InputForm } from '../../components/forms/InputForm';
+import { Button } from '../../components/forms/Button';
+import { TextStyle } from '../../components/forms/topograph';
+import { Avatar, HStack } from 'native-base';
+
+const { mutations } = make()
 
 export function Profile() {
   const { user, updateUser } = useAuth();
+  const { profile } = user
   const { navigate, goBack } = useNavigation();
   const formRef = useRef<FormHandles>(null);
   const modalizeRefRamo = useRef<Modalize>(null);
   const modalizeRefEnquadramento = useRef<Modalize>(null);
 
-  const [loading, setLoading] = useState(true);
-  const [load, setLoad] = React.useState(false);
+  const [logo, setLogo] = React.useState('')
+  const [avatar, setAvatar] = React.useState('')
 
-  // TODO USER
-  const [avatar, setAvatar] = useState('');
-  const [logo, setLogo] = useState('');
+  const { mutateAsync: updateProfile, isLoading: loadProfile } = mutations.updateProfile()
+  const { mutateAsync: upeUser, isLoading: loadUser } = mutations.updateUser()
 
-  // TODO FORMULARIOS
-  const [whats, setWhats] = useState(user.profile.whats);
-  const [email, setEmail] = useState(user.nome);
-  const [workName, setWorkName] = useState(user.profile.workName);
-  const [CPF, setCpf] = useState(user.profile.CPF);
-  const [cnpj, setCnpj] = useState(user.profile.CNPJ);
-  const [avatarUrl, setAvatarUrl] = useState(user.profile.avatar);
-  const [logoUrl, setLogorUrl] = useState(user.profile.logotipo);
-  const [membro, setMembro] = React.useState(user.membro);
-  const [senha, setSenha] = React.useState(null);
+  const userControl = useForm<TUser>({
+    resolver: zodResolver(validation.user),
+    defaultValues: {
+      nome: user.nome,
+      apelido: user.apelido,
+      adm: user.adm,
+      apadrinhado: user.apadrinhado,
+      hub: user.hub,
+      id: user.id,
+    }
+  })
 
-  console.log(user.profile.logotipo)
+  const profileControl = useForm<TProfile>({
+    resolver: zodResolver(validation.profile),
+    defaultValues: {
+      id: profile?.id,
+      whats: profile?.whats,
+      logotipo: profile?.logotipo,
+      avatar: profile?.avatar,
+      workName: profile?.workName,
+      CNPJ: profile?.CNPJ,
+      CPF: profile?.CPF,
+      ramo: profile?.ramo,
+      enquadramento: profile?.enquadramento,
+      email: profile?.email,
+      avatarPath: profile?.avatarPath,
+      logoPath: profile?.logoPath,
+      userId: user.id,
+    }
+  })
 
   // TODO MODAL
-  const [ramo, setRamo] = useState(user.profile.ramo);
+  const [ramo, setRamo] = useState(user?.profile?.ramo);
   const [enquadramento, setEnquadramento] = useState(
-    user.profile.enquadramento,
+    user?.profile?.enquadramento,
   );
   const [modal, setModal] = useState(false);
 
@@ -87,23 +114,9 @@ export function Profile() {
     modalizeRefEnquadramento.current?.open();
   }, []);
 
-  const SelectItemRamo = useCallback(
-    (item: string) => {
-      setRamo(item);
-      setModal(!modal);
 
-      modalizeRefRamo.current?.close();
-    },
-    [modal],
-  );
-
-  const SelectItemEnquadramento = useCallback((item: string) => {
-    setEnquadramento(item);
-    modalizeRefEnquadramento.current?.close();
-  }, []);
 
   const handleImagePiker = useCallback(async () => {
-    setLoading(true);
 
     const result = await ImagePiker.launchImageLibraryAsync({
       mediaTypes: ImagePiker.MediaTypeOptions.All,
@@ -111,9 +124,6 @@ export function Profile() {
       quality: 1,
     });
 
-    if (result.canceled) {
-      setLoading(false);
-    }
 
     if (!result.canceled) {
       setAvatar(result.assets[0].uri);
@@ -129,12 +139,11 @@ export function Profile() {
 
       await reference.putFile(result.assets[0].uri);
       const photoUrl = await reference.getDownloadURL();
-      setAvatarUrl(photoUrl);
+      setAvatar(photoUrl);
     }
   }, [user]);
 
   const handleLogo = useCallback(async () => {
-    setLoading(true);
     const { status } = await ImagePiker.requestMediaLibraryPermissionsAsync();
 
     if (status === 'granted') {
@@ -158,209 +167,165 @@ export function Profile() {
 
         await reference.putFile(result.assets[0].uri);
         const photoUrl = await reference.getDownloadURL();
-        setLogorUrl(photoUrl);
+        setLogo(photoUrl);
       }
     }
 
-    setLoading(false);
   }, [user]);
 
-  const handleSubmit = useCallback(
-    async (data: any) => {
-      formRef.current?.setErrors({});
-      setLoad(true);
+  async function handleSaveUser(obj: TUser) {
+    try {
+      await upeUser(obj)
+      updateUser()
+    } catch (error) {
 
-      const dados = {
-        whats,
-        workName,
-        CNPJ: cnpj,
-        CPF,
-        email,
-        enquadramento,
-        ramo,
-        fk_id_user: user.id,
-        logo: logoUrl,
-        avatar: avatarUrl,
-      };
+    }
+  }
 
-      try {
-        await api
-          .put('user/update-profile', dados)
-          .then(() => {
-            Alert.alert('Seu perfil foi atualizado com sucesso!');
-            const dt = {
-              ...user,
-              profile: dados,
-            };
-            updateUser();
-          })
-          .finally(() => {
-            setLoad(false);
-            goBack();
-          });
+  async function handleSaveProfile(obj: TProfile) {
+    try {
+      await updateProfile(obj)
+      updateUser()
 
-        let upmembro = {};
+    } catch (error) {
 
-        if (senha) {
-          upmembro = {
-            membro,
-            senha,
-            id: user.id,
-          };
-        } else {
-          upmembro = {
-            membro,
-            id: user.id,
-          };
-        }
-
-        await api.patch('/user/update-membro', upmembro);
-      } catch (err) {
-        Alert.alert('Erro ao atualizar seu perfil', err.response.data.message);
-      }
-    },
-    [
-      CPF,
-      avatarUrl,
-      cnpj,
-      email,
-      enquadramento,
-      goBack,
-      logoUrl,
-      membro,
-      ramo,
-      senha,
-      updateUser,
-      user,
-      whats,
-      workName,
-    ],
-  );
+    }
+  }
 
   return (
     <Container>
       <Modalize ref={modalizeRefRamo} snapPoint={530}>
-        <ToglleRamo selectItem={(item: string) => SelectItemRamo(item)} />
+        <InputForm
+          control={profileControl.control}
+          name='ramo'
+          error={profileControl.formState.errors.ramo}
+          render={({ value, onChange }) => (
+            <ToglleRamo selectItem={(item: string) => {
+              onChange(item)
+              modalizeRefRamo.current?.close();
+
+            }} />
+          )}
+        />
       </Modalize>
 
       <Modalize ref={modalizeRefEnquadramento} snapPoint={530}>
-        <ToglleEnquadramento
-          selectItem={(item: string) => SelectItemEnquadramento(item)}
+        <InputForm
+          control={profileControl.control}
+          name='enquadramento'
+          error={profileControl.formState.errors.enquadramento}
+          render={({ value, onChange }) => (
+            <ToglleEnquadramento
+              selectItem={(item: string) => {
+                onChange(item)
+                modalizeRefEnquadramento.current?.close()
+              }
+              }
+            />
+          )}
         />
       </Modalize>
       <Header />
 
-      <View
-        style={{
-          height: RFPercentage(80),
-        }}
-      >
+      <View>
         <ScrollView
           contentContainerStyle={{
             paddingTop: RFValue(10),
-            paddingBottom: RFValue(30),
+            paddingBottom: RFValue(80),
           }}
         >
           <Box>
             <Avatar
-              style={{ resizeMode: 'cover' }}
+              size={'2xl'}
               source={{
-                uri: avatar !== '' ? avatar : user.profile.avatar,
+                uri: user?.profile?.avatar,
               }}
             />
             <BoxCamera onPress={handleImagePiker}>
               <Camera name="camera" />
             </BoxCamera>
           </Box>
+          <BoxFormularios>
+            <TextStyle type='subtitle' >Dados da conta</TextStyle>
 
-          <Form
-            ref={formRef}
-            initialData={{
-              nome: user.nome,
-              email: user.profile.email,
-              workName: user.profile.workName,
-              membro: user.membro,
-            }}
-          >
-            <BoxFormularios>
-              <BoxInput>
-                <TitleHeader style={{ right: 10 }}>MEMBRO</TitleHeader>
-                <Input
-                  name="membro"
-                  icon=""
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  onChangeText={setMembro}
-                  value={membro}
-                />
-              </BoxInput>
+            <FormInput
+              name='nome'
+              control={userControl.control}
+              error={userControl.formState.errors.nome}
+              placeholder='Nome'
+            />
 
-              <BoxInput>
-                <TitleHeader style={{ right: 10 }}>SENHA</TitleHeader>
-                <Input
-                  name="senha"
-                  icon=""
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  onChangeText={setSenha}
-                />
-              </BoxInput>
+            <FormInput
+              name='apelido'
+              control={userControl.control}
+              error={userControl.formState.errors.apelido}
+            />
 
-              <BoxInput>
-                <TitleHeader style={{ right: 10 }}>WHATS</TitleHeader>
-                <Input
-                  name="whats"
-                  onChangeText={mask => {
-                    setWhats(mask);
-                  }}
-                  value={whats!}
-                />
-                <BoxInput />
-              </BoxInput>
-            </BoxFormularios>
+            <FormInput
+              name='senha'
+              control={userControl.control}
+              error={userControl.formState.errors.senha}
+              autoCapitalize='none'
+              secureTextEntry
+            />
 
-            <BoxFormularios>
-              <BoxInput>
-                <TitleHeader style={{ right: 10 }}>RAZÃO SOCIAL</TitleHeader>
-                <Input
-                  name="workName"
-                  icon=""
-                  autoCapitalize="none"
-                  onChangeText={h => setWorkName(h)}
-                  value={workName!}
-                />
-              </BoxInput>
-              <BoxInput>
-                <TitleHeader style={{ right: 10 }}>CPF</TitleHeader>
-                <Input
-                  name="cpf"
-                  icon=""
-                  onChangeText={h => setCpf(h)}
-                  value={String(CPF)}
-                />
-              </BoxInput>
+            <Button pres={userControl.handleSubmit(handleSaveUser)} loading={loadUser} title='SALVAR USUÁRIO' />
 
-              <BoxInput>
-                <TitleHeader style={{ right: 10 }}>CNPJ</TitleHeader>
-                <Input
-                  name="cnpj"
-                  icon=""
-                  onChangeText={h => setCnpj(h)}
-                  value={String(cnpj)}
-                />
-              </BoxInput>
 
-              <View
-                style={{
-                  alignSelf: 'flex-start',
-                  marginLeft: 20,
-                  marginTop: 20,
-                  marginBottom: 20,
-                }}
-              >
-                <TitleHeader>RAMO DE ATIVIDADE</TitleHeader>
+          </BoxFormularios>
+
+          <BoxFormularios>
+            <TextStyle type='subtitle' >Dados da sua empresa</TextStyle>
+            <FormInput
+              name='workName'
+              control={profileControl.control}
+              error={profileControl.formState.errors.workName}
+              placeholder='Nome fantasia'
+            />
+
+            <FormInput
+              name='email'
+              control={profileControl.control}
+              error={profileControl.formState.errors.email}
+              placeholder='E-mail'
+              keyboardType='email-address'
+            />
+
+            <FormInput
+              name='CPF'
+              control={profileControl.control}
+              error={profileControl.formState.errors.CPF}
+              placeholder='CPF'
+              mask='cpf'
+              keyboardType='numeric'
+            />
+
+            <FormInput
+              name='CNPJ'
+              control={profileControl.control}
+              keyboardType='numeric'
+              error={profileControl.formState.errors.CNPJ}
+              mask='cpf'
+              placeholder='CNPJ'
+            />
+
+            <FormInput
+              name='whats'
+              control={profileControl.control}
+              error={profileControl.formState.errors.whats}
+              placeholder='Contato'
+              mask='cell-phone'
+              maxLength={17}
+              keyboardType='numeric'
+            />
+
+
+            <HStack alignItems={'center'} space={2} w={'full'} >
+
+              <View style={{ flex: 1 }} >
+                <TextStyle>RAMO DE ATIVIDADE</TextStyle>
                 <BoxTogle onPress={handleModalOpenRamo}>
-                  <TextTogle>{ramo}</TextTogle>
+                  <TextTogle>{profileControl.watch('ramo')}</TextTogle>
                   <AntDesign
                     name="caretdown"
                     size={25}
@@ -369,16 +334,10 @@ export function Profile() {
                 </BoxTogle>
               </View>
 
-              <View
-                style={{
-                  alignSelf: 'flex-start',
-                  marginLeft: 20,
-                  marginTop: 20,
-                }}
-              >
-                <TitleHeader>ENQUADRAMENTO</TitleHeader>
+              <View style={{ flex: 1 }} >
+                <TextStyle>ENQUADRAMENTO</TextStyle>
                 <BoxTogle onPress={handleModalOpenEnquadramento}>
-                  <TextTogle>{enquadramento}</TextTogle>
+                  <TextTogle>{profileControl.watch('enquadramento')}</TextTogle>
                   <AntDesign
                     name="caretdown"
                     size={25}
@@ -386,8 +345,12 @@ export function Profile() {
                   />
                 </BoxTogle>
               </View>
-            </BoxFormularios>
-          </Form>
+
+            </HStack>
+
+
+            <Button loading={loadProfile} pres={profileControl.handleSubmit(handleSaveProfile)} title='SALVAR PERFIL' />
+          </BoxFormularios>
 
           <View
             style={{
@@ -398,7 +361,7 @@ export function Profile() {
               <TitleButton style={{ textAlign: 'center' }}>
                 LOGO EMPRESA
               </TitleButton>
-              <LogoImage source={{ uri: logoUrl }} />
+              <LogoImage source={{ uri: logo }} />
             </BoxLogo>
             <TouchableOpacity
               onPress={handleLogo}
@@ -409,9 +372,7 @@ export function Profile() {
           </View>
         </ScrollView>
       </View>
-      <BoxButton onPress={handleSubmit}>
-        {load ? <ActivityIndicator /> : <TitleButton>Atualizar</TitleButton>}
-      </BoxButton>
+
     </Container>
   );
 }

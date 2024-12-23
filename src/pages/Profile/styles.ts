@@ -3,6 +3,7 @@ import { Dimensions } from 'react-native';
 import { TextInputMask } from 'react-native-masked-text';
 import { RFPercentage, RFValue } from 'react-native-responsive-fontsize';
 import styled from 'styled-components/native';
+import { colors } from '../../global/hub-colors';
 
 const { height, width } = Dimensions.get('screen');
 
@@ -22,7 +23,6 @@ export const BoxHeader = styled.View.attrs({
   background-color: ${h => h.theme.colors.bg_color[1]};
   align-items: center;
   justify-content: space-between;
-  padding: 8px 25px;
   flex-direction: row;
 `;
 
@@ -71,7 +71,7 @@ export const TitleHeader = styled.Text`
 `;
 
 export const BoxFormularios = styled.View.attrs({
-  shadowColor: '#000',
+  shadowColor: '#9a9a9a',
   shadowOffset: {
     width: 0,
     height: 2,
@@ -81,14 +81,14 @@ export const BoxFormularios = styled.View.attrs({
   elevation: 4,
 })`
   background-color: ${h => h.theme.colors.bg_color[3]};
-  width: ${width / 1.12}px;
+  width: ${width / 1}px;
   top: ${RFPercentage(1)}px;
   align-self: center;
   border-radius: 15px;
   align-items: center;
   margin-bottom: 15px;
 
-  padding: ${RFValue(40)}px 10px;
+  padding: 15px;
   gap: 10px;
 `;
 
@@ -108,15 +108,10 @@ export const InpuMask = styled(TextInputMask)`
 
 export const BoxTogle = styled.TouchableOpacity`
   border-width: 2px;
-  border-top-color: ${h => h.theme.colors.bg_color[2]};
-  border-right-color: ${h => h.theme.colors.bg_color[2]};
-  border-left-color: ${h => h.theme.colors.bg_color[2]};
-  border-bottom-color: ${h => h.theme.colors.bg_color[2]};
+  border-color: ${colors.bg_color[1]};
   justify-content: center;
-  padding: 0 10px;
+  padding: 10px;
   border-radius: 10px;
-
-  width: ${RFPercentage(25)}px;
   align-items: center;
   flex-direction: row;
   justify-content: space-between;

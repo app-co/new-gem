@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Box, Container, Title, TitleDescricao } from './styles';
+import { TextStyle } from '../forms/topograph';
 
 const Itens = [
   { nome: 'NENHUM', descricao: '' },
@@ -41,8 +42,8 @@ export function ToglleRamo({ selectItem }: Props) {
     <Container>
       {Itens.map(h => (
         <Box key={h.nome} onPress={() => selectItem(h.nome)}>
-          <Title>{h.nome}</Title>
-          <TitleDescricao>{h.descricao}</TitleDescricao>
+          <TextStyle >{h.nome}</TextStyle>
+          <TextStyle>{h.descricao}</TextStyle>
         </Box>
       ))}
     </Container>

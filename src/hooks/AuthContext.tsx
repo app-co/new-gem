@@ -40,7 +40,6 @@ export const AuthContext = createContext<IAuthContextData>(
 
 export function AuthContextProvider({ children }: TAuthContext) {
   const [loading, setLoading] = useState(true);
-  const toast = useToast();
   const [data, setData] = useState<AuthState>({} as AuthState);
 
   const { mutations } = make()
@@ -116,7 +115,7 @@ export function AuthContextProvider({ children }: TAuthContext) {
 
   const updateUser = useCallback(
     async () => {
-      const token = await storageToken.getToken();
+      const token = await getOnStorage('geb:token');
       if (token) {
         userAndTokenUpdate(token);
       }

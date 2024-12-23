@@ -18,7 +18,7 @@ export class PostFetchs {
 
 
   public async registerProfile(obj: TProfile) {
-    const { data } = await api.post('/session', obj)
+    const { data } = await api.post('/user/profile', obj)
 
     return data
   }
@@ -40,4 +40,5 @@ export class PostFetchs {
 
     return data
   }
+
 }

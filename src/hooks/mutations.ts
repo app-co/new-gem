@@ -5,6 +5,7 @@ import { PostFetchs } from "./fetchs/posts";
 import { GetFetchs } from "./fetchs/gets";
 import { PutFetchs } from "./fetchs/put";
 import { DelteFetchs } from "./fetchs/delte";
+import { Querys } from "./querys";
 
 export class Mutations {
   constructor(
@@ -89,6 +90,32 @@ export class Mutations {
         client.invalidateQueries('relationsMetricasUser')
         client.invalidateQueries('relationForAprovation')
         client.invalidateQueries('relationByReceptor')
+      }
+    })
+  }
+
+  public updateProfile() {
+    return useMutation(this.post.registerProfile, {
+      onError: (error) => showMessage(error),
+      onSuccess: () => {
+        Toast.show({
+          tipo: 'success',
+          title: 'Sucesso!',
+          description: 'Perfil atualizado com sucesso!',
+        })
+      }
+    })
+  }
+
+  public updateUser() {
+    return useMutation(this.put.updateUser, {
+      onError: (error) => showMessage(error),
+      onSuccess: () => {
+        Toast.show({
+          tipo: 'success',
+          title: 'Sucesso!',
+          description: 'Usuário atualizado com sucesso!',
+        })
       }
     })
   }
