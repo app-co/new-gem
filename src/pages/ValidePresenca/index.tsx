@@ -6,11 +6,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert } from 'react-native';
 
 import { Header } from '../../components/Header';
-import { useToken } from '../../contexts/Token';
-import { useRelation } from '../../contexts/relation';
-import { IPresensaRelation } from '../../dtos';
 import { useAuth } from '../../hooks/useAuth';
-import { useAllUsers } from '../../hooks/user';
 import { api } from '../../services/api';
 import { routesScheme } from '../../services/schemeRoutes';
 import {
@@ -20,6 +16,10 @@ import {
   TextButtonValidar,
   Title,
 } from './styles';
+import { TextStyle } from '../../components/forms/topograph';
+import { colors } from '../../global/hub-colors';
+import { make } from '../../hooks';
+import Toast from '../../components/toast/handler';
 
 interface I {
   lat: number;
@@ -27,23 +27,23 @@ interface I {
 }
 
 const local = {
-  lat: -22.889,
-  log: -48.442,
+  lat: -22.8893341,
+  log: -48.4448072,
 };
+
+const { querys, mutations } = make()
 
 export function Valide() {
   const { user } = useAuth();
-  const { listAllRelation } = useRelation();
-  const { mytoken, sendMessage } = useToken();
 
-  const adms = useAllUsers();
-  const allAdm = adms.data || [];
 
   const { nome, id } = user;
   const { navigate } = useNavigation();
-  const [data, setData] = useState(format(new Date(Date.now()), 'dd/MM/yyyy'));
-  const [load, setLoad] = useState(false);
 
+  const { data, isLoading } = querys.useRelationsMetricasUser()
+  const { mutateAsync, isLoading: load } = mutations.registerRelation()
+
+  const [currentDate, setData] = useState(format(new Date(Date.now()), 'dd/MM/yy'));
   const [location, setLocation] = useState<I>({ lat: 0, log: 0 });
   const [errorMsg, setErrorMsg] = useState(null);
 
@@ -65,87 +65,63 @@ export function Valide() {
     geoLocation();
   }, [geoLocation]);
 
-  const presendaData = (listAllRelation.data as IPresensaRelation[]) || [];
-  const filPres = presendaData.find(h => {
-    const date = format(new Date(h.created_at), 'dd/MM/yyyy');
-
-    if (date === data && h.type === 'PRESENCA' && h.fk_user_id === user.id) {
-      return h;
-    }
-  });
-
-  useFocusEffect(
-    useCallback(() => {
-      adms.refetch();
-      geoLocation();
-    }, [geoLocation]),
-  );
+  useFocusEffect(useCallback(() => {
+    geoLocation()
+  }, []))
 
   const hanldeValidar = useCallback(async () => {
-    setLoad(true)
-    // if (filPres) {
-    //   return Alert.alert(
-    //     'Você não pode validar mais de uma presença no mesmo dia',
-    //   );
-    // }
+    const lat = Number(location.lat);
+    const log = Number(location.log);
 
-    // const lat = Number(location.lat.toFixed(3));
-    // const log = Number(location.log.toFixed(3));
+    if (local.lat !== lat && local.log !== log) {
+      return Toast.show({
+        title: 'Atenção',
+        description: 'Você precisa estar no local para validar sua presença',
+        tipo: 'alert',
+      })
+    }
+
+    const preNotValid = data?.notAprovaded.PRESENÇA.find(h => {
+      const date = format(new Date(h.updated_at), 'dd/MM/yy')
+      if (date === currentDate) return h
+    })
+
+    const preValid = data?.aprovaded.PRESENÇA.find(h => {
+      const date = format(new Date(h.updated_at), 'dd/MM/yy')
+      if (date === currentDate) return h
+    })
+
+    if (preNotValid) return Toast.show({
+      title: 'Atenção',
+      description: 'Você já possui uma solicitação de presença pendente.',
+      tipo: 'alert',
+    })
+
+    if (preValid) return Toast.show({
+      title: 'Atenção',
+      description: 'Sua precença já foi validada para este dia.',
+      tipo: 'alert',
+    })
 
 
-    // if (local.lat !== lat && local.log !== log) {
-    //   return Alert.alert(
-    //     'Atenção',
-    //     'Você precisa estar no local para lançar a sua presença',
-    //   );
-    // }
+
+
+
 
     const dados = {
-      nome,
       user_id: id,
-      objto: {
-        user_id: id,
-        avatar: user.profile.avatar,
-        token: mytoken,
+      type: 5,
+      objeto: {
+        nome
       },
-      type: 'PRESENCA',
-      situation: false,
     };
 
-    const adm = allAdm.filter(h => h.adm === true).map(h => h.token);
-
-    await api
-      .post(routesScheme.relationShip.create, dados)
-      .then(h => {
-        setLoad(false);
-        navigate('INÍCIO');
-
-        adm.forEach(async h => {
-          sendMessage({
-            title: 'Presença',
-            text: 'Um membro acabou de marcar presença',
-            token: h,
-          });
-        });
-        Alert.alert(
-          'Solicitação enviada',
-          'Aguarde um adm validar sua presença',
-        );
-      })
-      .catch(h => {
-        Alert.alert('Ops!', h.response.data.message);
-        setLoad(false)
-      });
+    await mutateAsync(dados)
   }, [
-    allAdm,
-    filPres,
     id,
     location.lat,
     location.log,
-    mytoken,
     nome,
-    sendMessage,
-    user.profile.avatar,
   ]);
 
   return (
@@ -153,14 +129,14 @@ export function Valide() {
       <Header title="Valide sua presença" />
 
       <Box>
-        <Title>{data}</Title>
+        <Title>{currentDate}</Title>
       </Box>
 
       <ButtonValidar onPress={hanldeValidar}>
-        {load ? (
+        {isLoading ? (
           <ActivityIndicator />
         ) : (
-          <TextButtonValidar>validar</TextButtonValidar>
+          <TextStyle type='subtitle' colorText={colors.text[2]} >Marcar Presença</TextStyle>
         )}
       </ButtonValidar>
     </Container>

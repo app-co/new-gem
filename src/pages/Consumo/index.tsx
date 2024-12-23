@@ -37,7 +37,7 @@ type TType =
   | 'PRESENÇA'
   | 'PADRINHO'
   | 'B2B'
-  | 'CONVITE'
+  | 'CONVITES'
   | 'DONATIVOS'
   | 'INDICAÇÃO'
   | "CORRIDA"
@@ -48,7 +48,7 @@ const types: TType[] = [
   'PRESENÇA',
   'PADRINHO',
   'B2B',
-  'CONVITE',
+  'CONVITES',
   'DONATIVOS',
   'INDICAÇÃO',
   'CORRIDA'
@@ -215,6 +215,8 @@ export function Consumo() {
 
   }, [])
 
+  console.log(type)
+
 
   if (isLoading) {
     return <Loading />;
@@ -331,231 +333,37 @@ export function Consumo() {
 
       {typeExtrato === 'valid' && (
         <Box>
-          {type === 'entrada' && (
+
+          <Box>
             <FlatList
               contentContainerStyle={{
                 paddingBottom: 400,
               }}
-              data={extrato.validos.VENDA}
-              keyExtractor={h => String(h.id)}
+              data={extrato.validos[type]}
+              keyExtractor={h => String(h.day)}
               renderItem={({ item: h }) => (
                 <ExtratoComp day={h?.day} item={h?.item} />
               )}
             />
-          )}
 
-          {type === 'saida' && (
-            <FlatList
-              contentContainerStyle={{
-                paddingBottom: 400,
-              }}
-              data={extrato.validos.COMPRA}
-              keyExtractor={h => String(h.id)}
-              renderItem={({ item: h }) => (
-                <ExtratoComp day={h.day} item={h.item} />
-              )}
-            />
-          )}
+          </Box>
 
-          {type === 'indication' && (
-            <FlatList
-              contentContainerStyle={{
-                paddingBottom: 400,
-              }}
-              data={extrato.validos.INDICAÇÃO}
-              keyExtractor={h => String(h.id)}
-              renderItem={({ item: h }) => (
-                <ExtratoComp day={h.day} item={h.item} />
-              )}
-            />
-          )}
 
-          {type === 'presenca' && (
-            <FlatList
-              contentContainerStyle={{
-                paddingBottom: 400,
-              }}
-              data={extrato.validos.PRESENÇA}
-              keyExtractor={h => String(h.id)}
-              renderItem={({ item: h }) => (
-                <ExtratoComp day={h.day} item={h.item} />
-              )}
-            />
-          )}
-
-          {type === 'b2b' && (
-            <FlatList
-              contentContainerStyle={{
-                paddingBottom: 400,
-              }}
-              data={extrato.validos.B2B}
-              keyExtractor={h => String(h.id)}
-              renderItem={({ item: h }) => (
-                <ExtratoComp day={h.day} item={h.item} />
-              )}
-            />
-          )}
-
-          {type === 'guest' && (
-            <FlatList
-              contentContainerStyle={{
-                paddingBottom: 400,
-              }}
-
-              data={extrato.validos.CONVITES}
-              keyExtractor={h => String(h.id)}
-              renderItem={({ item: h }) => (
-                <ExtratoComp day={h.day} item={h.item} />
-              )}
-            />
-          )}
-
-          {type === 'padrinho' && (
-            <FlatList
-              contentContainerStyle={{
-                paddingBottom: 400,
-              }}
-              data={extrato.validos.PADRINHO}
-              keyExtractor={h => String(h.id)}
-              renderItem={({ item: h }) => (
-                <ExtratoComp day={h.day} item={h.item} />
-              )}
-            />
-          )}
-
-          {type === 'donate' && (
-            <FlatList
-              contentContainerStyle={{
-                paddingBottom: 400,
-              }}
-              data={extrato.validos.DONATIVOS}
-              keyExtractor={h => String(h.id)}
-              renderItem={({ item: h }) => (
-                <ExtratoComp day={h.day} item={h.item} />
-              )}
-            />
-          )}
         </Box>
       )}
 
       {typeExtrato === 'peding' && (
         <Box>
-          {type === 'entrada' && (
-            <FlatList
-              contentContainerStyle={{
-                paddingBottom: 400,
-              }}
-              data={extrato.pendente.VENDA}
-              keyExtractor={h => String(h.id)}
-              renderItem={({ item: h }) => (
-                <ExtratoComp day={h.day} item={h.item} />
-              )}
-            />
-          )}
-
-          {type === 'saida' && (
-            <FlatList
-              contentContainerStyle={{
-                paddingBottom: 400,
-              }}
-              data={extrato.pendente.COMPRA}
-              keyExtractor={h => String(h.id)}
-              renderItem={({ item: h }) => (
-                <ExtratoComp day={h.day} item={h.item} />
-              )}
-            />
-          )}
-
-          {type === 'indication' && (
-            <FlatList
-              contentContainerStyle={{
-                paddingBottom: 400,
-              }}
-              data={extrato.pendente.INDICAÇÃO}
-              keyExtractor={h => String(h.id)}
-              renderItem={({ item: h }) => (
-                <ExtratoComp day={h.day} item={h.item} />
-              )}
-            />
-          )}
-
-          {type === 'presenca' && (
-            <FlatList
-              contentContainerStyle={{
-                paddingBottom: 400,
-              }}
-              data={extrato.pendente.PRESENÇA}
-              keyExtractor={h => String(h.id)}
-              renderItem={({ item: h }) => (
-                <ExtratoComp day={h.day} item={h.item} />
-              )}
-            />
-          )}
-
-          {type === 'b2b' && (
-            <FlatList
-              contentContainerStyle={{
-                paddingBottom: 400,
-              }}
-              data={extrato.pendente.B2B}
-              keyExtractor={h => String(h.id)}
-              renderItem={({ item: h }) => (
-                <ExtratoComp day={h.day} item={h.item} />
-              )}
-            />
-          )}
-
-          {type === 'guest' && (
-            <FlatList
-              contentContainerStyle={{
-                paddingBottom: 400,
-              }}
-              data={extrato.pendente.CONVITE}
-              keyExtractor={h => String(h.id)}
-              renderItem={({ item: h }) => (
-                <ExtratoComp day={h.day} item={h.item} />
-              )}
-            />
-          )}
-
-          {type === 'padrinho' && (
-            <FlatList
-              contentContainerStyle={{
-                paddingBottom: 400,
-              }}
-              data={extrato.pendente.PADRINHO}
-              keyExtractor={h => String(h.id)}
-              renderItem={({ item: h }) => (
-                <ExtratoComp day={h.day} item={h.item} />
-              )}
-            />
-          )}
-
-          {type === 'donate' && (
-            <FlatList
-              contentContainerStyle={{
-                paddingBottom: 400,
-              }}
-              data={extrato.pendente.DONATIVOS}
-              keyExtractor={h => String(h.id)}
-              renderItem={({ item: h }) => (
-                <ExtratoComp day={h.day} item={h.item} />
-              )}
-            />
-          )}
-
-          {type === 'donate' && (
-            <FlatList
-              contentContainerStyle={{
-                paddingBottom: 400,
-              }}
-              data={extrato.pendente.DONATIVOS}
-              keyExtractor={h => String(h.id)}
-              renderItem={({ item: h }) => (
-                <ExtratoComp day={h.day} item={h.item} />
-              )}
-            />
-          )}
+          <FlatList
+            contentContainerStyle={{
+              paddingBottom: 400,
+            }}
+            data={extrato.pendente[type]}
+            keyExtractor={h => String(h.day)}
+            renderItem={({ item: h }) => (
+              <ExtratoComp day={h.day} item={h.item} />
+            )}
+          />
         </Box>
       )}
     </S.Container>

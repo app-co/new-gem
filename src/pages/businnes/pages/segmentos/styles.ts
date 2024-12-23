@@ -27,5 +27,13 @@ export const textSegments = styled.Text`
     font-size: ${RFValue(14)}px;
 `
 
+export const warp = styled.View`
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 15px;
+  align-items: center;
+  justify-content: space-around;
+`
+
 
 

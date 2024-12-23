@@ -35,12 +35,12 @@ export function ToastModal() {
         {
           translateX: interpolate(
             animation.value,
-            [0, 0.2, 9.5, 10],
+            [0, 0.1, 9.5, 10],
             [300, -340, -340, 300],
           ),
         },
       ],
-      opacity: interpolate(animation.value, [0, 0.2, 9.5, 10], [0, 1, 1, 0]),
+      opacity: interpolate(animation.value, [0, 0.15, 9.5, 10], [0, 1, 1, 0]),
     };
   });
 

@@ -37,6 +37,30 @@ type TSegments = 'b2b' | 'consumo' | 'indication'
 
 const { mutations } = make()
 
+type TType =
+  | 'VENDA'
+  | 'COMPRA'
+  | 'PRESENÇA'
+  | 'PADRINHO'
+  | 'B2B'
+  | 'CONVITES'
+  | 'DONATIVOS'
+  | 'INDICAÇÃO'
+  | "CORRIDA"
+
+const types: TType[] = [
+  'VENDA',
+  'COMPRA',
+  'PRESENÇA',
+  'PADRINHO',
+  'B2B',
+  'CONVITES',
+  'DONATIVOS',
+  'INDICAÇÃO',
+  'CORRIDA'
+];
+
+
 export function Segments() {
   const params = useRoute().params as IParmans
   const { goBack, navigate } = useNavigation()
@@ -161,6 +185,7 @@ export function Segments() {
         <Center mt='4'>
           <S.title>Escolha qual negócios irá realizar</S.title>
         </Center>
+
 
 
         <VStack mt='4' space={3} p='4' >
