@@ -34,4 +34,10 @@ export class PostFetchs {
 
     await AsyncStorage.setItem(key, dt)
   }
+
+  public async registerRelation(obj: any) {
+    const { data } = await api.post('/relationShip/register', obj)
+
+    return data
+  }
 }

@@ -2,6 +2,7 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
 
 import { AppError } from '../utils/AppError';
+import Toast from '../components/toast/handler';
 
 type SignOut = () => void;
 
@@ -140,6 +141,14 @@ api.interceptors.response.use(
 
     if (status === 409) {
       return Promise.reject(new AppError(message))
+    }
+
+    if (status === 404) {
+      Toast.show({
+        title: 'Recurso não encontrado',
+        description: 'Route not found',
+        tipo: 'error',
+      })
     }
 
     if (status === 401) {

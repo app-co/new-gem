@@ -11,6 +11,7 @@ import { Warning } from 'phosphor-react-native';
 import theme from '../../global/styles/club-mentoria';
 import { CartaMessagem } from '../CartaMessagem';
 import * as S from './styles';
+import { colors } from '../../global/hub-colors';
 
 interface IProps {
   type?: 'menu' | 'goback';
@@ -39,25 +40,25 @@ export function Header({ title, orders = 0, openAtenction, openMail, type = 'men
               <MaterialCommunityIcons
                 name="menu"
                 size={40}
-                color={theme.colors.color_text.ligh}
+                color={colors.text[0]}
               />
             ) : (
               <MaterialCommunityIcons
                 name="arrow-left-thick"
                 size={40}
-                color={theme.colors.focus[1]}
+                color={colors.focus[1]}
               />
             )}
           </TouchableOpacity>
 
 
-          {orders > 0 ? (<CartaMessagem pres={openMail} quantity={orders} />) : (
+          {orders > 0 ? (<CartaMessagem pres={openMail!} quantity={orders} />) : (
             <Box>
               {title === 'Home' && (
                 <TouchableOpacity onPress={openAtenction} >
 
                   <Box>
-                    <Warning size={35} color={theme.colors.focus[1]} weight='duotone' />
+                    <Warning size={35} color={colors.focus[1]} weight='duotone' />
                   </Box>
 
                 </TouchableOpacity>

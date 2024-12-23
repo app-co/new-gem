@@ -13,7 +13,7 @@ const color = {
 }
 
 const colorText = {
-  success: colors.sucess[2],
+  success: colors.text[2],
   error: colors.text[0],
   alert: colors.alert[2],
 }
@@ -27,7 +27,7 @@ export const container = styled(Animated.View) <{ type: 'success' | 'error' | 'a
   border-radius: 10px;
   border-width: 2px;
   border-color: ${h => color[h.type]};
-  width: 250px;
+  width: 300px;
 `;
 
 export const title = styled.Text<{ type: 'success' | 'error' | 'alert' }>`

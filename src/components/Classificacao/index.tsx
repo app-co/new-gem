@@ -4,32 +4,43 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React from 'react';
 
-import { FlatList, HStack } from 'native-base';
+import { Center, FlatList, HStack } from 'native-base';
 import { useMetricas } from '../../contexts/metricas';
 import { usePontos } from '../../contexts/pontos';
 import { Loading } from '../Loading';
 import * as S from './styles';
+import { make } from '../../hooks';
+import { Island } from 'phosphor-react-native';
+import { ActivityIndicator } from 'react-native';
+
+const { querys } = make()
 
 export function Classificacao() {
-  const { pontosListMe } = usePontos();
-  const { getSelfMetric } = useMetricas()
+  const { data: metrica, isLoading } = querys.useRelationsMetricasUser()
 
-  if (getSelfMetric.isLoading) {
-    return <Loading />;
+  const positions = metrica?.position ?? []
+
+  if (isLoading) {
+
+    return (
+      <Center flex={1} >
+        <ActivityIndicator />
+      </Center>
+    )
   }
 
   return (
     <S.Container>
       <S.BoxEventos>
         <FlatList
-          data={getSelfMetric.data?.classification}
+          data={positions}
           keyExtractor={(h, i) => String(i)}
           renderItem={({ item: h, index }) => (
 
             <HStack key={index} my='3px' justifyContent={'space-between'} >
               <S.BoxContainer>
-                <S.Title>{h.segment}</S.Title>
-                <S.Title>{h.ponts} pts</S.Title>
+                <S.Title>{h.type_str}</S.Title>
+                <S.Title>{h.pontos} pts</S.Title>
               </S.BoxContainer>
 
               <S.BoxPosition>

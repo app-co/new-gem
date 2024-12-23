@@ -14,7 +14,7 @@ import {
   withTiming,
 } from 'react-native-reanimated';
 
-import { Box } from 'native-base';
+import { Box, HStack } from 'native-base';
 import { XCircle } from 'phosphor-react-native';
 
 import GlobalErrorModalHandler from './handler';
@@ -93,15 +93,15 @@ export function ToastModal() {
 
   return (
     <S.container style={[animetedStyle]} type={message?.tipo ?? 'success'}>
-      <Box alignItems="flex-end">
+      <HStack mb={4} alignItems="center" justifyContent={'space-between'}>
+        <S.title type={message?.tipo ?? 'success'} >{message?.title}</S.title>
         <TouchableOpacity
           onPress={() => setMessage(null)}
           style={{ padding: 5 }}
         >
           <XCircle color="#fff" weight="bold" />
         </TouchableOpacity>
-      </Box>
-      <S.title type={message?.tipo ?? 'success'} >{message?.title}</S.title>
+      </HStack>
       <S.text type={message?.tipo ?? 'success'}>{message?.description}</S.text>
     </S.container>
   );

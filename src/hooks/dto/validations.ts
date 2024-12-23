@@ -1,65 +1,87 @@
 import { z } from "zod";
+import { _number } from "../../utils/mask";
 
 export const validation = {
   user: z.object({
-    id: z.string(),
-    nome: z.string(),
-    apelido: z.string(),
-    token: z.string().optional(),
-    senha: z.string(),
+    id: z.string({ message: '* campo obrigatório' }),
+    nome: z.string({ message: '* campo obrigatório' }),
+    apelido: z.string({ message: '* campo obrigatório' }),
+    token: z.string({ message: '* campo obrigatório' }).optional(),
+    senha: z.string({ message: '* campo obrigatório' }),
     adm: z.boolean().default(false),
     apadrinhado: z.boolean(),
     hub: z.array(z.number().default(0)),
   }),
   profile: z.object({
-    id: z.string(),
-    whats: z.string(),
-    logotipo: z.string(),
-    avatar: z.string(),
-    workName: z.string(),
-    CNPJ: z.string(),
-    CPF: z.string(),
-    ramo: z.string(),
-    enquadramento: z.string(),
-    email: z.string(),
-    avatarPath: z.string(),
-    logoPath: z.string(),
-    userId: z.string()
+    id: z.string({ message: '* campo obrigatório' }),
+    whats: z.string({ message: '* campo obrigatório' }),
+    logotipo: z.string({ message: '* campo obrigatório' }),
+    avatar: z.string({ message: '* campo obrigatório' }),
+    workName: z.string({ message: '* campo obrigatório' }),
+    CNPJ: z.string({ message: '* campo obrigatório' }),
+    CPF: z.string({ message: '* campo obrigatório' }),
+    ramo: z.string({ message: '* campo obrigatório' }),
+    enquadramento: z.string({ message: '* campo obrigatório' }),
+    email: z.string({ message: '* campo obrigatório' }),
+    avatarPath: z.string({ message: '* campo obrigatório' }),
+    logoPath: z.string({ message: '* campo obrigatório' }),
+    userId: z.string({ message: '* campo obrigatório' })
   }),
   midia: z.object({
     id: z.number(),
-    nome: z.string(),
-    link: z.string(),
-    type_midia: z.string(),
-    created_at: z.string(),
-    updated_at: z.string(),
-    user_id: z.string(),
+    nome: z.string({ message: '* campo obrigatório' }),
+    link: z.string({ message: '* campo obrigatório' }),
+    type_midia: z.string({ message: '* campo obrigatório' }),
+    created_at: z.string({ message: '* campo obrigatório' }),
+    updated_at: z.string({ message: '* campo obrigatório' }),
+    user_id: z.string({ message: '* campo obrigatório' }),
   }),
   relationships: z.object({
     id: z.number(),
     status: z.number().default(0),
-    userId: z.string(),
-    avatar: z.string(),
-    userReceptorId: z.string().optional(),
+    userId: z.string({ message: '* campo obrigatório' }),
+    avatar: z.string().nullable(),
+    userReceptorId: z.string({ message: '* campo obrigatório' }).optional(),
     hub: z.number().default(0),
     type: z.number(),
-    valor: z.number().default(0),
+    valor: z.string().transform(h => {
+      const vl = _number(h)
+      const valor = vl && vl.length >= 3 ? Number(vl) / 100 : Number(vl)
+      return valor
+    }).optional(),
     objeto: z.any({}).optional()
   }),
   indication: z.object({
-    indicado_por: z.string(),
-    nomeCliente: z.string(),
-    contatoCliente: z.string(),
+    indicado_por: z.string({ message: '* campo obrigatório' }),
+    nomeCliente: z.string({ message: '* campo obrigatório' }),
+    contatoCliente: z.string({ message: '* campo obrigatório' }),
+    descricao: z.string({ message: '* campo obrigatório' }),
+  }),
+  b2b: z.object({
+    assunto: z.string({ message: '* campo obrigatório' }),
   }),
   donate: z.array(z.object({
-    item: z.string(),
+    item: z.string({ message: '* campo obrigatório' }),
     ponto: z.number(),
   })),
+  consumo: z.object({
+    descricao: z.string({ message: '* campo obrigatório' }),
+  }),
   invit: z.object({
-    nomeConvidado: z.string(),
+    nomeConvidado: z.string({ message: '* campo obrigatório' }),
   }),
   session: z.object({
-    apelido: z.string(),
-    senha: z.string(),
+    apelido: z.string({ message: '* campo obrigatório' }),
+    senha: z.string({ message: '* campo obrigatório' }),
+  }),
+  usersByHub: z.object({
+    hub: z.string({ message: '* campo obrigatório' }),
+    pageSize: z.number(),
+    pageNumber: z.number(),
+    nome: z.string({ message: '* campo obrigatório' }),
   })
 }
+
+export const validationB2b = validation.b2b.merge(validation.relationships)
+export const validationConsumo = validation.consumo.merge(validation.relationships)
+export const validationIndication = validation.indication.merge(validation.relationships)

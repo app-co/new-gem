@@ -11,7 +11,7 @@ import {
   Text,
   VStack
 } from 'native-base';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, Modal, TouchableOpacity } from 'react-native';
 
 import { RFValue } from 'react-native-responsive-fontsize';
@@ -33,6 +33,7 @@ import * as S from './styles';
 import { ModalSolicitations } from '../../components/modals/ModalSolicitations';
 import { ModalAtention } from '../../components/modals/ModalAtention';
 import { ModalInfoPresenca } from '../../components/modals/InfoPresenca';
+import { make } from '../../hooks';
 
 const isActiveFigerToken = new IsActiveFingerTokenStorage();
 const localAuthData = new LocalAuthData();
@@ -50,30 +51,31 @@ const variationPresensa: any = {
   10: '#ee3c3c',
 };
 
+const { querys } = make()
+
 export function Inicio() {
 
   const { user, updateUser } = useAuth();
   const { navigate } = useNavigation();
-  const { indRank } = useData();
 
-  const [permissionFingerprint, setPermissionFingerprinte] =
-    React.useState(false);
+  const [modalAtenction, setModalAtenction] = useState(false)
 
-  const [handshak, setHandshak] = React.useState(0)
+  const { data: relationsReceptor = [], isLoading } = querys.relationForAprovation()
 
-  const [showModalSolicitations, setModalSolicitations] = React.useState(false);
-  const [modalAtenction, setModalAtenction] = React.useState<boolean>(false)
+  const aprovation = relationsReceptor.length > 0
 
   const version = Contants.default.expoConfig?.version;
 
-
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <S.Container>
 
       <ModalInfoPresenca openModal={false} />
-      <ModalSolicitations openModal={true} />
-      <ModalAtention openModal={false} />
+      <ModalSolicitations openModal={aprovation} />
+      <ModalAtention openModal={modalAtenction} />
 
       <Box flex={1}>
         <Header
@@ -82,7 +84,7 @@ export function Inicio() {
           }}
           openAtenction={() => setModalAtenction(true)}
           title="Home"
-          orders={0}
+          orders={relationsReceptor.length}
         />
 
         <Center>
@@ -121,11 +123,7 @@ export function Inicio() {
 
         <S.Line />
 
-        {indRank.isLoading ? (
-          <ActivityIndicator size={36} />
-        ) : (
-          <Classificacao />
-        )}
+        <Classificacao />
       </Box>
 
       <Text>version: {version}</Text>

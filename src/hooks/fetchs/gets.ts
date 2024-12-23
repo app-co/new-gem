@@ -1,8 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { api } from "../../services/api"
-import { IRelationsMetricas, IUser } from "../dto/interfaces"
-import { IRelashionship } from "../../dtos"
-import { TRelationships } from "../dto/types"
+import { IRelationship, IRelationsMetricas, IUser, IUsersByHub } from "../dto/interfaces"
+import { TRelationships, TUsersByHub } from "../dto/types"
 
 export class GetFetchs {
 
@@ -25,25 +24,37 @@ export class GetFetchs {
   }
 
   public async relationGetAll() {
-    const { data } = await api.get<IRelashionship[]>('/relationShip/all')
+    const { data } = await api.get<IRelationship[]>('/relationShip/all')
 
     return data
   }
 
   public async relationByUser() {
-    const { data } = await api.get<IRelashionship[]>('/relationShip/byUser')
+    const { data } = await api.get<IRelationship[]>('/relationShip/byUser')
 
     return data
   }
 
   public async relationByReceptor() {
-    const { data } = await api.get<IRelashionship[]>('/relationShip/byReceptor')
+    const { data } = await api.get<IRelationship[]>('/relationShip/byReceptor')
+
+    return data
+  }
+
+  public async relationForAprovation() {
+    const { data } = await api.get<IRelationship[]>('/relationShip/aprovation')
 
     return data
   }
 
   public async relationMetricasUser() {
-    const { data } = await api.get<IRelationsMetricas>('/relationShip//podiun')
+    const { data } = await api.get<IRelationsMetricas>('/relationShip/podiun')
+
+    return data
+  }
+
+  public async userByHub(params: TUsersByHub) {
+    const { data } = await api.get<IUsersByHub>('/user/hub', { params })
 
     return data
   }

@@ -3,6 +3,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import styled from 'styled-components/native';
 
 import { w } from '../../utils/size';
+import { colors } from '../../global/hub-colors';
 
 type Props = {
   inativo: boolean;
@@ -27,23 +28,17 @@ export const boxH = styled.View`
 `;
 
 export const star = styled(FontAwesome)`
-  color: ${h => h.theme.colors.focus[1]};
+  color: ${h => colors.focus[1]};
   font-size: ${RFValue(18)}px;
 `;
 
 export const boxV = styled.View``;
 
-export const Title = styled.Text`
-  font-family: ${h => h.theme.fonts.regular};
-  font-size: ${RFValue(22)}px;
-  color: ${h => h.theme.colors.color_text.ligh};
-`;
-
 export const Box = styled.TouchableOpacity<Props>`
   flex-direction: row;
-  padding: 5px;
+  padding: 10px;
   background-color: ${h =>
-    h.inativo ? h.theme.colors.focus[2] : h.theme.colors.bg_color[3]};
+    h.inativo ? colors.focus[2] : colors.bg_color[2]};
   margin-bottom: 10px;
 `;
 
@@ -58,7 +53,7 @@ export const Avatar = styled.Image`
   width: ${RFValue(110)}px;
   height: ${RFValue(100)}px;
   border-radius: 16px;
-  background-color: ${h => h.theme.colors.focus[1]};
+  background-color: ${h => colors.focus[2]};
 `;
 
 export const ImageOfice = styled.Image`
@@ -67,7 +62,7 @@ export const ImageOfice = styled.Image`
   border-radius: ${RFValue(25)}px;
   top: ${RFValue(50)}px;
   right: ${RFValue(35)}px;
-  background-color: ${h => h.theme.colors.bg_color[1]};
+  background-color: ${h => colors.bg_color[1]};
   opacity: 0.8;
 `;
 

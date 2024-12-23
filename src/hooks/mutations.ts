@@ -1,4 +1,4 @@
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { showMessage } from "./messageError";
 import Toast from "../components/toast/handler";
 import { PostFetchs } from "./fetchs/posts";
@@ -13,6 +13,12 @@ export class Mutations {
     private put: PutFetchs,
     private del: DelteFetchs,
   ) { }
+
+  private resetClient(key: string) {
+    const client = useQueryClient()
+    client.invalidateQueries(key)
+    client.resetQueries(key)
+  }
 
   public registerUser() {
     return useMutation(this.post.registerUser, {
@@ -55,6 +61,32 @@ export class Mutations {
         })
       },
       onError: (error) => showMessage(error)
+    })
+  }
+
+  public registerRelation() {
+
+    return useMutation(this.post.registerRelation, {
+      onSuccess: (data) => {
+        Toast.show({
+          tipo: 'success',
+          title: 'Sucesso!',
+          description: 'Relacionamento cadastrado com sucesso! \n Aguarde a validação para computar seus pontos.',
+        })
+        this.resetClient('relationsMetricasUser')
+      },
+      onError: (error) => showMessage(error)
+    })
+  }
+
+  public aproveRelation() {
+    return useMutation(this.put.validateRelationship, {
+      onError: (error) => showMessage(error),
+      onSuccess: () => {
+        this.resetClient('relationsMetricasUser')
+        this.resetClient('relationForAprovation')
+        this.resetClient('relationByReceptor')
+      }
     })
   }
 

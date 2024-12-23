@@ -4,12 +4,10 @@ interface ISegments {
   avatar: string
   name: string
   workname: string
-  token: string
 }
 
 interface ISucess {
-  prestador: string
-  description: string
+  workName: string
 }
 
 export declare global {

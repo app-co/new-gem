@@ -26,7 +26,7 @@ export interface IProfile {
 
 export interface IRelationship {
   id: number
-  objto: any,
+  objeto: any,
   status: number
   userId: string
   avatar: string
@@ -76,4 +76,14 @@ export interface NotAprovaded {
   CONVITES: IRelationship[]
   PADRINHO: IRelationship[]
   CORRIDAS: IRelationship[]
+}
+
+export interface IUsersByHub {
+  totalPages: number
+  currentPage: number
+  totalRecords: number
+  pageSize: number
+  pageNumber: number
+  totalRecordsPerPage: number
+  records: IUser[],
 }

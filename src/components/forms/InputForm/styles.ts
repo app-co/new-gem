@@ -1,13 +1,13 @@
 import styled from 'styled-components/native';
+import { _text } from '../../../utils/size';
+import { colors } from '../../../global/hub-colors';
 
-import { font } from '@/styles/fonts';
-import { _text } from '@/styles/sizes';
 
 export const Container = styled.View``;
 
 export const error = styled.Text`
   font-size: ${_text}px;
-  font-family: ${font.regular};
-  color: #e91919;
-  margin-top: -10px;
+  font-family: regular;
+  color: ${colors.error[0]};
+  margin-top: -5px;
 `;

@@ -4,15 +4,17 @@ import React, { ReactNode } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 
-import { IRelashionship } from '../../dtos';
 import theme from '../../global/styles/geb';
 import { _text } from '../../utils/size';
 import * as S from './styles';
+import { IRelationship } from '../../hooks/dto/interfaces';
+import { TextStyle } from '../forms/topograph';
+import { colors } from '../../global/hub-colors';
 
 type TTypeValue = 'not-yeat' | 'not' | 'handshak';
 
 interface IProps {
-  item: IRelashionship;
+  item: IRelationship;
   reject: () => void;
   confirmation: () => void;
   valueType: (item: TTypeValue) => void;
@@ -20,12 +22,17 @@ interface IProps {
   load: boolean;
 }
 
-const title = {
-  INDICATION: 'INDICAÇÃO',
-  CONSUMO_OUT: 'CONSUMO',
-  B2B: 'B2B',
-};
-
+export const _convertionType: { [key: number]: string } = {
+  1: 'COMPRA',
+  2: 'VENDA',
+  3: 'B2B',
+  4: 'INDICAÇÃO',
+  5: 'PRESENÇA',
+  6: 'DONATIVOS',
+  7: 'CONVITES',
+  8: 'PADRINHO',
+  9: 'CORRIDAS',
+}
 export function OrderIndicationComp({
   item,
   reject,
@@ -34,31 +41,32 @@ export function OrderIndicationComp({
   children,
   load,
 }: IProps) {
+
   const [value, setValue] = React.useState('not-yeat');
 
   return (
     <S.Container>
-      <S.title>{title[item.type]}</S.title>
-      {item.type === 'INDICATION' && (
-        <Box>
-          <S.title>
-            {item?.objto?.quemIndicaou_name} indicou você para fazer negócios
+      <TextStyle colorText={colors.focus[1]} type='title' >{_convertionType[item.type]}</TextStyle>
+      {item.type === 4 && (
+        <Box mt={4} >
+          <TextStyle>
+            {item?.objeto?.indicado_por} indicou você para fazer negócios
             com...
-          </S.title>
+          </TextStyle>
           <S.flex style={{ marginTop: 20 }}>
-            <S.title>Nome do cliente: </S.title>
-            <S.text>{item?.objto?.client_name}</S.text>
+            <TextStyle>Nome do cliente: </TextStyle>
+            <S.text>{item?.objeto?.nomeCliente}</S.text>
           </S.flex>
           <S.flex>
-            <S.title>Contato: </S.title>
-            <S.text>{item?.objto?.phone_number}</S.text>
+            <TextStyle>Contato: </TextStyle>
+            <S.text>{item?.objeto?.contatoCliente}</S.text>
           </S.flex>
           <S.flex>
-            <S.title>Descrição: </S.title>
-            <S.text>{item?.objto?.description}</S.text>
+            <TextStyle>Descrição: </TextStyle>
+            <S.text>{item?.objeto?.descricao}</S.text>
           </S.flex>
           <S.flex>
-            <S.title>Data que foi indicado: </S.title>
+            <TextStyle>Data que foi indicado: </TextStyle>
             <S.text>{format(new Date(item?.created_at), 'dd/MM/yy')}</S.text>
           </S.flex>
 
@@ -126,31 +134,31 @@ export function OrderIndicationComp({
         </Box>
       )}
 
-      {item.type === 'CONSUMO_OUT' && (
-        <HStack space={6}>
+      {item.type === 1 && (
+        <HStack mt={4} space={4}>
           <Center mt="4">
-            <Avatar size="lg" source={{ uri: item.objto.avatar }} />
-            <S.text>{item.objto.consumidor_name}</S.text>
+            <Avatar size="lg" source={{ uri: item?.avatar }} />
+            <S.text>{item?.objeto?.al}</S.text>
           </Center>
 
           <S.boxDescription>
             <S.title>Descrição Compra</S.title>
-            <S.text>{item?.objto.description}</S.text>
-            <S.textfocus>{item?.objto?.valor}</S.textfocus>
+            <S.text>{item?.objeto.description}</S.text>
+            <S.textfocus>{item?.objeto?.valor}</S.textfocus>
           </S.boxDescription>
         </HStack>
       )}
 
-      {item.type === 'B2B' && (
+      {item.type === 3 && (
         <HStack space={6}>
           <Center mt="4">
-            <Avatar size="lg" source={{ uri: item.objto?.avatar }} />
-            <S.text>{item.objto.send_name}</S.text>
+            <Avatar size="lg" source={{ uri: item.objeto?.avatar }} />
+            <S.text>{item.objeto?.send_name}</S.text>
           </Center>
 
           <S.boxDescription>
-            <S.title>Descrição do B2B</S.title>
-            <S.text>{item?.objto.description}</S.text>
+            <S.title>Assunto</S.title>
+            <S.text>{item?.objeto.assunto}</S.text>
           </S.boxDescription>
         </HStack>
       )}

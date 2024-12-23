@@ -4,6 +4,8 @@ import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import theme from '../../global/styles/club-mentoria';
+import { colors } from '../../global/hub-colors';
+import { TextStyle } from '../forms/topograph';
 
 interface Props {
   pres: () => void;
@@ -15,23 +17,19 @@ export function CartaMessagem({ pres, quantity }: Props) {
     <Box>
       <TouchableOpacity onPress={pres}>
         <Circle
-          top="2"
-          bg={theme.colors.focus[1]}
+          top="1"
+          bg={colors.focus[0]}
           alignItems="center"
           justifyContent="center"
           size="5"
         >
-          <Text
-            fontFamily={theme.fonts.bold}
-            color={theme.colors.color_text.dark}
-            fontSize={12}
-          >
+          <TextStyle type='defaultSemiBold' colorText={colors.text[2]} >
             {quantity}
-          </Text>
+          </TextStyle>
         </Circle>
         <MaterialCommunityIcons
-          color={theme.colors.focus[1]}
-          size={40}
+          color={colors.focus[1]}
+          size={35}
           name="email-outline"
         />
       </TouchableOpacity>

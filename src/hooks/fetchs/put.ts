@@ -15,4 +15,10 @@ export class PutFetchs {
     return data
   }
 
+  public async validateRelationship(id: number) {
+    const { data } = await api.put(`/relationShip/${id}`)
+
+    return data
+  }
+
 }

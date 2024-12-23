@@ -54,6 +54,8 @@ export function _currency(e: string) {
 export function _number(e: string) {
   let value = e;
 
+  if (!e) return
+
   value = value.replace(/\D/g, '');
 
   const vl = value;

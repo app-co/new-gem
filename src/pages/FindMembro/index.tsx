@@ -3,7 +3,7 @@ import { Form } from '@unform/mobile';
 import * as Linkin from 'expo-linking';
 import { Center } from 'native-base';
 import React, { useCallback } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, RefreshControl, View } from 'react-native';
 
 import { FindMembroComponent } from '../../components/FindMembro';
 import { Header } from '../../components/Header';
@@ -12,13 +12,24 @@ import { Loading } from '../../components/Loading';
 import { useAuth } from '../../hooks/useAuth';
 import { useAllUsers } from '../../hooks/user';
 import { Box, Container } from './styles';
+import { make } from '../../hooks';
+
+const { querys } = make()
 
 export function FindUser() {
   const { user } = useAuth();
-  console.log({ hub: user.hub })
-  const { data, refetch, isLoading } = useAllUsers(user.hub);
 
   const [search, setSearch] = React.useState('');
+
+  const nome = search.length > 3 ? search : ''
+
+  const { data, refetch, isLoading } = querys.useUserByHub({
+    nome,
+    hub: `${user.hub}`
+  });
+
+  const users = data?.pages.flatMap(h => h.records)
+
 
   const handlePress = useCallback(async (url: string) => {
     await Linkin.openURL(`https://${url}`);
@@ -28,19 +39,6 @@ export function FindUser() {
     await Linkin.openURL(`https://wa.me/55${url}`);
   }, []);
 
-  const membros = data || [];
-
-  const users =
-    search.length > 0
-      ? membros.filter(h => {
-        const up = h.nome.toLocaleUpperCase();
-
-        if (up.includes(search.toLocaleUpperCase()) && h.id !== user.id) {
-          return h;
-        }
-        return null;
-      })
-      : membros.filter(h => h.id !== user.id);
 
   useFocusEffect(
     useCallback(() => {
@@ -70,18 +68,17 @@ export function FindUser() {
       </Center>
 
       <FlatList
-        // contentContainerStyle={{ paddingBottom: 150 }}
         data={users}
-        keyExtractor={h => h.id}
+        keyExtractor={h => h?.id}
         renderItem={({ item: h }) => (
           <View>
             <FindMembroComponent
-              star={h.media}
+              star={h?.media}
               avatar={h?.profile?.avatar}
-              name={h.nome}
-              workName={h.profile.workName}
+              name={h?.nome}
+              workName={h?.profile?.workName}
               whats={() => {
-                handleNavigateToWatts(h.profile.whats);
+                handleNavigateToWatts(h?.profile?.whats);
               }}
               face={() => { }}
               insta={() => { }}
@@ -89,6 +86,9 @@ export function FindUser() {
             />
           </View>
         )}
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={refetch} />
+        }
       />
     </Container>
   );

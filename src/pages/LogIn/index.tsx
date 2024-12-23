@@ -67,6 +67,7 @@ export function SingIn() {
           control={control}
           error={errors.apelido}
           placeholder='Usuario'
+          autoCapitalize='none'
         />
 
         <FormInput
@@ -74,6 +75,7 @@ export function SingIn() {
           control={control}
           error={errors.senha}
           placeholder='Sua senha'
+          secureTextEntry
         />
 
         <Button loading={load} disabled={load} pres={submit(handleSubmit)} title="ENTRAR" />

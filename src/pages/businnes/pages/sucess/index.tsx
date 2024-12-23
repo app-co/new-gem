@@ -12,8 +12,7 @@ import { api } from '../../../../services/api';
 import { Button, Container, Image, Message, Title } from './styles';
 
 interface RouteParams {
-  prestador: IUserDtos;
-  description: string;
+  workName: string;
 }
 
 export function Sucess() {
@@ -21,30 +20,12 @@ export function Sucess() {
   const { user } = useAuth();
   const [star, setStar] = React.useState(1);
   const [modal, setModal] = React.useState(false);
-  const { prestador, description } = route.params as RouteParams;
+  const { workName } = route.params as RouteParams;
 
   const { reset } = useNavigation();
 
-  const sendPushNotification = useCallback(async () => {
-    const message = {
-      to: prestador.token,
-      sound: 'default',
-      title: 'Você foi solicitado',
-      body: `cliente ${user.nome} está adiquirindo: ${description}`,
-    };
-
-    await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
-    });
-  }, []);
-
   const navigateToHome = useCallback(async () => {
+    setModal(false);
 
     try {
       await api
@@ -79,7 +60,7 @@ export function Sucess() {
       </Message>
 
       <Message style={{ textAlign: 'center' }}>
-        Aguarde a confimação da {prestador?.profile?.workName}
+        Aguarde a confimação da {workName}
       </Message>
 
       <Button onPress={() => setModal(true)}>

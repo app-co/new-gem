@@ -8,6 +8,8 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import icone from '../../assets/circulos.png';
 import theme from '../../global/styles/club-mentoria';
 import * as S from './styles';
+import { colors } from '../../global/hub-colors';
+import { TextStyle } from '../forms/topograph';
 
 interface Props {
   userName: string;
@@ -58,21 +60,20 @@ export function MembrosComponents({
                 'https://www.seekpng.com/png/detail/73-730482_existing-user-default-avatar.png',
             }}
           />
-          <S.ImageOfice source={imageOfice ? { uri: imageOfice } : icone} />
+          <S.ImageOfice source={{ uri: imageOfice }} />
         </S.BoxAvatar>
 
         <S.BoxText>
-          <S.Title>{userName}</S.Title>
-          <S.Title
+          <TextStyle type='defaultSemiBold' >{userName}</TextStyle>
+          <TextStyle
             style={{
               fontFamily: theme.fonts.regular,
               textAlign: 'left',
-              fontSize: RFValue(13),
             }}
           >
             {' '}
             {oficio}{' '}
-          </S.Title>
+          </TextStyle>
 
           <S.boxH>
             <S.star name={star >= 1 ? 'star' : 'star-o'} />
@@ -89,17 +90,17 @@ export function MembrosComponents({
 
         <S.ContainerIcon>
           {icon === 'necociar' && (
-            <CurrencyCircleDollar color={theme.colors.focus[1]} size={45} />
+            <CurrencyCircleDollar color={colors.focus[0]} size={45} />
           )}
           {icon === 'indicar' && (
-            <AntDesign size={40} name="swap" color={theme.colors.focus[1]} />
+            <AntDesign size={40} name="swap" color={colors.focus[0]} />
           )}
 
           {icon === 'b2b' && (
             <FontAwesome5
               name="users"
               size={40}
-              color={theme.colors.focus[1]}
+              color={colors.focus[0]}
             />
           )}
         </S.ContainerIcon>

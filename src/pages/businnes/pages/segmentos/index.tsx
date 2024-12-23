@@ -14,238 +14,386 @@ import { routesScheme } from '../../../../services/schemeRoutes'
 import { AppError } from '../../../../utils/AppError'
 import { _currency, _number } from '../../../../utils/mask'
 import * as S from './styles'
+import { TextStyle } from '../../../../components/forms/topograph'
+import { colors } from '../../../../global/hub-colors'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { validationB2b, validationConsumo, validationIndication } from '../../../../hooks/dto/validations'
+import { TRelationB2b, TRelationConsumo, TRelationIndication } from '../../../../hooks/dto/types'
+import { FormInput } from '../../../../components/forms/FormInput'
+import { InputForm } from '../../../../components/forms/InputForm'
+import { make } from '../../../../hooks'
 
 interface IParmans {
-    name: string
-    workname: string
-    avatar: string
-    providerId: string
-    token: string
+  name: string
+  workname: string
+  avatar: string
+  providerId: string
+  token: string,
+  hub: number
 }
 
 type TSegments = 'b2b' | 'consumo' | 'indication'
 
+const { mutations } = make()
+
 export function Segments() {
-    const params = useRoute().params as IParmans
-    const { goBack, navigate } = useNavigation()
-    const { user } = useAuth()
-    const { mytoken } = useToken()
+  const params = useRoute().params as IParmans
+  const { goBack, navigate } = useNavigation()
+  const { user } = useAuth()
+  const { mytoken } = useToken()
+
+  const { mutateAsync: resgister, isLoading } = mutations.registerRelation()
 
 
-    const [description, setDescription] = useState('')
-    const [name, setName] = useState('')
-    const [cell, setCell] = useState('')
-    const [value, setValue] = useState('')
+  const [description, setDescription] = useState('')
+  const [name, setName] = useState('')
+  const [cell, setCell] = useState('')
+  const [value, setValue] = useState('')
 
-    const [loading, setLoad] = useState(false)
-    const [segmenst, setSegmens] = useState<TSegments>()
+  const [loading, setLoad] = useState(false)
+  const [segmenst, setSegmens] = useState<TSegments>()
 
-    let valor = Number(_number(value))
-    valor = String(valor).length < 3 || String(valor).length < 2 ? valor * 100 : valor
+  let valor = Number(_number(value))
+  valor = String(valor).length < 3 || String(valor).length < 2 ? valor * 100 : valor
 
-    function selecSegment(value: TSegments) {
-        setSegmens(value)
-        setName('')
-        setCell('')
-        setValue('')
-        setDescription('')
+  function selecSegment(value: TSegments) {
+    setSegmens(value)
+    setName('')
+    setCell('')
+    setValue('')
+    setDescription('')
+  }
+
+  const b2b = useForm<TRelationB2b>({
+    resolver: zodResolver(validationB2b.omit({ id: true })),
+    defaultValues: {
+      avatar: params?.avatar ?? '',
+      hub: params?.hub,
+      type: 3,
+      userId: user.id,
+      userReceptorId: params.providerId,
+      valor: '0'
+    }
+  })
+
+  const consumo = useForm<TRelationConsumo>({
+    resolver: zodResolver(validationConsumo.omit({ id: true })),
+    defaultValues: {
+      avatar: params?.avatar ?? '',
+      hub: params?.hub,
+      type: 1,
+      userId: user.id,
+      userReceptorId: params.providerId,
+    }
+  })
+
+  const indication = useForm<TRelationIndication>({
+    resolver: zodResolver(validationIndication.omit({ id: true })),
+    defaultValues: {
+      avatar: params?.avatar ?? '',
+      hub: params?.hub,
+      type: 4,
+      userId: user.id,
+      userReceptorId: params.providerId,
+      valor: '0',
+      indicado_por: user.nome
+    }
+  })
+
+  async function submitB2b(obj: TRelationIndication) {
+    try {
+      const dt = {
+        ...obj,
+        objeto: { assunto: obj.assunto }
+      }
+      console.log(dt)
+      await resgister(dt)
+      navigate('sucess', { workName: params.workname })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function submitConsumo(obj: TRelationConsumo) {
+    try {
+      const dt = {
+        ...obj,
+        objeto: { assunto: obj.descricao }
+      }
+      console.log(dt)
+      await resgister(dt)
+      navigate('sucess', { workName: params.workname })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+  async function submitIndication(obj: TRelationIndication) {
+    try {
+      const dt = {
+        ...obj,
+        objeto: {
+          descricao: obj.descricao,
+          indicado_por: obj.indicado_por,
+          nomeCliente: obj.nomeCliente,
+          contatoCliente: obj.contatoCliente,
+        }
+      }
+      console.log(dt)
+      await resgister(dt)
+      navigate('sucess', { workName: params.workname })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+  async function submit() {
+
+    setLoad(true)
+
+    const indication = {
+      prestador_id: params.providerId,
+      objto: {
+        quemIndicaou_name: user.nome,
+        client_name: name,
+        phone_number: cell,
+        description,
+        token: mytoken,
+      },
+      type: 'INDICATION',
+      token: mytoken,
+    };
+
+    const consumo = {
+      prestador_id: params.providerId,
+      client_id: user.id,
+      token: params.token || 'token',
+      objto: {
+        token: mytoken,
+        consumidor_name: user.nome,
+        avatar: user.profile.avatar,
+        description,
+        valor,
+      },
+      type: 'CONSUMO_OUT',
+    };
+
+    const b2b = {
+      prestador_id: params.providerId,
+      objto: {
+        send_name: user.nome,
+        description,
+        token: mytoken,
+        avatar: user.profile.avatar,
+      },
+      token: params.token || 'token',
+      situation: false,
+      type: 'B2B',
+    };
+
+    const modalidade = {
+      b2b,
+      consumo,
+      indication
     }
 
-    async function submit() {
+    console.log({ valor })
 
-        setLoad(true)
+    try {
+      await api
+        .post(`${routesScheme.relationShip.create}`, modalidade[segmenst])
+        .then(() => {
+          Alert.alert('Sucesso!', 'Continue a incentivar os membros do GEB');
+          navigate('sucess', { prestador: params.providerId, description });
+        })
+      setLoad(false)
 
-        const indication = {
-            prestador_id: params.providerId,
-            objto: {
-                quemIndicaou_name: user.nome,
-                client_name: name,
-                phone_number: cell,
-                description,
-                token: mytoken,
-            },
-            type: 'INDICATION',
-            token: mytoken,
-        };
+    } catch (error) {
+      setLoad(false)
 
-        const consumo = {
-            prestador_id: params.providerId,
-            client_id: user.id,
-            token: params.token || 'token',
-            objto: {
-                token: mytoken,
-                consumidor_name: user.nome,
-                avatar: user.profile.avatar,
-                description,
-                valor,
-            },
-            type: 'CONSUMO_OUT',
-        };
+      if (error instanceof AppError) {
+        console.log(error.message)
+      }
 
-        const b2b = {
-            prestador_id: params.providerId,
-            objto: {
-                send_name: user.nome,
-                description,
-                token: mytoken,
-                avatar: user.profile.avatar,
-            },
-            token: params.token || 'token',
-            situation: false,
-            type: 'B2B',
-        };
-
-        const modalidade = {
-            b2b,
-            consumo,
-            indication
-        }
-
-        console.log({ valor })
-
-        try {
-            await api
-                .post(`${routesScheme.relationShip.create}`, modalidade[segmenst])
-                .then(() => {
-                    Alert.alert('Sucesso!', 'Continue a incentivar os membros do GEB');
-                    navigate('sucess', { prestador: params.providerId, description });
-                })
-            setLoad(false)
-
-        } catch (error) {
-            setLoad(false)
-
-            if (error instanceof AppError) {
-                console.log(error.message)
-            }
-
-            console.log({ error })
-        }
-
+      console.log({ error })
     }
 
+  }
 
-    return (
-        <S.container>
-            <ScrollView contentContainerStyle={{
-                paddingBottom: 300
-            }}>
-                <Box my='4' mx='8' >
-                    <TouchableOpacity onPress={() => goBack()} >
-                        <ArrowLeft color={theme.colors.focus[1]} weight='duotone' size={35} />
-                    </TouchableOpacity>
-                </Box>
 
-                <HStack space={6} p={4} mt='2' >
-                    <Avatar alignItems={'center'} size='xl' source={{ uri: params.avatar }} />
+  return (
+    <S.container>
+      <ScrollView contentContainerStyle={{
+        paddingBottom: 100
+      }}>
+        <Box my='4' mx='8' >
+          <TouchableOpacity onPress={() => goBack()} >
+            <ArrowLeft color={theme.colors.focus[1]} weight='duotone' size={35} />
+          </TouchableOpacity>
+        </Box>
 
-                    <Box w='220px' >
-                        <S.title>{params.name}</S.title>
-                        <S.text>{params.workname}</S.text>
-                    </Box>
-                </HStack>
+        <HStack space={6} p={4} mt='2' >
+          <Avatar alignItems={'center'} size='xl' source={{ uri: params.avatar }} />
 
-                <Center mt='4'>
-                    <S.title>Escolha qual negócios irá realizar</S.title>
+          <Box w='220px' >
+            <S.title>{params?.name}</S.title>
+            <S.text>{params?.workname}</S.text>
+          </Box>
+        </HStack>
+
+        <Center mt='4'>
+          <S.title>Escolha qual negócios irá realizar</S.title>
+        </Center>
+
+
+        <VStack mt='4' space={3} p='4' >
+          <TouchableOpacity onPress={() => selecSegment('b2b')} >
+            <Center bg={segmenst === 'b2b' ? colors.focus[1] : colors.bg_color[1]} rounded={8} py='2' >
+              <TextStyle type='title' colorText={segmenst === 'b2b' ? colors.text[0] : colors.text[2]} >B2B</TextStyle>
+            </Center>
+          </TouchableOpacity>
+
+
+          <TouchableOpacity onPress={() => selecSegment('consumo')} >
+            <Center bg={segmenst === 'consumo' ? colors.focus[1] : colors.bg_color[1]} rounded={8} py='2' >
+              <TextStyle type='title' colorText={segmenst === 'consumo' ? colors.text[0] : colors.text[2]} >CONSUMO</TextStyle>
+            </Center>
+          </TouchableOpacity>
+
+
+          <TouchableOpacity onPress={() => selecSegment('indication')} >
+            <Center bg={segmenst === 'indication' ? colors.focus[1] : colors.bg_color[1]} rounded={8} py='2' >
+              <TextStyle type='title' colorText={segmenst === 'indication' ? colors.text[0] : colors.text[2]} >INDICAÇÃO</TextStyle>
+            </Center>
+          </TouchableOpacity>
+        </VStack>
+
+        <Box>
+          {segmenst === 'b2b' && (
+            <Box p='4'>
+              <InputForm
+                control={b2b.control}
+                name='assunto'
+                error={b2b.formState.errors.assunto}
+                render={({ value, onChange }) => (
+                  <TextArea
+                    borderRadius={10}
+                    maxLength={100}
+                    onChangeText={h => onChange(h)}
+                    fontFamily={theme.fonts.regular}
+                    fontSize={14}
+                    color='gray.200'
+                    placeholder='Descrição do B2B'
+                    placeholderTextColor={colors.text[1]}
+                  />
+
+                )}
+              />
+
+
+              {segmenst && (
+                <Center mt={10}>
+                  <Button loading={isLoading} pres={b2b.handleSubmit(submitB2b)} title='FINALIZAR' />
                 </Center>
+              )}
+            </Box>
+          )}
 
+          {segmenst === 'consumo' && (
+            <VStack space={3} p='4' >
+              <InputForm
+                control={consumo.control}
+                name='descricao'
+                error={consumo.formState.errors.descricao}
+                render={({ value, onChange }) => (
+                  <TextArea
+                    borderRadius={10}
+                    maxLength={100}
+                    onChangeText={h => onChange(h)}
+                    fontFamily={theme.fonts.regular}
+                    fontSize={14}
+                    color='gray.200'
+                    placeholder='Descreva seu consumo'
+                    placeholderTextColor={colors.text[1]}
+                  />
 
-                <VStack mt='4' space={3} p='4' >
-                    <TouchableOpacity onPress={() => selecSegment('b2b')} >
-                        <Center bg={segmenst === 'b2b' ? theme.colors.focus[1] : 'gray.200'} rounded={8} py='2' >
-                            <S.textSegments>B2B</S.textSegments>
-                        </Center>
-                    </TouchableOpacity>
+                )}
+              />
+              <FormInput
+                control={consumo.control}
+                name='valor'
+                error={consumo.formState.errors.valor}
+                mask='money'
+                keyboardType='numeric'
+                placeholder='Valor a ser consumido R$'
+              />
 
-
-                    <TouchableOpacity onPress={() => selecSegment('consumo')} >
-                        <Center bg={segmenst === 'consumo' ? theme.colors.focus[1] : 'gray.200'} rounded={8} py='2' >
-                            <S.textSegments>CONSUMO</S.textSegments>
-                        </Center>
-                    </TouchableOpacity>
-
-
-                    <TouchableOpacity onPress={() => selecSegment('indication')} >
-                        <Center bg={segmenst === 'indication' ? theme.colors.focus[1] : 'gray.200'} rounded={8} py='2' >
-                            <S.textSegments>INDICAÇÃO</S.textSegments>
-                        </Center>
-                    </TouchableOpacity>
-                </VStack>
-
-                <Box>
-                    {segmenst === 'b2b' && (
-                        <Box p='4'>
-                            <TextArea
-                                borderRadius={10}
-                                maxLength={100}
-                                value={description}
-                                onChangeText={h => setDescription(h)}
-                                fontFamily={theme.fonts.regular}
-                                fontSize={14}
-                                color='gray.200'
-                                placeholder='Descrição do B2B'
-                                placeholderTextColor={'#726d51'}
-                            />
-                        </Box>
-                    )}
-
-                    {segmenst === 'consumo' && (
-                        <VStack space={3} p='4' >
-                            <TextArea
-                                borderRadius={10}
-                                maxLength={100}
-                                value={description}
-                                onChangeText={h => setDescription(h)}
-                                fontFamily={theme.fonts.regular}
-                                fontSize={14}
-                                color='gray.200'
-                                placeholder='Descrição do consumo'
-                                placeholderTextColor={'#726d51'}
-                            />
-
-                            <Form>
-                                <Input
-                                    onChangeText={setValue}
-                                    value={_currency(value)}
-                                    placeholder='Valor consumido R$'
-                                    name='cash'
-                                    keyboardType='numeric'
-                                />
-                            </Form>
-                        </VStack>
-                    )}
-
-                    {segmenst === 'indication' && (
-                        <Form>
-                            <VStack space={3} p='4' >
-                                <TextArea
-                                    borderRadius={10}
-                                    maxLength={100}
-                                    value={description}
-                                    onChangeText={h => setDescription(h)}
-                                    fontFamily={theme.fonts.regular}
-                                    fontSize={14}
-                                    color='gray.200'
-                                    selectionColor='#fff'
-                                />
-                                <Input placeholder='Nome do cliente' name='clien name' />
-                                <Input placeholder='contato' name='tell' />
-
-                            </VStack>
-                        </Form>
-
-
-                    )}
-                </Box>
-            </ScrollView>
-
-
-            {segmenst && (
-                <Center>
-                    <Button loading={loading} pres={submit} title='FINALIZAR' />
+              {segmenst && (
+                <Center mt={10}>
+                  <Button loading={isLoading} pres={consumo.handleSubmit(submitConsumo)} title='FINALIZAR' />
                 </Center>
+              )}
+            </VStack>
+          )}
 
-            )}
-        </S.container>
-    )
+          {segmenst === 'indication' && (
+            <VStack p='4' >
+              <InputForm
+                control={indication.control}
+                name='descricao'
+                error={indication.formState.errors.descricao}
+                render={({ value, onChange }) => (
+                  <TextArea
+                    borderRadius={10}
+                    maxLength={100}
+                    onChangeText={h => onChange(h)}
+                    fontFamily={theme.fonts.regular}
+                    fontSize={14}
+                    color='gray.200'
+                    placeholder='Descreva seu consumo'
+                    placeholderTextColor={colors.text[1]}
+                  />
+
+                )}
+              />
+
+              <Box mt={5} >
+
+                <FormInput
+                  control={indication.control}
+                  name='nomeCliente'
+                  error={indication.formState.errors.nomeCliente}
+                  placeholder='Nome do cliente'
+                />
+
+
+                <FormInput
+                  control={indication.control}
+                  name='contatoCliente'
+                  error={indication.formState.errors.contatoCliente}
+                  placeholder='Contato do cliente'
+                  keyboardType='numeric'
+                  mask='cell-phone'
+                  maxLength={16}
+                />
+              </Box>
+
+
+              {segmenst && (
+                <Center mt={4}>
+                  <Button loading={isLoading} pres={indication.handleSubmit(submitIndication)} title='FINALIZAR' />
+                </Center>
+              )}
+
+            </VStack>
+
+
+          )}
+        </Box>
+      </ScrollView>
+    </S.container>
+  )
 }

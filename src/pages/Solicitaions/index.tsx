@@ -1,15 +1,14 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { Form } from '@unform/mobile';
-import { Center, TextArea } from 'native-base';
+import { Center, TextArea, VStack } from 'native-base';
 import React, { useCallback } from 'react';
-import { Alert } from 'react-native';
+import { Alert, RefreshControl } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 
 import { useQueryClient } from 'react-query';
 import { Header } from '../../components/Header';
 import { Input } from '../../components/Inputs';
 import { OrderIndicationComp } from '../../components/OrderIndicationComp';
-import { IRelashionship } from '../../dtos';
 import theme from '../../global/styles/geb';
 import { useOrderRelation } from '../../hooks/relations';
 import { useAuth } from '../../hooks/useAuth';
@@ -17,22 +16,46 @@ import { api } from '../../services/api';
 import { paramsRoutesScheme, routesScheme } from '../../services/schemeRoutes';
 import { _currency, _number } from '../../utils/mask';
 import * as S from './styles';
+import { make } from '../../hooks';
+import { TextStyle } from '../../components/forms/topograph';
+import { Loading } from '../../components/Loading';
+import { IRelationship } from '../../hooks/dto/interfaces';
+import { TRelationConsumo } from '../../hooks/dto/types';
+import { validationConsumo } from '../../hooks/dto/validations';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { InputForm } from '../../components/forms/InputForm';
+import { showMessage } from '../../hooks/messageError';
+import { colors } from '../../global/hub-colors';
+import { FormInput } from '../../components/forms/FormInput';
 
 type TSubmit = {
-  item: IRelashionship;
+  item: IRelationship;
 };
 
 type TTypeValue = 'not-yeat' | 'not' | 'handshak';
 
+const { mutations, querys } = make()
+
 export function Solicitaions() {
   const { user } = useAuth();
-  const { data, refetch } = useOrderRelation();
 
+  const { data: relations = [], isLoading: loadRelation, refetch } = querys.relationForAprovation()
+  const { mutateAsync: aproveRelation, isLoading: load } = mutations.aproveRelation()
+  const { mutateAsync, isLoading } = mutations.registerRelation()
 
-  const [orders, setOrders] = React.useState<IRelashionship[] | undefined>([]);
-
-  const [itemId, setItemId] = React.useState('');
+  const [itemId, setItemId] = React.useState<number | null>(null);
   const [descripton, setDescription] = React.useState('');
+
+  const consumo = useForm<TRelationConsumo>({
+    resolver: zodResolver(validationConsumo.omit({ id: true })),
+    defaultValues: {
+      hub: user.hub[0],
+      type: 1,
+      userId: user.id,
+      valor: 0
+    }
+  })
 
   const [typeIndication, setTypeIndication] =
     React.useState<TTypeValue>('not-yeat');
@@ -45,63 +68,34 @@ export function Solicitaions() {
 
   const handleAproved = React.useCallback(
 
-    async ({ item }: TSubmit) => {
+    async (obj: TRelationConsumo) => {
+      console.log('cof')
       try {
-        setItemId(item.id);
+        if (obj.type === 4) {
+          console.log('submit')
 
-        if (item.type === 'INDICATION') {
-          const it = item;
           switch (typeIndication) {
             case 'handshak':
               {
-                const valor =
-                  value.length < 6
-                    ? Number(_number(`${value},00`))
-                    : Number(_number(value));
-
                 const dt = {
-                  prestador_id: user.id,
-                  ponts: 10,
-                  token: '',
-                  objto: {
-                    consumidor_name: it.objto.client_name,
-                    descripton,
-                    valor,
-                  },
-                  situation: true,
-                  type: 'CONSUMO_OUT',
-                };
+                  ...obj,
+                  objeto: { assunto: obj.descricao }
+                }
 
-                await api.post(routesScheme.relationShip.create, dt);
-
-                await api.put(routesScheme.relationShip.update, {
-                  id: item.id,
-                  situation: true,
-                });
-
-                setOrders(orders?.filter(h => h.id !== item.id));
-                setItemId('');
-                client.removeQueries('getmetric')
+                await mutateAsync(dt)
+                await aproveRelation(obj.id)
               }
 
               break;
 
             case 'not-yeat':
-              setItemId('');
-
-              setOrders(orders?.filter(h => h.id !== item.id));
+              setItemId(null);
 
               break;
 
             case 'not':
               {
-                await api.put(routesScheme.relationShip.update, {
-                  id: item.id,
-                  situation: true,
-                });
-
-                const fil = orders?.filter(h => h.id !== item.id);
-                setOrders(fil);
+                await aproveRelation(obj.id)
               }
               break;
 
@@ -109,28 +103,17 @@ export function Solicitaions() {
               break;
           }
         } else {
-          await api
-            .put(routesScheme.relationShip.update, {
-              id: item.id,
-              situation: true,
-            })
-            .then(h => {
-              setItemId('');
-              setOrders(orders?.filter(h => h.id !== item.id));
-              client.removeQueries('getmetric')
 
-            });
+
+          await aproveRelation(obj.id)
         }
       } catch (err: any) {
-        setItemId('');
 
-        const message = err?.response?.data?.message;
-        if (message) {
-          return Alert.alert('Algo não está certo!', message);
-        }
+        setItemId(null);
+        showMessage(err)
       }
     },
-    [descripton, orders, typeIndication, user.id, value],
+    [descripton, typeIndication, user.id, value],
   );
 
   const handleRecused = React.useCallback(
@@ -139,7 +122,6 @@ export function Solicitaions() {
         await api
           .delete(paramsRoutesScheme(item.id).relationShip.delete)
           .then(h => {
-            setOrders(orders?.filter(h => h.id !== item.id));
             setItemId('');
           });
         client.removeQueries('getmetric')
@@ -149,69 +131,79 @@ export function Solicitaions() {
         setItemId('');
       }
     },
-    [orders],
+    [],
   );
 
-  React.useEffect(() => {
-    if (orders?.length === 0) {
-      refetch();
+  async function submit(obj: IRelationship) {
+    if (obj.type === 4) {
+      const validate = await consumo.trigger(['valor', 'descricao'])
+
+
+      if (validate) {
+        const dt = {
+          ...obj,
+          ...consumo.getValues()
+        }
+        await handleAproved(dt)
+      }
     }
-  }, [orders]);
+  }
 
-  console.log('orders', orders);
+  if (loadRelation) return <Loading />
 
-  useFocusEffect(
-    useCallback(() => {
-      setOrders(data?.relation);
-    }, [data]),
-  );
 
   return (
     <S.Container>
       <Header type="goback" />
 
-      {orders?.length === 0 && <S.title>Não há negócios para validar</S.title>}
+      {relations?.length === 0 && <TextStyle>Não há negócios para validar</TextStyle>}
 
       <S.box>
         <FlatList
           contentContainerStyle={{
             paddingBottom: 150,
           }}
-          data={orders}
-          keyExtractor={h => h.id}
+          refreshControl={
+            <RefreshControl refreshing={loadRelation} onRefresh={refetch} />
+          }
+          data={relations}
+          keyExtractor={h => String(h.id)}
           renderItem={({ item: h }) => (
             <OrderIndicationComp
-              confirmation={() => handleAproved({ item: h })}
+              confirmation={() => submit(h)}
               reject={() => handleRecused({ item: h })}
               item={h}
               valueType={h => setTypeIndication(h)}
               load={itemId === h.id}
             >
-              <Form onSubmit={() => { }}>
-                <Center m={10}>
-                  <Input
-                    placeholderTextColor="#b6b6b6"
-                    name="name"
-                    placeholder="Digite o valor que foi negociado"
-                    onChangeText={setValue}
-                    value={currency}
-                    keyboardType="numeric"
-                  />
+              <VStack space={3} p='4' >
+                <InputForm
+                  control={consumo.control}
+                  name='descricao'
+                  error={consumo.formState.errors.descricao}
+                  render={({ value, onChange }) => (
+                    <TextArea
+                      borderRadius={10}
+                      maxLength={100}
+                      onChangeText={h => onChange(h)}
+                      fontFamily={theme.fonts.regular}
+                      fontSize={14}
+                      color='gray.200'
+                      placeholder='Descreva seu consumo'
+                      placeholderTextColor={colors.text[1]}
+                    />
 
-                  <TextArea
-                    w="64"
-                    mt="2"
-                    _focus={{
-                      backgroundColor: theme.colors.bg_color[2],
-                      fontFamily: theme.fonts.regular,
-                    }}
-                    color="#fff"
-                    placeholder="Descricão"
-                    onChangeText={setDescription}
-                    value={descripton}
-                  />
-                </Center>
-              </Form>
+                  )}
+                />
+                <FormInput
+                  control={consumo.control}
+                  name='valor'
+                  error={consumo.formState.errors.valor}
+                  mask='money'
+                  keyboardType='numeric'
+                  placeholder='Valor a ser consumido R$'
+                />
+              </VStack>
             </OrderIndicationComp>
           )}
         />

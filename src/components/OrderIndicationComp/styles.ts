@@ -18,6 +18,7 @@ export const Container = styled.View`
 export const flex = styled.View`
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
   padding: 3px 0;
 `;
 

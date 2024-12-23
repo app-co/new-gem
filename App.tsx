@@ -95,9 +95,9 @@ export default function App() {
   const queryClient = new QueryClient();
 
   return (
-    <NativeBaseProvider>
-      <QueryClientProvider client={queryClient}>
-        <AuthContextProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthContextProvider>
+        <NativeBaseProvider>
           <SafeAreaProvider>
             <Box flex="1">
               <StatusBar style="light" hidden />
@@ -120,8 +120,8 @@ export default function App() {
               <ToastModal />
             </Box>
           </SafeAreaProvider>
-        </AuthContextProvider>
-      </QueryClientProvider>
-    </NativeBaseProvider>
+        </NativeBaseProvider>
+      </AuthContextProvider>
+    </QueryClientProvider>
   );
 }
