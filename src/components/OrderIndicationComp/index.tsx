@@ -53,22 +53,25 @@ export function OrderIndicationComp({
             {item?.objeto?.indicado_por} indicou você para fazer negócios
             com...
           </TextStyle>
-          <S.flex style={{ marginTop: 20 }}>
-            <TextStyle>Nome do cliente: </TextStyle>
-            <S.text>{item?.objeto?.nomeCliente}</S.text>
-          </S.flex>
-          <S.flex>
-            <TextStyle>Contato: </TextStyle>
-            <S.text>{item?.objeto?.contatoCliente}</S.text>
-          </S.flex>
-          <S.flex>
-            <TextStyle>Descrição: </TextStyle>
-            <S.text>{item?.objeto?.descricao}</S.text>
-          </S.flex>
-          <S.flex>
-            <TextStyle>Data que foi indicado: </TextStyle>
-            <S.text>{format(new Date(item?.created_at), 'dd/MM/yy')}</S.text>
-          </S.flex>
+          <Box bg={colors.bg_color[3]} mt={4} p={2} rounded={'xl'} >
+            <S.flex>
+              <TextStyle type='defaultSemiBold' >Nome do cliente: </TextStyle>
+              <S.text>{item?.objeto?.nomeCliente}</S.text>
+            </S.flex>
+            <S.flex>
+              <TextStyle type='defaultSemiBold' >Contato: </TextStyle>
+              <S.text>{item?.objeto?.contatoCliente}</S.text>
+            </S.flex>
+            <S.flex>
+              <TextStyle type='defaultSemiBold'>Descrição: </TextStyle>
+              <S.text>{item?.objeto?.descricao}</S.text>
+            </S.flex>
+            <S.flex>
+              <TextStyle type='defaultSemiBold'>Data que foi indicado: </TextStyle>
+              <S.text>{format(new Date(item?.created_at), 'dd/MM/yy')}</S.text>
+            </S.flex>
+
+          </Box>
 
           <Center
             _text={{

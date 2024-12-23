@@ -12,17 +12,19 @@ export class Mutations {
     private post: PostFetchs,
     private put: PutFetchs,
     private del: DelteFetchs,
-  ) { }
+  ) {
+
+  }
 
   private resetClient(key: string) {
     const client = useQueryClient()
-    client.invalidateQueries(key)
-    client.resetQueries(key)
+    return client.invalidateQueries(key)
+    // client.resetQueries(key)
   }
 
   public registerUser() {
     return useMutation(this.post.registerUser, {
-      onSuccess: (data) => {
+      onSuccess: () => {
         Toast.show({
           tipo: 'success',
           title: 'Sucesso!',
@@ -35,7 +37,14 @@ export class Mutations {
 
   public session() {
     return useMutation(this.post.session, {
-      onError: (error) => showMessage(error)
+      onError: (error) => showMessage(error),
+      onSuccess: () => {
+        Toast.show({
+          tipo: 'success',
+          title: 'Sucesso!',
+          description: 'Sessão iniciada com sucesso!',
+        })
+      }
     })
   }
 
@@ -53,39 +62,33 @@ export class Mutations {
 
   public getUserById() {
     return useMutation(this.get.userById, {
-      onSuccess: (data) => {
-        Toast.show({
-          tipo: 'success',
-          title: 'Sucesso!',
-          description: 'Usuário buscado com sucesso!',
-        })
-      },
       onError: (error) => showMessage(error)
     })
   }
 
   public registerRelation() {
-
+    const client = useQueryClient()
     return useMutation(this.post.registerRelation, {
-      onSuccess: (data) => {
+      onSuccess: () => {
+        client.invalidateQueries('relationsMetricasUser')
         Toast.show({
           tipo: 'success',
           title: 'Sucesso!',
           description: 'Relacionamento cadastrado com sucesso! \n Aguarde a validação para computar seus pontos.',
         })
-        this.resetClient('relationsMetricasUser')
       },
       onError: (error) => showMessage(error)
     })
   }
 
   public aproveRelation() {
+    const client = useQueryClient()
     return useMutation(this.put.validateRelationship, {
       onError: (error) => showMessage(error),
       onSuccess: () => {
-        this.resetClient('relationsMetricasUser')
-        this.resetClient('relationForAprovation')
-        this.resetClient('relationByReceptor')
+        client.invalidateQueries('relationsMetricasUser')
+        client.invalidateQueries('relationForAprovation')
+        client.invalidateQueries('relationByReceptor')
       }
     })
   }

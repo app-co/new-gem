@@ -34,15 +34,7 @@ export function Route() {
     <NavigationContainer>
       <ThemeProvider theme={themes.B}>
         {user ? (
-          <LoadData>
-            <Pontos>
-              <TokenContext>
-                <RelationContex>
-                  <DrawerApp />
-                </RelationContex>
-              </TokenContext>
-            </Pontos>
-          </LoadData>
+          <DrawerApp />
         ) : (
           <SingIn />
         )}

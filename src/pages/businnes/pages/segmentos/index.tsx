@@ -41,28 +41,16 @@ export function Segments() {
   const params = useRoute().params as IParmans
   const { goBack, navigate } = useNavigation()
   const { user } = useAuth()
-  const { mytoken } = useToken()
 
   const { mutateAsync: resgister, isLoading } = mutations.registerRelation()
 
 
-  const [description, setDescription] = useState('')
-  const [name, setName] = useState('')
-  const [cell, setCell] = useState('')
-  const [value, setValue] = useState('')
-
-  const [loading, setLoad] = useState(false)
   const [segmenst, setSegmens] = useState<TSegments>()
 
-  let valor = Number(_number(value))
-  valor = String(valor).length < 3 || String(valor).length < 2 ? valor * 100 : valor
 
   function selecSegment(value: TSegments) {
     setSegmens(value)
-    setName('')
-    setCell('')
-    setValue('')
-    setDescription('')
+
   }
 
   const b2b = useForm<TRelationB2b>({
@@ -141,86 +129,12 @@ export function Segments() {
           contatoCliente: obj.contatoCliente,
         }
       }
-      console.log(dt)
+      console.log('dt', dt)
       await resgister(dt)
-      navigate('sucess', { workName: params.workname })
+      // navigate('sucess', { workName: params?.workname })
     } catch (error) {
       console.log(error)
     }
-  }
-
-
-  async function submit() {
-
-    setLoad(true)
-
-    const indication = {
-      prestador_id: params.providerId,
-      objto: {
-        quemIndicaou_name: user.nome,
-        client_name: name,
-        phone_number: cell,
-        description,
-        token: mytoken,
-      },
-      type: 'INDICATION',
-      token: mytoken,
-    };
-
-    const consumo = {
-      prestador_id: params.providerId,
-      client_id: user.id,
-      token: params.token || 'token',
-      objto: {
-        token: mytoken,
-        consumidor_name: user.nome,
-        avatar: user.profile.avatar,
-        description,
-        valor,
-      },
-      type: 'CONSUMO_OUT',
-    };
-
-    const b2b = {
-      prestador_id: params.providerId,
-      objto: {
-        send_name: user.nome,
-        description,
-        token: mytoken,
-        avatar: user.profile.avatar,
-      },
-      token: params.token || 'token',
-      situation: false,
-      type: 'B2B',
-    };
-
-    const modalidade = {
-      b2b,
-      consumo,
-      indication
-    }
-
-    console.log({ valor })
-
-    try {
-      await api
-        .post(`${routesScheme.relationShip.create}`, modalidade[segmenst])
-        .then(() => {
-          Alert.alert('Sucesso!', 'Continue a incentivar os membros do GEB');
-          navigate('sucess', { prestador: params.providerId, description });
-        })
-      setLoad(false)
-
-    } catch (error) {
-      setLoad(false)
-
-      if (error instanceof AppError) {
-        console.log(error.message)
-      }
-
-      console.log({ error })
-    }
-
   }
 
 

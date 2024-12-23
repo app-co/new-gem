@@ -42,14 +42,14 @@ export function AuthContextProvider({ children }: TAuthContext) {
   const [loading, setLoading] = useState(true);
   const toast = useToast();
   const [data, setData] = useState<AuthState>({} as AuthState);
-  const storageToken = new TokenStorage();
 
   const { mutations } = make()
 
-  const { mutateAsync: session } = mutations.session()
-  const { mutateAsync: saveOnStorage } = mutations.saveOnStorage()
-  const { mutateAsync: getUserById } = mutations.getUserById()
+  const { mutateAsync: session, isLoading: loadSession } = mutations.session()
+  const { mutateAsync: saveOnStorage, isLoading: loadSaveOnStorage } = mutations.saveOnStorage()
+  const { mutateAsync: getUserById, isLoading: loadGetById } = mutations.getUserById()
   const { mutateAsync: deleteStorage } = mutations.deleteOnStorage()
+  const { mutateAsync: getOnStorage, isLoading } = mutations.getOnStorage()
 
 
 
@@ -65,7 +65,7 @@ export function AuthContextProvider({ children }: TAuthContext) {
   const LoadingUser = useCallback(async () => {
     setLoading(true);
 
-    const token = await storageToken.getToken();
+    const token = await getOnStorage('geb:token')
 
     if (token) {
       userAndTokenUpdate(token);
@@ -77,6 +77,10 @@ export function AuthContextProvider({ children }: TAuthContext) {
   React.useEffect(() => {
     LoadingUser();
   }, []);
+
+  React.useEffect(() => {
+    setLoading(loadGetById || loadSaveOnStorage || loadSession || isLoading)
+  }, [loadGetById, loadSaveOnStorage, isLoading, loadSession]);
 
   const login = useCallback(async (obj: TSession) => {
     try {
@@ -105,9 +109,10 @@ export function AuthContextProvider({ children }: TAuthContext) {
   }, []);
 
   const logOut = useCallback(async () => {
+    console.log('logOut')
     await deleteStorage('geb:token')
     setData({} as AuthState);
-  }, [data]);
+  }, []);
 
   const updateUser = useCallback(
     async () => {
@@ -119,15 +124,7 @@ export function AuthContextProvider({ children }: TAuthContext) {
     [],
   );
 
-  const tokkenFail = React.useCallback(async () => {
-    logOut();
-    toast.show({
-      title: 'Seu token expirou.',
-      description: 'Entre novamente com suas credenciais',
-      placement: 'bottom',
-      bg: 'red.500',
-    });
-  }, [logOut, toast]);
+
 
 
 

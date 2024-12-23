@@ -96,32 +96,17 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthContextProvider>
-        <NativeBaseProvider>
+      <NativeBaseProvider>
+        <AuthContextProvider>
           <SafeAreaProvider>
             <Box flex="1">
               <StatusBar style="light" hidden />
-              <Modal visible={showModalUpdate}>
-                <Center p="5" bg={theme.colors.primary}>
-                  <Box>
-                    <Text fontFamily={theme.fonts.bold} fontSize="16">
-                      UMA NOVA ATUALIZAÇÃO ESTA DISPONÍVEL
-                    </Text>
-                    {update.map(h => (
-                      <Text>{h.title}</Text>
-                    ))}
-                  </Box>
-                  <ButtonBase onPress={ReloadDevice} mt="10">
-                    ATUALIZAR
-                  </ButtonBase>
-                </Center>
-              </Modal>
               <Route />
               <ToastModal />
             </Box>
           </SafeAreaProvider>
-        </NativeBaseProvider>
-      </AuthContextProvider>
+        </AuthContextProvider>
+      </NativeBaseProvider>
     </QueryClientProvider>
   );
 }

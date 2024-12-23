@@ -40,9 +40,7 @@ export function DrawerContent({ ...props }: Props) {
         <DrawerItemList {...props} />
 
         <LogOf
-          onPress={() => {
-            logOut();
-          }}
+          onPress={() => logOut()}
         >
           <Title style={{ color: theme.colors.color_text.dark }}>SAIR</Title>
         </LogOf>

@@ -12,6 +12,7 @@ import theme from '../../global/styles/club-mentoria';
 import { CartaMessagem } from '../CartaMessagem';
 import * as S from './styles';
 import { colors } from '../../global/hub-colors';
+import { TextStyle } from '../forms/topograph';
 
 interface IProps {
   type?: 'menu' | 'goback';
@@ -29,27 +30,33 @@ export function Header({ title, orders = 0, openAtenction, openMail, type = 'men
   return (
     <S.Container style={{ paddingTop }}>
       <Box w="100%">
-        <HStack alignItems="center" space="70%">
-          <TouchableOpacity
-            style={{ marginLeft: 10 }}
-            onPress={() => {
-              type === 'menu' ? dispatch(DrawerActions.openDrawer()) : goBack();
-            }}
-          >
-            {type === 'menu' ? (
-              <MaterialCommunityIcons
-                name="menu"
-                size={40}
-                color={colors.text[0]}
-              />
-            ) : (
-              <MaterialCommunityIcons
-                name="arrow-left-thick"
-                size={40}
-                color={colors.focus[1]}
-              />
-            )}
-          </TouchableOpacity>
+        <HStack p={1} alignItems="center" justifyContent={'space-between'} >
+          <HStack alignItems={'center'} space={8} >
+            <TouchableOpacity
+              style={{ marginLeft: 10 }}
+              onPress={() => {
+                type === 'menu' ? dispatch(DrawerActions.openDrawer()) : goBack();
+              }}
+            >
+              {type === 'menu' ? (
+                <MaterialCommunityIcons
+                  name="menu"
+                  size={40}
+                  color={colors.text[0]}
+                />
+              ) : (
+                <MaterialCommunityIcons
+                  name="arrow-left-thick"
+                  size={40}
+                  color={colors.focus[0]}
+                />
+              )}
+            </TouchableOpacity>
+
+            <TextStyle type='subtitle' >{title}</TextStyle>
+
+          </HStack>
+
 
 
           {orders > 0 ? (<CartaMessagem pres={openMail!} quantity={orders} />) : (
@@ -58,7 +65,7 @@ export function Header({ title, orders = 0, openAtenction, openMail, type = 'men
                 <TouchableOpacity onPress={openAtenction} >
 
                   <Box>
-                    <Warning size={35} color={colors.focus[1]} weight='duotone' />
+                    <Warning size={35} color={colors.alert[0]} weight='duotone' />
                   </Box>
 
                 </TouchableOpacity>
@@ -66,6 +73,8 @@ export function Header({ title, orders = 0, openAtenction, openMail, type = 'men
               )}
             </Box>
           )}
+
+
         </HStack>
       </Box>
     </S.Container>

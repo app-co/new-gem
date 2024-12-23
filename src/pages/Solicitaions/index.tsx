@@ -2,7 +2,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Form } from '@unform/mobile';
 import { Center, TextArea, VStack } from 'native-base';
 import React, { useCallback } from 'react';
-import { Alert, RefreshControl } from 'react-native';
+import { ActivityIndicator, Alert, Modal, RefreshControl } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 
 import { useQueryClient } from 'react-query';
@@ -28,6 +28,7 @@ import { InputForm } from '../../components/forms/InputForm';
 import { showMessage } from '../../hooks/messageError';
 import { colors } from '../../global/hub-colors';
 import { FormInput } from '../../components/forms/FormInput';
+import { _canva } from '../../utils/size';
 
 type TSubmit = {
   item: IRelationship;
@@ -53,27 +54,20 @@ export function Solicitaions() {
       hub: user.hub[0],
       type: 1,
       userId: user.id,
-      valor: 0
+      valor: '0'
     }
   })
 
   const [typeIndication, setTypeIndication] =
     React.useState<TTypeValue>('not-yeat');
 
-  const [value, setValue] = React.useState('');
-
-  const client = useQueryClient()
-
-  const currency = _currency(value);
-
+  console.log(consumo.formState.errors)
   const handleAproved = React.useCallback(
 
     async (obj: TRelationConsumo) => {
       console.log('cof')
       try {
         if (obj.type === 4) {
-          console.log('submit')
-
           switch (typeIndication) {
             case 'handshak':
               {
@@ -81,6 +75,10 @@ export function Solicitaions() {
                   ...obj,
                   objeto: { assunto: obj.descricao }
                 }
+
+                const validate = await consumo.trigger(['valor', 'descricao'])
+
+                if (!validate) return
 
                 await mutateAsync(dt)
                 await aproveRelation(obj.id)
@@ -113,7 +111,7 @@ export function Solicitaions() {
         showMessage(err)
       }
     },
-    [descripton, typeIndication, user.id, value],
+    [descripton, typeIndication, user.id],
   );
 
   const handleRecused = React.useCallback(
@@ -122,13 +120,12 @@ export function Solicitaions() {
         await api
           .delete(paramsRoutesScheme(item.id).relationShip.delete)
           .then(h => {
-            setItemId('');
+            setItemId(null);
           });
-        client.removeQueries('getmetric')
 
       } catch (err) {
         console.log(err)
-        setItemId('');
+        setItemId(null);
       }
     },
     [],
@@ -146,17 +143,24 @@ export function Solicitaions() {
         }
         await handleAproved(dt)
       }
+      return
+
     }
+    await handleAproved(obj)
   }
+
 
   if (loadRelation) return <Loading />
 
 
   return (
     <S.Container>
-      <Header type="goback" />
-
-      {relations?.length === 0 && <TextStyle>Não há negócios para validar</TextStyle>}
+      <Header title='Negócios para aprovar' type="goback" />
+      <Modal transparent visible={load} >
+        <Center bgColor={'#21211ccf'} flex={1} >
+          <ActivityIndicator color={colors.focus[0]} size={_canva} />
+        </Center>
+      </Modal>
 
       <S.box>
         <FlatList
@@ -170,7 +174,7 @@ export function Solicitaions() {
           keyExtractor={h => String(h.id)}
           renderItem={({ item: h }) => (
             <OrderIndicationComp
-              confirmation={() => submit(h)}
+              confirmation={() => handleAproved(h)}
               reject={() => handleRecused({ item: h })}
               item={h}
               valueType={h => setTypeIndication(h)}
@@ -206,6 +210,12 @@ export function Solicitaions() {
               </VStack>
             </OrderIndicationComp>
           )}
+          ListEmptyComponent={
+            <Center mt={10}>
+
+              <TextStyle colorText={colors.alert[0]} style={{ textAlign: 'center' }} >Não há negócios para validar</TextStyle>
+            </Center>
+          }
         />
       </S.box>
     </S.Container>
