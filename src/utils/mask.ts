@@ -39,7 +39,9 @@ export function cpf(e: string) {
 }
 
 export function _currency(e: string) {
-  let value = e;
+  let value = String(e);
+
+  if (!e) return
 
   value = value.replace(/\D/g, '');
 
@@ -47,7 +49,7 @@ export function _currency(e: string) {
 
   value = value.replace(/(?=(\d{3})+(\D))\B/g, '.');
 
-  const vl = `R$${value}`;
+  const vl = `R$ ${value}`;
   return vl;
 }
 

@@ -10,6 +10,8 @@ import * as S from './styles';
 import { IRelationship } from '../../hooks/dto/interfaces';
 import { TextStyle } from '../forms/topograph';
 import { colors } from '../../global/hub-colors';
+import { _currency } from '../../utils/mask';
+import { locale } from '../../utils/LocalStrigMoney';
 
 type TTypeValue = 'not-yeat' | 'not' | 'handshak';
 
@@ -137,7 +139,7 @@ export function OrderIndicationComp({
         </Box>
       )}
 
-      {item.type === 1 && (
+      {item.type <= 2 && (
         <HStack mt={4} space={4}>
           <Center mt="4">
             <Avatar size="lg" source={{ uri: item?.avatar }} />
@@ -146,8 +148,8 @@ export function OrderIndicationComp({
 
           <S.boxDescription>
             <S.title>Descrição Compra</S.title>
-            <S.text>{item?.objeto.description}</S.text>
-            <S.textfocus>{item?.objeto?.valor}</S.textfocus>
+            <S.text>{item?.objeto.assunto}</S.text>
+            <S.textfocus>{locale(item?.valor)}</S.textfocus>
           </S.boxDescription>
         </HStack>
       )}

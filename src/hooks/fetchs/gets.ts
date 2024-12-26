@@ -59,4 +59,10 @@ export class GetFetchs {
     return data
   }
 
+  public async relationNotvalidBytype(type: number) {
+    const { data } = await api.get<IRelationship[]>(`/relationShip/notValides/${type}`)
+
+    return data
+  }
+
 }

@@ -1,7 +1,9 @@
+import { colors } from '../global/hub-colors';
 import theme from '../global/styles/club-mentoria';
 import { Ranking } from '../pages/ADM/Classificacao';
 import { SingUp } from '../pages/ADM/CreateUser';
 import { DeletUser } from '../pages/ADM/DeleteUser';
+import { Eventos } from '../pages/ADM/Eventos';
 import { UploadAvatar } from '../pages/ADM/UploadAvatar';
 import { ValidateDanates } from '../pages/ADM/ValidateDanates';
 import { ValidateGuest } from '../pages/ADM/ValidateGuest';
@@ -26,13 +28,13 @@ export const rotas = [
     component: Inicio,
     icon: 'home',
   },
-  {
-    focus: theme.colors.focus[1],
-    color: theme.colors.bg_color[2],
-    name: 'POSTS',
-    component: TabBarApp,
-    icon: 'camera-retro',
-  },
+  // {
+  //   focus: theme.colors.focus[1],
+  //   color: theme.colors.bg_color[2],
+  //   name: 'POSTS',
+  //   component: TabBarApp,
+  //   icon: 'camera-retro',
+  // },
   {
     focus: theme.colors.focus[1],
     color: theme.colors.bg_color[2],
@@ -115,6 +117,12 @@ export const rotasAdm = [
     name: 'CADASTRAR MEMBRO',
     component: SingUp,
     icon: '',
+  },
+  {
+    color: colors.alert[0],
+    name: 'EVENTOS',
+    component: Eventos,
+    icon: 'life-buoy',
   },
   {
     color: theme.colors.bg_color[2],

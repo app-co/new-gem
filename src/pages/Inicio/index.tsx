@@ -36,13 +36,9 @@ import { ModalInfoPresenca } from '../../components/modals/InfoPresenca';
 import { make } from '../../hooks';
 import { TextStyle } from '../../components/forms/topograph';
 import { colors } from '../../global/hub-colors';
+import { useQueryClient } from 'react-query';
 
-const isActiveFigerToken = new IsActiveFingerTokenStorage();
-const localAuthData = new LocalAuthData();
 
-interface IResponse {
-  presenca: IRelashionship[];
-}
 
 const variationPresensa: any = {
   5: '#f5e346',
@@ -59,14 +55,19 @@ export function Inicio() {
 
   const { user, updateUser } = useAuth();
   const { navigate } = useNavigation();
+  const client = useQueryClient()
 
   const [modalAtenction, setModalAtenction] = useState(false)
 
-  const { data: relationsReceptor = [], isLoading } = querys.relationForAprovation()
-
+  const { data: relationsReceptor = [], isLoading, refetch } = querys.relationForAprovation()
   const aprovation = relationsReceptor.length > 0
 
   const version = Contants.default.expoConfig?.version;
+
+  useFocusEffect(useCallback(() => {
+    client.invalidateQueries('relationForAprovation')
+    refetch()
+  }, []))
 
   if (isLoading) {
     return <Loading />;
@@ -97,7 +98,7 @@ export function Inicio() {
         </Center>
 
         <HStack space={10} justifyContent="center" my="4" alignItems="center">
-          <Avatar size="xl" />
+          <Avatar size="xl" source={{ uri: user?.profile?.avatar }} />
 
           <Box w="1" bg="#bebebe" h="full" />
 

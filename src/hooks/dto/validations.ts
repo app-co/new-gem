@@ -18,13 +18,11 @@ export const validation = {
     whats: z.string({ message: '* campo obrigatório' }),
     avatar: z.string({ message: '* campo obrigatório' }).optional(),
     workName: z.string({ message: '* campo obrigatório' }),
-    CNPJ: z.string().optional(),
-    CPF: z.string().optional(),
-    ramo: z.string().optional(),
-    enquadramento: z.string().optional(),
+    CNPJ: z.string().optional().nullable(),
+    CPF: z.string().optional().nullable(),
+    ramo: z.string().optional().nullable(),
+    enquadramento: z.string().optional().nullable(),
     email: z.string({ message: '* campo obrigatório' }).email('E-mail invaálido'),
-    avatarPath: z.string().optional(),
-    logoPath: z.string().optional(),
     userId: z.string({ message: '* campo obrigatório' })
   }),
   midia: z.object({

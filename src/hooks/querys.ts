@@ -29,7 +29,7 @@ export class Querys {
     };
 
     return useInfiniteQuery({
-      queryKey: ['users', newParams],
+      queryKey: ['usersss', newParams],
       queryFn: ({ pageParam = 0 }) =>
 
         this.get.userByHub({
@@ -41,7 +41,7 @@ export class Querys {
           return undefined;
         }
 
-        return lastPage.pageNumber + 1;
+        return lastPage.pageNumber + lastPage.pageSize;
       },
     });
   }
@@ -57,6 +57,13 @@ export class Querys {
     return useQuery({
       queryFn: this.get.relationForAprovation,
       queryKey: ['relationForAprovation'],
+    })
+  }
+
+  public relationNotvalidBytype(type: number) {
+    return useQuery({
+      queryKey: ['relationNotvalidBytype', type],
+      queryFn: () => this.get.relationNotvalidBytype(type),
     })
   }
 }

@@ -39,12 +39,12 @@ export function Classificacao() {
 
             <HStack key={index} my='3px' justifyContent={'space-between'} >
               <S.BoxContainer>
-                <S.Title>{h.type_str}</S.Title>
-                <S.Title>{h.pontos} pts</S.Title>
+                <S.Title>{h?.type_str}</S.Title>
+                <S.Title>{h?.pontos} pts</S.Title>
               </S.BoxContainer>
 
               <S.BoxPosition>
-                <S.Title>{h.rank}</S.Title>
+                <S.Title>{h?.rank}</S.Title>
                 <S.text>rank</S.text>
               </S.BoxPosition>
             </HStack>

@@ -12,106 +12,72 @@ import { Header } from '../../components/Header';
 import { Input } from '../../components/Inputs';
 import { useRelation } from '../../contexts/relation';
 import { useToken } from '../../contexts/Token';
-import { IInviteRelation } from '../../dtos';
 import theme from '../../global/styles/club-mentoria';
 import { useAuth } from '../../hooks/useAuth';
-import { useAllUsers } from '../../hooks/user';
-import { api } from '../../services/api';
-import { routesScheme } from '../../services/schemeRoutes';
 import * as S from './styles';
+import { make } from '../../hooks';
+import { Loading } from '../../components/Loading';
+import { colors } from '../../global/hub-colors';
+
+const { querys, mutations } = make()
 
 export function Visitante() {
   const { user } = useAuth();
-  const { mytoken, sendMessage } = useToken();
-  const { listAllRelation } = useRelation();
-  const { data, isLoading, refetch } = useAllUsers(user.hub);
-  const adms = data || [];
   const [selected, setSelected] = React.useState('approveded');
   const [showModal, setShowModa] = React.useState(false);
   const [name_convidado, setNameConvidado] = React.useState('');
 
+  const { data, isLoading } = querys.useRelationsMetricasUser()
+  const { mutateAsync, isLoading: load } = mutations.registerRelation()
 
-  const relation = (listAllRelation.data as IInviteRelation[]) || [];
-  const invitPending = relation.filter(
-    h =>
-      h.type === 'INVIT' && h.situation === false && h.fk_user_id === user.id,
-  );
+  const aprovados = data?.aprovaded.CONVITES
+  const pendentes = data?.notAprovaded.CONVITES
 
-  const invitAproved = relation.filter(
-    h => h.type === 'INVIT' && h.situation === true && h.fk_user_id === user.id,
-  );
-
-  const handleSave = React.useCallback(async () => {
-    const adm = adms.filter(h => h.adm === true).map(h => h.token);
-
+  async function handleAdd() {
     try {
-      await api
-        .post(routesScheme.relationShip.create, {
-          objto: {
-            name_convidado,
-            token: mytoken,
-          },
-          type: 'INVIT',
-          token: '',
-        })
-        .then(h => {
-          console.log(h.data);
-          adm.forEach(async h => {
-            console.log(h);
-            await sendMessage({
-              text: 'convidado',
-              title: 'Novo convidado',
-              token: h,
-            });
-          });
+      await mutateAsync({
+        user_id: user.id,
+        hub: user.hub[0],
+        type: 7,
+        objeto: {
+          nomeConvidado: name_convidado,
+          nome: user.nome
+        },
+      })
+      setShowModa(false)
+    } catch (error) {
 
-          Alert.alert(
-            'Show!',
-            'Convidados são importantes para aumentar as relações de negócios',
-          );
-          setShowModa(false);
-          listAllRelation.refetch();
-        });
-    } catch (err: any) {
-      console.log(err?.response.data);
     }
-  }, [adms, listAllRelation, name_convidado, sendMessage]);
-
-  useFocusEffect(
-    useCallback(() => {
-      listAllRelation.refetch();
-      refetch();
-    }, []),
-  );
-
-  if (listAllRelation.isLoading) {
-    return (
-      <Center flex="1">
-        <ActivityIndicator size={40} />
-      </Center>
-    );
   }
+
+  if (isLoading) return <Loading />
+
 
   return (
     <S.Container>
       <Header />
-      <Modal visible={showModal}>
-        <Center p='4' bg={theme.colors.bg_color[1]} flex="1">
-          <Form>
-            <Input
-              onChangeText={setNameConvidado}
-              placeholder="Nome do convidado"
-              name="name"
-              value={name_convidado}
-            />
+      <Modal onRequestClose={() => setShowModa(false)} visible={showModal} transparent >
 
-            <Center mt='8' >
-              <Button pres={handleSave} title="SALVAR" />
+        <Center mt={'70%'}>
+          <Box rounded={8} p={4} bg={colors.bg_color[1]}>
 
-            </Center>
+            <Form>
+              <Input
+                onChangeText={setNameConvidado}
+                placeholder="Nome do convidado"
+                name="name"
+                value={name_convidado}
+              />
 
-          </Form>
+              <Center mt='8' >
+                <Button pres={handleAdd} loading={load} title="SALVAR" />
+
+              </Center>
+
+            </Form>
+          </Box>
         </Center>
+
       </Modal>
 
       <Box flex="1">
@@ -137,7 +103,7 @@ export function Visitante() {
 
         {selected === 'approveded' && (
           <FlatList
-            data={invitAproved}
+            data={aprovados}
             renderItem={({ item: h }) => (
               <Box
                 bg={
@@ -154,7 +120,7 @@ export function Visitante() {
                 >
                   Nome do convidado
                 </S.title>
-                <S.text>{h.objto.name_convidado}</S.text>
+                <S.text>{h.objeto.nomeConvidado}</S.text>
 
                 <S.title
                   style={{
@@ -176,7 +142,7 @@ export function Visitante() {
         {selected === 'pendent' && (
           <FlatList
             mt="3"
-            data={invitPending}
+            data={pendentes}
             renderItem={({ item: h }) => (
               <Box bg="gray.500" mt={2} p={3}>
                 <S.title
@@ -187,7 +153,7 @@ export function Visitante() {
                 >
                   Nome do convidado
                 </S.title>
-                <S.text>{h.objto.name_convidado}</S.text>
+                <S.text>{h.objeto.nomeConvidado}</S.text>
                 <S.title
                   style={{
                     fontFamily: theme.fonts.Regular,
@@ -203,17 +169,7 @@ export function Visitante() {
           />
         )}
 
-        {invitAproved.length === 0 && selected === 'approveded' && (
-          <Center flex="1">
-            <S.title>Você ainda não tem convidados</S.title>
-          </Center>
-        )}
 
-        {invitPending.length === 0 && selected === 'pendent' && (
-          <Center flex="1">
-            <S.title>Você ainda não tem convidados</S.title>
-          </Center>
-        )}
       </Box>
 
       <Box pb={5}>

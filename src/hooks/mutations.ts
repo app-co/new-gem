@@ -90,6 +90,7 @@ export class Mutations {
         client.invalidateQueries('relationsMetricasUser')
         client.invalidateQueries('relationForAprovation')
         client.invalidateQueries('relationByReceptor')
+        client.invalidateQueries('relationNotvalidBytype')
       }
     })
   }
@@ -117,6 +118,24 @@ export class Mutations {
           description: 'Usuário atualizado com sucesso!',
         })
       }
+    })
+  }
+
+  public delRelation() {
+    const client = useQueryClient()
+    return useMutation(this.del.deleteRelation, {
+      onSuccess: () => {
+        client.invalidateQueries('relationsMetricasUser')
+        client.invalidateQueries('relationForAprovation')
+        client.invalidateQueries('relationByReceptor')
+        client.invalidateQueries('relationNotvalidBytype')
+        Toast.show({
+          tipo: 'success',
+          title: 'Sucesso!',
+          description: 'Usuário excluído com sucesso!',
+        })
+      },
+      onError: (error) => showMessage(error)
     })
   }
 

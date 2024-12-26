@@ -14,4 +14,10 @@ export class DelteFetchs {
 
     return true
   }
+
+  public async deleteRelation(id: number) {
+    const { data } = await api.delete(`/relationShip/${id}`)
+
+    return data
+  }
 }

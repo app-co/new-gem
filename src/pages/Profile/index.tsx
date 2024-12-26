@@ -130,7 +130,10 @@ export function Profile() {
 
       try {
         const ref = storage().ref(`image/avatar/${user.id}.png`);
-        await ref.delete();
+
+        if (ref) {
+          await ref.delete();
+        }
       } catch (error) {
         console.log(error);
       }
@@ -139,6 +142,7 @@ export function Profile() {
 
       await reference.putFile(result.assets[0].uri);
       const photoUrl = await reference.getDownloadURL();
+      profileControl.setValue('avatar', photoUrl)
       setAvatar(photoUrl);
     }
   }, [user]);
@@ -167,11 +171,14 @@ export function Profile() {
 
         await reference.putFile(result.assets[0].uri);
         const photoUrl = await reference.getDownloadURL();
+        profileControl.setValue('logotipo', photoUrl)
         setLogo(photoUrl);
       }
     }
 
   }, [user]);
+
+  console.log(profileControl.formState.errors)
 
   async function handleSaveUser(obj: TUser) {
     try {
@@ -238,7 +245,7 @@ export function Profile() {
             <Avatar
               size={'2xl'}
               source={{
-                uri: user?.profile?.avatar,
+                uri: profileControl.watch('avatar'),
               }}
             />
             <BoxCamera onPress={handleImagePiker}>

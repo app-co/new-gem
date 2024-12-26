@@ -103,11 +103,6 @@ export function Valide() {
       tipo: 'alert',
     })
 
-
-
-
-
-
     const dados = {
       user_id: id,
       type: 5,

@@ -213,7 +213,7 @@ export function Consumo() {
 
     return { validos, pendente }
 
-  }, [])
+  }, [relations])
 
   console.log(type)
 
