@@ -1,19 +1,18 @@
 import React, { ReactNode, useCallback } from 'react'
 import * as S from './styles'
 import { TextStyle } from '../../../components/forms/topograph'
-import { HandCoins, HandDeposit, HandHeart, HandPalm, PersonSimpleRun, UserPlus } from 'phosphor-react-native'
+import { HandHeart, HandPalm, PersonSimpleRun, UserPlus } from 'phosphor-react-native'
 import { colors } from '../../../global/hub-colors'
-import { _canva } from '../../../utils/size'
+import { _canva, _height } from '../../../utils/size'
 import { Header } from '../../../components/Header'
 import { make } from '../../../hooks'
-import { RenderItem } from './render-item'
 import { PresenAs } from './render-types/PresenAs'
 import { Donativos } from './render-types/Donativos'
 import { Button } from '../../../components/forms/Button'
 import { Box, Center } from 'native-base'
 import { ActivityIndicator, FlatList, Modal } from 'react-native'
 import { IRelationship } from '../../../hooks/dto/interfaces'
-import { Comvites, Convite } from './render-types/Comvites'
+import { Convite } from './render-types/Comvites'
 import { Corridas } from './render-types/Corridas'
 import { useFocusEffect } from '@react-navigation/native'
 
@@ -51,17 +50,18 @@ export function Eventos() {
 
   const { data = [], isLoading, refetch } = querys.relationNotvalidBytype(relationType)
   const { mutateAsync, isLoading: load } = mutations.aproveRelation()
+  const { mutateAsync: reprove, isLoading: loadReprove } = mutations.delRelation()
 
   async function handleAccept(id: number) {
-    console.log(id)
     await mutateAsync(id)
   }
 
   async function handleReject(id: number) {
-    await mutateAsync(id)
+    await reprove(id)
+    refetch()
   }
 
-  function renderItens(item: IRelationship) {
+  const renderItens = React.useCallback((item: IRelationship) => {
 
     const components: { [key: number]: ReactNode } = {
       [5]: <PresenAs accept={h => handleAccept(h)} reject={(h) => handleReject(h)} item={item} />,
@@ -71,23 +71,27 @@ export function Eventos() {
     }
 
     return components[relationType]
-  }
+
+  }, [data])
+
+  console.log(data)
+
 
   useFocusEffect(useCallback(() => {
     refetch()
+    setRelationType(5)
   }, []))
 
 
   return (
     <S.Container>
-      <Modal visible={load} transparent >
+      <Modal visible={load || loadReprove} transparent >
         <Center flex={1} bg={'#2e2e2edd'} >
           <ActivityIndicator color={colors.alert[0]} size={'large'} />
         </Center>
       </Modal>
 
       <Header title='Validações dos Eventos' />
-      {/* <TextStyle type='title' style={{ textAlign: 'center' }} >Validações dos Eventos</TextStyle> */}
       <S.warp>
         <S.touch onPress={() => setRelationType(5)} >
           <HandPalm weight={focusWeight(5)} color={focusType(5)} size={icosize} />
@@ -114,7 +118,7 @@ export function Eventos() {
       <Box mt={2} p='4' >
 
         {data.length > 0 && (
-          <Button title='validar todos' />
+          <Button loading pres={() => { }} title='validar todos' />
         )}
 
         {isLoading && <Box w='100%' h='100%' justifyContent='center' alignItems='center' >
@@ -128,13 +132,18 @@ export function Eventos() {
 
 
         <FlatList
+          style={{ height: _height * 0.4 }}
           contentContainerStyle={{
             gap: 10,
             paddingTop: 15
           }}
           data={data}
           keyExtractor={item => String(item.id)}
-          renderItem={({ item }) => renderItens(item)}
+          renderItem={({ item }) => (
+            <Box>
+              {renderItens(item)}
+            </Box>
+          )}
         />
 
       </Box>

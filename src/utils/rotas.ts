@@ -103,6 +103,13 @@ export const rotas = [
     component: Solicitaions,
     icon: 'envelope',
   },
+  {
+    focus: colors.focus[1],
+    color: colors.bg_color[2],
+    name: 'EVENTOS',
+    component: Solicitaions,
+    icon: 'envelope',
+  },
 ];
 
 export const rotasAdm = [
@@ -120,16 +127,11 @@ export const rotasAdm = [
   },
   {
     color: colors.alert[0],
-    name: 'EVENTOS',
+    name: 'VALIDAR EVENTOS',
     component: Eventos,
     icon: 'life-buoy',
   },
-  {
-    color: theme.colors.bg_color[2],
-    name: 'VALIDAR PRESENÇA',
-    component: ListPresenca,
-    icon: '',
-  },
+
   // {
   //   color: theme.colors.bg_color[2],
   //   name: 'ALTERAR SENHA DE UM MEMBRO',
@@ -155,23 +157,4 @@ export const rotasAdm = [
   //   component: Inativo,
   //   icon: '',
   // },
-  // {
-  //   color: theme.colors.bg_color[2],
-  //   name: 'LISTA DE PRESENÇA',
-  //   component: ListaPresença,
-  //   icon: '',
-  // },
-
-  {
-    color: theme.colors.bg_color[2],
-    name: 'VALIDAR CONVIDADOS',
-    component: ValidateGuest,
-    icon: '',
-  },
-  {
-    color: theme.colors.bg_color[2],
-    name: 'VALIDAR DONATIVOS',
-    component: ValidateDanates,
-    icon: '',
-  },
 ];
