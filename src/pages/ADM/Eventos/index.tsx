@@ -74,9 +74,6 @@ export function Eventos() {
 
   }, [data])
 
-  console.log(data)
-
-
   useFocusEffect(useCallback(() => {
     refetch()
     setRelationType(5)

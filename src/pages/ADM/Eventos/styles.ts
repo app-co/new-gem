@@ -23,7 +23,7 @@ export const touch = styled.TouchableOpacity`
   background-color: ${colors.bg_color[3]};
   padding: 10px;
   border-radius: 10px;
-  width: ${_canva * 5};
+  width: ${_canva * 5}px;
   /* height: ${_canva * 2}; */
   align-items: center;
   justify-content: center;
