@@ -8,6 +8,7 @@ interface ISegments {
 
 interface ISucess {
   workName: string
+  userId: string
 }
 
 export declare global {

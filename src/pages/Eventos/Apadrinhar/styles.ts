@@ -1,15 +1,17 @@
 import styled from 'styled-components/native';
 
-import { _subTitle, _text } from '../../utils/size';
+import { _subTitle, _text } from '../../../utils/size';
 
 interface I {
   selected: boolean;
 }
 
 export const Container = styled.View`
-  flex: 1;
-
-  background-color: ${h => h.theme.colors.bg_color[1]}
+  background-color: ${h => h.theme.colors.bg_color[1]};
+  padding: 10px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px
 `;
 
 export const text = styled.Text`
@@ -20,7 +22,7 @@ export const text = styled.Text`
 export const title = styled.Text`
   font-size: ${_subTitle}px;
   font-family: 'regular';
-  color: ${h => h.theme.colors.color_text.ligh}
+  color: ${h => h.theme.colors.color_text.ligh};
 `;
 
 export const subTitle = styled.Text<I>`

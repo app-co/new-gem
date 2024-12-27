@@ -5,10 +5,10 @@ import * as Location from 'expo-location';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert } from 'react-native';
 
-import { Header } from '../../components/Header';
-import { useAuth } from '../../hooks/useAuth';
-import { api } from '../../services/api';
-import { routesScheme } from '../../services/schemeRoutes';
+import { Header } from '../../../components/Header';
+import { useAuth } from '../../../hooks/useAuth';
+import { api } from '../../../services/api';
+import { routesScheme } from '../../../services/schemeRoutes';
 import {
   Box,
   ButtonValidar,
@@ -16,10 +16,10 @@ import {
   TextButtonValidar,
   Title,
 } from './styles';
-import { TextStyle } from '../../components/forms/topograph';
-import { colors } from '../../global/hub-colors';
-import { make } from '../../hooks';
-import Toast from '../../components/toast/handler';
+import { TextStyle } from '../../../components/forms/topograph';
+import { colors } from '../../../global/hub-colors';
+import { make } from '../../../hooks';
+import Toast from '../../../components/toast/handler';
 
 interface I {
   lat: number;
@@ -33,7 +33,7 @@ const local = {
 
 const { querys, mutations } = make()
 
-export function Valide() {
+export function ValidePresenca() {
   const { user } = useAuth();
 
 
@@ -73,13 +73,13 @@ export function Valide() {
     const lat = Number(location.lat);
     const log = Number(location.log);
 
-    if (local.lat !== lat && local.log !== log) {
-      return Toast.show({
-        title: 'Atenção',
-        description: 'Você precisa estar no local para validar sua presença',
-        tipo: 'alert',
-      })
-    }
+    // if (local.lat !== lat && local.log !== log) {
+    //   return Toast.show({
+    //     title: 'Atenção',
+    //     description: 'Você precisa estar no local para validar sua presença',
+    //     tipo: 'alert',
+    //   })
+    // }
 
     const preNotValid = data?.notAprovaded.PRESENÇA.find(h => {
       const date = format(new Date(h.updated_at), 'dd/MM/yy')
@@ -121,7 +121,6 @@ export function Valide() {
 
   return (
     <Container>
-      <Header title="Valide sua presença" />
 
       <Box>
         <Title>{currentDate}</Title>

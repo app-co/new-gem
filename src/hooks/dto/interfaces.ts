@@ -44,6 +44,7 @@ export interface IRelationsMetricas {
   aprovaded: Aprovaded
   notAprovaded: NotAprovaded
   totalPontos: number
+  currencyVenda: number
 }
 
 export interface IRelationPositons {

@@ -56,7 +56,8 @@ export const validation = {
     descricao: z.string({ message: '* campo obrigatório' }),
   }),
   b2b: z.object({
-    assunto: z.string({ message: '* campo obrigatório' }),
+    descricao: z.string({ message: '* campo obrigatório' }),
+    nome: z.string({ message: '* campo obrigatório' }),
   }),
   donate: z.array(z.object({
     item: z.string({ message: '* campo obrigatório' }),
@@ -64,9 +65,11 @@ export const validation = {
   })),
   consumo: z.object({
     descricao: z.string({ message: '* campo obrigatório' }),
+    nome: z.string({ message: '* campo obrigatório' }),
   }),
   invit: z.object({
     nomeConvidado: z.string({ message: '* campo obrigatório' }),
+    nome: z.string({ message: '* campo obrigatório' }),
   }),
   session: z.object({
     apelido: z.string({ message: '* campo obrigatório' }),

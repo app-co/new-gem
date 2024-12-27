@@ -18,7 +18,7 @@ import { useFocusEffect } from '@react-navigation/native'
 
 const { querys, mutations } = make()
 
-export function Eventos() {
+export function ValidateEventos() {
   const icosize = _canva + 5
 
   const [relationType, setRelationType] = React.useState(5)
@@ -74,6 +74,8 @@ export function Eventos() {
 
   }, [data])
 
+
+
   useFocusEffect(useCallback(() => {
     refetch()
     setRelationType(5)
@@ -82,13 +84,13 @@ export function Eventos() {
 
   return (
     <S.Container>
+      <Header title='Validações dos Eventos' />
       <Modal visible={load || loadReprove} transparent >
         <Center flex={1} bg={'#2e2e2edd'} >
           <ActivityIndicator color={colors.alert[0]} size={'large'} />
         </Center>
       </Modal>
 
-      <Header title='Validações dos Eventos' />
       <S.warp>
         <S.touch onPress={() => setRelationType(5)} >
           <HandPalm weight={focusWeight(5)} color={focusType(5)} size={icosize} />
@@ -123,7 +125,6 @@ export function Eventos() {
         </Box>}
 
         <Box mt={4} >
-
           <TextStyle type='subtitle' >{focusTitle[relationType]}</TextStyle>
         </Box>
 
@@ -137,7 +138,7 @@ export function Eventos() {
           data={data}
           keyExtractor={item => String(item.id)}
           renderItem={({ item }) => (
-            <Box>
+            <Box minH='140px' >
               {renderItens(item)}
             </Box>
           )}

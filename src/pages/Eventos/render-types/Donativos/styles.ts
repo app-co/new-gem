@@ -1,5 +1,5 @@
 import styled from 'styled-components/native'
-import { colors } from '../../../../../global/hub-colors';
+import { colors } from '../../../../global/hub-colors';
 
 export const Container = styled.View`
   flex: 1;

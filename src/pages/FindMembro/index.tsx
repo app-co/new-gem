@@ -23,7 +23,7 @@ export function FindUser() {
 
   const nome = search.length > 3 ? search : ''
 
-  const { data, refetch, isLoading } = querys.useUserByHub({
+  const { data, refetch, isLoading, fetchNextPage } = querys.useUserByHub({
     nome,
     hub: `${user.hub}`
   });
@@ -73,7 +73,7 @@ export function FindUser() {
         renderItem={({ item: h }) => (
           <View>
             <FindMembroComponent
-              star={h?.media}
+              star={h?.avalicaoes}
               avatar={h?.profile?.avatar}
               name={h?.nome}
               workName={h?.profile?.workName}
@@ -86,6 +86,7 @@ export function FindUser() {
             />
           </View>
         )}
+        onEndReached={() => fetchNextPage()}
         refreshControl={
           <RefreshControl refreshing={isLoading} onRefresh={refetch} />
         }

@@ -11,7 +11,7 @@ interface Props {
   prestador?: string;
 }
 
-export function StarModal({ submit, prestador, setStars, star = 0 }: Props) {
+export function StarModal({ submit, prestador, setStars, star = 5 }: Props) {
   return (
     <S.Container>
       <S.logo source={logo} />

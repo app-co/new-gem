@@ -26,6 +26,7 @@ export class Mutations {
   public registerUser() {
     return useMutation(this.post.registerUser, {
       onSuccess: () => {
+
         Toast.show({
           tipo: 'success',
           title: 'Sucesso!',
@@ -72,10 +73,11 @@ export class Mutations {
     return useMutation(this.post.registerRelation, {
       onSuccess: () => {
         client.invalidateQueries('relationsMetricasUser')
+        client.invalidateQueries('relationNotvalidBytype')
         Toast.show({
           tipo: 'success',
           title: 'Sucesso!',
-          description: 'Relacionamento cadastrado com sucesso! \n Aguarde a validação para computar seus pontos.',
+          description: 'Relacionamento cadastrado com sucesso! \n Aguarde a validação',
         })
       },
       onError: (error) => showMessage(error)
@@ -136,6 +138,18 @@ export class Mutations {
         })
       },
       onError: (error) => showMessage(error)
+    })
+  }
+
+  public avaliation() {
+    const client = useQueryClient()
+
+    return useMutation(this.post.registerStar, {
+      onError: (error) => showMessage(error),
+      onSuccess: () => {
+        client.invalidateQueries('userByHub')
+
+      }
     })
   }
 

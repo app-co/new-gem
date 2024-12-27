@@ -31,8 +31,10 @@ export function FindMembroComponent({
   whats,
   maps,
   avatar,
-  star = 1,
+  star = 5,
 }: Props) {
+
+  console.log({ star })
   return (
     <S.Container>
       <View style={{ flexDirection: 'row' }}>

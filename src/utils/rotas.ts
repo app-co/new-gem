@@ -3,20 +3,14 @@ import theme from '../global/styles/club-mentoria';
 import { Ranking } from '../pages/ADM/Classificacao';
 import { SingUp } from '../pages/ADM/CreateUser';
 import { DeletUser } from '../pages/ADM/DeleteUser';
-import { Eventos } from '../pages/ADM/Eventos';
+import { ValidateEventos } from '../pages/ADM/Eventos';
 import { UploadAvatar } from '../pages/ADM/UploadAvatar';
-import { ValidateDanates } from '../pages/ADM/ValidateDanates';
-import { ValidateGuest } from '../pages/ADM/ValidateGuest';
-import { ListPresenca } from '../pages/ADM/ValidatePresenca';
 import { Consumo } from '../pages/Consumo';
-import { Donates } from '../pages/Donates';
+import { Eventos } from '../pages/Eventos';
 import { FindUser } from '../pages/FindMembro';
 import { Inicio } from '../pages/Inicio';
-import { Padrinho } from '../pages/Padrinho';
 import { Profile } from '../pages/Profile';
 import { Solicitaions } from '../pages/Solicitaions';
-import { Valide } from '../pages/ValidePresenca';
-import { Visitante } from '../pages/Visitante';
 import { StacKMembros } from '../routes/StackMembros';
 import { TabBarApp } from '../routes/TabBarApp';
 
@@ -56,13 +50,13 @@ export const rotas = [
     component: Consumo,
     icon: 'line-chart',
   },
-  {
-    focus: theme.colors.focus[1],
-    color: theme.colors.bg_color[2],
-    name: 'VALIDE SUA PRESENÇA',
-    component: Valide,
-    icon: 'hand-peace-o',
-  },
+  // {
+  //   focus: theme.colors.focus[1],
+  //   color: theme.colors.bg_color[2],
+  //   name: 'VALIDE SUA PRESENÇA',
+  //   component: Valide,
+  //   icon: 'hand-peace-o',
+  // },
   {
     focus: theme.colors.focus[1],
     color: theme.colors.bg_color[2],
@@ -72,41 +66,41 @@ export const rotas = [
   },
 
 
-  {
-    focus: theme.colors.focus[1],
-    color: theme.colors.bg_color[2],
-    name: 'CONVIDADOS',
-    component: Visitante,
-    icon: 'user-plus',
-  },
+  // {
+  //   focus: theme.colors.focus[1],
+  //   color: theme.colors.bg_color[2],
+  //   name: 'CONVIDADOS',
+  //   component: Visitante,
+  //   icon: 'user-plus',
+  // },
+
+  // {
+  //   focus: theme.colors.focus[1],
+  //   color: theme.colors.bg_color[2],
+  //   name: 'DONATIVOS',
+  //   component: Donates,
+  //   icon: 'diamond',
+  // },
+
+  // {
+  //   focus: theme.colors.focus[1],
+  //   color: theme.colors.bg_color[2],
+  //   name: 'APADRINHAR',
+  //   component: Padrinho,
+  //   icon: 'mortar-board',
+  // },
 
   {
-    focus: theme.colors.focus[1],
-    color: theme.colors.bg_color[2],
-    name: 'DONATIVOS',
-    component: Donates,
-    icon: 'diamond',
+    focus: colors.focus[1],
+    color: colors.bg_color[0],
+    name: 'EVENTOS',
+    component: Eventos,
+    icon: 'life-buoy',
   },
-
-  {
-    focus: theme.colors.focus[1],
-    color: theme.colors.bg_color[2],
-    name: 'APADRINHAR',
-    component: Padrinho,
-    icon: 'mortar-board',
-  },
-
   {
     focus: theme.colors.focus[1],
     color: theme.colors.bg_color[2],
     name: 'SOLICITAÇÕES',
-    component: Solicitaions,
-    icon: 'envelope',
-  },
-  {
-    focus: colors.focus[1],
-    color: colors.bg_color[2],
-    name: 'EVENTOS',
     component: Solicitaions,
     icon: 'envelope',
   },
@@ -128,7 +122,7 @@ export const rotasAdm = [
   {
     color: colors.alert[0],
     name: 'VALIDAR EVENTOS',
-    component: Eventos,
+    component: ValidateEventos,
     icon: 'life-buoy',
   },
 

@@ -8,18 +8,21 @@ import { TextStyle } from '../../forms/topograph';
 import negocios from '../../../assets/negocios.jpg'
 import { _canva } from '../../../utils/size';
 import { Button } from '../../forms/Button';
+import { boolean } from 'zod';
 
 interface I {
   openModal: boolean;
+  onClose: (h: boolean) => void;
 }
 
-export function ModalAtention({ openModal }: I) {
+export function ModalAtention({ openModal, onClose }: I) {
   const navigation = useNavigation()
 
   const [isOpen, setIsOpen] = React.useState(true)
 
   React.useEffect(() => {
     setIsOpen(openModal)
+    onClose(openModal)
   }, [openModal])
 
   const imgSize = _canva * 13

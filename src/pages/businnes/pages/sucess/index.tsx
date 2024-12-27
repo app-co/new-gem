@@ -10,36 +10,35 @@ import { IUserDtos } from '../../../../dtos';
 import { useAuth } from '../../../../hooks/useAuth';
 import { api } from '../../../../services/api';
 import { Button, Container, Image, Message, Title } from './styles';
+import { make } from '../../../../hooks';
 
 interface RouteParams {
   workName: string;
+  userId: string
 }
+
+const { mutations } = make()
 
 export function Sucess() {
   const route = useRoute();
   const { user } = useAuth();
   const [star, setStar] = React.useState(1);
   const [modal, setModal] = React.useState(false);
-  const { workName } = route.params as RouteParams;
+  const { workName, userId } = route.params as RouteParams;
 
-  const { reset } = useNavigation();
+  const { mutateAsync, isLoading } = mutations.avaliation()
+
+  const { reset, navigate } = useNavigation();
 
   const navigateToHome = useCallback(async () => {
-    setModal(false);
 
     try {
-      await api
-        .post('/star/assest', {
-          star,
-          fk_id_user: prestador,
-        })
-        .then(() => {
-          sendPushNotification();
-          setModal(false);
-          reset({
-            routes: [{ name: 'INÍCIO' }],
-          });
-        });
+      await mutateAsync({
+        userId,
+        star
+      })
+
+      navigate('INÍCIO')
 
     } catch (error) {
       console.log({ error })

@@ -1,10 +1,10 @@
 import React from 'react'
 import * as S from './styles'
 import { Avatar, Box, HStack } from 'native-base'
-import { TextStyle } from '../../../../../components/forms/topograph'
-import { IRelationship } from '../../../../../hooks/dto/interfaces'
+import { TextStyle } from '../../../../components/forms/topograph'
+import { IRelationship } from '../../../../hooks/dto/interfaces'
 import * as G from '../../styles'
-import { colors } from '../../../../../global/hub-colors'
+import { colors } from '../../../../global/hub-colors'
 import { format } from 'date-fns'
 
 interface I {
@@ -30,16 +30,15 @@ export function Convite({ item, accept, reject }: I) {
         </Box>
       </HStack>
 
-
+      <Box>
+        <TextStyle colorText={colors.alert[0]} >Nome do convidado</TextStyle>
+        <TextStyle type='subtitle' >{item?.objeto?.nomeConvidado}</TextStyle>
+      </Box>
 
       <HStack space={10} mt={4} >
         <G.reject onPress={() => reject(item.id)} >
-          <TextStyle colorText={colors.text[0]} >RECUSAR</TextStyle>
+          <TextStyle colorText={colors.text[0]} >CANCELAR</TextStyle>
         </G.reject>
-
-        <G.accept onPress={() => accept(item.id)} >
-          <TextStyle colorText={colors.text[2]} >ACEITAR</TextStyle>
-        </G.accept>
       </HStack>
     </S.Container>
   )

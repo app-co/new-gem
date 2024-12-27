@@ -39,7 +39,7 @@ function ExtratoCompMemo({ item = [], day }: I) {
               <HStack w='full' alignItems={'center'} justifyContent={'space-between'} >
                 {h?.type <= 2 && (
                   <Box>
-                    <TextStyle>{h.objeto.assunto}</TextStyle>
+                    <TextStyle>{h.objeto.descricao}</TextStyle>
                     <TextStyle>
                       {locale(h?.valor)}
                     </TextStyle>
@@ -48,7 +48,7 @@ function ExtratoCompMemo({ item = [], day }: I) {
 
                 {h?.type === 3 && (
                   <TextStyle>
-                    {h?.objeto?.assunto}
+                    {h?.objeto?.descricao}
                   </TextStyle>
                 )}
                 {h?.type === 5 && (

@@ -1,6 +1,6 @@
 import styled from 'styled-components/native'
-import { colors } from '../../../global/hub-colors';
-import { _canva } from '../../../utils/size';
+import { colors } from '../../global/hub-colors';
+import { _canva } from '../../utils/size';
 
 export const Container = styled.View`
   flex: 1;
@@ -11,23 +11,22 @@ export const Container = styled.View`
 export const warp = styled.View`
   flex-wrap: wrap;
   flex-direction: row;
-  padding: 10px;
   align-items: center;
   justify-content: flex-start;
   gap: 10px;
   justify-content: space-between;
-  margin-top: 10px;
+  margin: 10px 0;
   `
 
 export const touch = styled.TouchableOpacity`
   background-color: ${colors.bg_color[3]};
   padding: 10px;
   border-radius: 10px;
-  width: ${_canva * 5};
+  width: ${_canva * 4.8}px;
   /* height: ${_canva * 2}; */
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 4px;
 
 `
 

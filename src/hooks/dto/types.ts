@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { validation, validationB2b, validationConsumo } from "./validations";
+import { validation, validationB2b, validationConsumo, validationIndication } from "./validations";
 
 
 export type TUser = z.infer<typeof validation.user>
@@ -13,4 +13,4 @@ export type TSession = z.infer<typeof validation.session>
 export type TUsersByHub = z.infer<typeof validation.usersByHub>
 export type TRelationB2b = z.infer<typeof validationB2b>
 export type TRelationConsumo = z.infer<typeof validationConsumo>
-export type TRelationIndication = z.infer<typeof validation.indication>
+export type TRelationIndication = z.infer<typeof validationIndication>

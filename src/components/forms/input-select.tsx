@@ -104,7 +104,7 @@ export function InputSelect({ onChange, label, refetch, searching, error = false
 
       {isMultiple ? (
         <Box w='full' >
-          <TextStyle style={{ marginBottom: 5 }} >{label}</TextStyle>
+          <TextStyle colorText={colors.text[1]} style={{ marginBottom: 5 }} >{label}</TextStyle>
 
           <TouchableOpacity
             onPress={() => setOpen(true)}
@@ -112,7 +112,7 @@ export function InputSelect({ onChange, label, refetch, searching, error = false
               borderWidth: 1,
               borderColor: color(),
               borderRadius: 10,
-              backgroundColor: colors.bg_color[1],
+              backgroundColor: colors.bg_color[2],
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -121,11 +121,11 @@ export function InputSelect({ onChange, label, refetch, searching, error = false
               paddingHorizontal: 10
             }}
           >
-            <Box style={{ gap: 10 }} flexWrap={'wrap'} flexDirection={'row'} bg={colors.bg_color[1]}>
+            <Box style={{ gap: 10 }} flexWrap={'wrap'} flexDirection={'row'} >
               {lista.slice(0, 7).map(h => (
                 <>
-                  <Box key={h.value} rounded={'lg'} px={2} bg={colors.bg_color[1]} p={1} >
-                    <TextStyle>{h.label}</TextStyle>
+                  <Box key={h.value} rounded={'lg'} px={3} bg={colors.bg_color[3]} p={1} >
+                    <TextStyle colorText={colors.text[0]} >{h.label}</TextStyle>
                   </Box>
 
                 </>
@@ -134,7 +134,7 @@ export function InputSelect({ onChange, label, refetch, searching, error = false
 
               {
                 lista.length >= 5 && (
-                  <TextStyle style={{ marginTop: 5 }} >... mais {lista.slice(7).length}</TextStyle>
+                  <TextStyle colorText={colors.text[0]} style={{ marginTop: 5 }} >... mais {lista.slice(7).length}</TextStyle>
                 )
               }
             </Box>
@@ -146,9 +146,7 @@ export function InputSelect({ onChange, label, refetch, searching, error = false
       ) : (
 
         <TouchableOpacity onPress={() => setOpen(true)} >
-          <Input icon={
-            <MaterialIcons color={colors.focus[0]} size={25} name="arrow-drop-down-circle" />
-          } placeholderTextColor={colors.bg_color[1]} placeholder={placeholder} editable={false} label={label} value={valueLabel} />
+          <Input icon='arrow-down-circle' placeholderTextColor={colors.bg_color[1]} placeholder={placeholder} editable={false} label={label} value={valueLabel} />
         </TouchableOpacity >
 
       )
@@ -176,7 +174,7 @@ export function InputSelect({ onChange, label, refetch, searching, error = false
               return (
                 <>
                   {isMultiple ? (
-                    <TouchableOpacity style={{ backgroundColor: select ? colors.bg_color[2] : 'transparent', borderRadius: 6 }}
+                    <TouchableOpacity style={{ backgroundColor: select ? colors.bg_color[3] : 'transparent', borderRadius: 6 }}
                       onPress={() => onItemSelect(h)} >
                       <HStack p={2} alignItems={'center'} justifyContent={'space-between'} >
                         <TextStyle type="defaultSemiBold" colorText={colors.text[0]} >{h?.label}</TextStyle>
@@ -187,7 +185,7 @@ export function InputSelect({ onChange, label, refetch, searching, error = false
                     </TouchableOpacity>
                   ) : (
 
-                    <TouchableOpacity style={{ backgroundColor: select ? colors.bg_color[1] : 'transparent' }}
+                    <TouchableOpacity style={{ backgroundColor: select ? colors.bg_color[2] : 'transparent' }}
                       onPress={() => onItemSelect(h)} >
                       <HStack p={2} >
                         <TextStyle colorText={colors.text[0]} >{h?.label}</TextStyle>

@@ -29,7 +29,7 @@ export class Querys {
     };
 
     return useInfiniteQuery({
-      queryKey: ['usersss', newParams],
+      queryKey: ['userByHub', newParams],
       queryFn: ({ pageParam = 0 }) =>
 
         this.get.userByHub({

@@ -41,4 +41,10 @@ export class PostFetchs {
     return data
   }
 
+  public async registerStar(obj: { userId: string, star: number }) {
+    const { data } = await api.post('/user/avaliation', obj)
+
+    return data
+  }
+
 }

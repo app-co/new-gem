@@ -85,7 +85,8 @@ export function Segments() {
       type: 3,
       userId: user.id,
       userReceptorId: params.providerId,
-      valor: '0'
+      valor: '0',
+      nome: user.nome
     }
   })
 
@@ -97,6 +98,7 @@ export function Segments() {
       type: 1,
       userId: user.id,
       userReceptorId: params.providerId,
+      nome: user.nome
     }
   })
 
@@ -113,15 +115,14 @@ export function Segments() {
     }
   })
 
-  async function submitB2b(obj: TRelationIndication) {
+  async function submitB2b(obj: TRelationB2b) {
     try {
       const dt = {
         ...obj,
-        objeto: { assunto: obj.assunto }
+        objeto: { descricao: obj.descricao, nome: obj.nome }
       }
-      console.log(dt)
       await resgister(dt)
-      navigate('sucess', { workName: params.workname })
+      navigate('sucess', { workName: params.workname, userId: obj.userReceptorId! })
     } catch (error) {
       console.log(error)
     }
@@ -131,11 +132,10 @@ export function Segments() {
     try {
       const dt = {
         ...obj,
-        objeto: { assunto: obj.descricao }
+        objeto: { descricao: obj.descricao, nome: obj.nome }
       }
-      console.log(dt)
       await resgister(dt)
-      navigate('sucess', { workName: params.workname })
+      navigate('sucess', { workName: params.workname, userId: obj.userReceptorId! })
     } catch (error) {
       console.log(error)
     }
@@ -155,7 +155,7 @@ export function Segments() {
       }
       console.log('dt', dt)
       await resgister(dt)
-      // navigate('sucess', { workName: params?.workname })
+      navigate('sucess', { workName: params?.workname, userId: obj.userReceptorId! })
     } catch (error) {
       console.log(error)
     }
@@ -215,8 +215,8 @@ export function Segments() {
             <Box p='4'>
               <InputForm
                 control={b2b.control}
-                name='assunto'
-                error={b2b.formState.errors.assunto}
+                name='descricao'
+                error={b2b.formState.errors.descricao}
                 render={({ value, onChange }) => (
                   <TextArea
                     borderRadius={10}

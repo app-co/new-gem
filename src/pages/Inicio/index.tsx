@@ -78,7 +78,7 @@ export function Inicio() {
 
       <ModalInfoPresenca openModal={false} />
       <ModalSolicitations openModal={aprovation} />
-      <ModalAtention openModal={modalAtenction} />
+      <ModalAtention onClose={h => setModalAtenction(h)} openModal={modalAtenction} />
 
       <Box flex={1}>
         <Header
