@@ -8,7 +8,7 @@ import { Segments } from '../pages/businnes/pages/segmentos';
 const Stak = createNativeStackNavigator();
 export function StacKMembros() {
   return (
-    <Stak.Navigator screenOptions={{ headerShown: false }}>
+    <Stak.Navigator initialRouteName='businnes' screenOptions={{ headerShown: false }}>
 
       <Stak.Screen name="businnes" component={Businnes} />
       <Stak.Screen name="segments" component={Segments} />

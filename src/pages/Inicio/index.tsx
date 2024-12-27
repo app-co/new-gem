@@ -37,6 +37,7 @@ import { make } from '../../hooks';
 import { TextStyle } from '../../components/forms/topograph';
 import { colors } from '../../global/hub-colors';
 import { useQueryClient } from 'react-query';
+import { locale } from '../../utils/LocalStrigMoney';
 
 
 
@@ -60,6 +61,7 @@ export function Inicio() {
   const [modalAtenction, setModalAtenction] = useState(false)
 
   const { data: relationsReceptor = [], isLoading, refetch } = querys.relationForAprovation()
+  const { data: metricas } = querys.useRelationsMetricasUser()
   const aprovation = relationsReceptor.length > 0
 
   const version = Contants.default.expoConfig?.version;
@@ -103,14 +105,14 @@ export function Inicio() {
           <Box w="1" bg="#bebebe" h="full" />
 
           <Box alignItems="flex-end">
-            <S.text>Vendas este ano:</S.text>
-            <S.text style={{ fontSize: _subTitle, fontFamily: 'medium' }}>
-              {0}
-            </S.text>
+            <TextStyle>Vendas este ano:</TextStyle>
+            <TextStyle type='subtitle'>
+              {locale(metricas?.currencyVenda)}
+            </TextStyle>
 
             <S.text>Meus pontos:</S.text>
             <S.text style={{ fontSize: _subTitle, fontFamily: 'medium' }}>
-              {0}
+              {metricas?.totalPontos}
             </S.text>
           </Box>
         </HStack>
@@ -119,7 +121,7 @@ export function Inicio() {
           <HStack space={2} alignItems="center">
             <S.text style={{ fontSize: _subTitle }}>Total geral:</S.text>
             <S.text style={{ fontSize: _subTitle, fontFamily: 'medium' }}>
-              {0}
+              {locale(metricas?.globalCurrency)}
             </S.text>
           </HStack>
         </Center>

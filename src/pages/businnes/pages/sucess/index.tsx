@@ -28,7 +28,7 @@ export function Sucess() {
 
   const { mutateAsync, isLoading } = mutations.avaliation()
 
-  const { reset, navigate } = useNavigation();
+  const { reset, navigate, goBack } = useNavigation();
 
   const navigateToHome = useCallback(async () => {
 
@@ -37,7 +37,7 @@ export function Sucess() {
         userId,
         star
       })
-
+      goBack();
       navigate('INÍCIO')
 
     } catch (error) {

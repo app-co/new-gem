@@ -98,7 +98,7 @@ export function AuthContextProvider({ children }: TAuthContext) {
         token
       })
 
-      OneSignal.User.addTag('apelido', obj.apelido)
+      OneSignal.User.addTag('userId', userById.id)
 
 
     } catch (error) {

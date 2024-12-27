@@ -134,7 +134,7 @@ export class Mutations {
         Toast.show({
           tipo: 'success',
           title: 'Sucesso!',
-          description: 'Usuário excluído com sucesso!',
+          description: 'Relacionamento rejeitado!',
         })
       },
       onError: (error) => showMessage(error)

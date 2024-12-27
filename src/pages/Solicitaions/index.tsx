@@ -44,6 +44,7 @@ export function Solicitaions() {
   const { data: relations = [], isLoading: loadRelation, refetch } = querys.relationForAprovation()
   const { mutateAsync: aproveRelation, isLoading: load } = mutations.aproveRelation()
   const { mutateAsync, isLoading } = mutations.registerRelation()
+  const { mutateAsync: reprove, isLoading: loadReprov } = mutations.delRelation()
 
   const [itemId, setItemId] = React.useState<number | null>(null);
   const [descripton, setDescription] = React.useState('');
@@ -61,7 +62,6 @@ export function Solicitaions() {
   const [typeIndication, setTypeIndication] =
     React.useState<TTypeValue>('not-yeat');
 
-  console.log(consumo.formState.errors)
   const handleAproved = React.useCallback(
 
     async (obj: TRelationConsumo) => {
@@ -117,11 +117,7 @@ export function Solicitaions() {
   const handleRecused = React.useCallback(
     async ({ item }: TSubmit) => {
       try {
-        await api
-          .delete(paramsRoutesScheme(item.id).relationShip.delete)
-          .then(h => {
-            setItemId(null);
-          });
+        await reprove(item.id)
 
       } catch (err) {
         console.log(err)
@@ -131,24 +127,6 @@ export function Solicitaions() {
     [],
   );
 
-  async function submit(obj: IRelationship) {
-    if (obj.type === 4) {
-      const validate = await consumo.trigger(['valor', 'descricao'])
-
-
-      if (validate) {
-        const dt = {
-          ...obj,
-          ...consumo.getValues()
-        }
-        await handleAproved(dt)
-      }
-      return
-
-    }
-    await handleAproved(obj)
-  }
-
 
   if (loadRelation) return <Loading />
 
@@ -156,7 +134,7 @@ export function Solicitaions() {
   return (
     <S.Container>
       <Header title='Negócios para aprovar' type="goback" />
-      <Modal transparent visible={load} >
+      <Modal transparent visible={load || loadReprov} >
         <Center bgColor={'#21211ccf'} flex={1} >
           <ActivityIndicator color={colors.focus[0]} size={_canva} />
         </Center>
