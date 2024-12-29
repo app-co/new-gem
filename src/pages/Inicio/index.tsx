@@ -75,6 +75,8 @@ export function Inicio() {
     return <Loading />;
   }
 
+  console.log({ modalAtenction })
+
   return (
     <S.Container>
 

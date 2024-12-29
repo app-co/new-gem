@@ -20,9 +20,13 @@ export function ModalAtention({ openModal, onClose }: I) {
 
   const [isOpen, setIsOpen] = React.useState(true)
 
+  function closeModal() {
+    onClose(false)
+    setIsOpen(false)
+  }
+
   React.useEffect(() => {
     setIsOpen(openModal)
-    onClose(openModal)
   }, [openModal])
 
   const imgSize = _canva * 13
@@ -87,7 +91,7 @@ export function ModalAtention({ openModal, onClose }: I) {
         </VStack>
 
         <Center>
-          <Button pres={() => setIsOpen(false)} title='FECHAR' />
+          <Button pres={closeModal} title='FECHAR' />
 
         </Center>
       </Box >

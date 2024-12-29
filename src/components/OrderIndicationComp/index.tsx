@@ -143,12 +143,12 @@ export function OrderIndicationComp({
         <HStack mt={4} space={4}>
           <Center mt="4">
             <Avatar size="lg" source={{ uri: item?.avatar }} />
-            <S.text>{item?.objeto?.al}</S.text>
+            <S.text>{item?.objeto?.nome}</S.text>
           </Center>
 
           <S.boxDescription>
-            <S.title>Descrição Compra</S.title>
-            <S.text>{item?.objeto.assunto}</S.text>
+            <S.title>Descrição da Venda</S.title>
+            <S.text>{item?.objeto.descricao}</S.text>
             <S.textfocus>{locale(item?.valor)}</S.textfocus>
           </S.boxDescription>
         </HStack>
@@ -158,12 +158,12 @@ export function OrderIndicationComp({
         <HStack space={6}>
           <Center mt="4">
             <Avatar size="lg" source={{ uri: item.objeto?.avatar }} />
-            <S.text>{item.objeto?.send_name}</S.text>
+            <S.text>{item.objeto?.nome}</S.text>
           </Center>
 
           <S.boxDescription>
             <S.title>Assunto</S.title>
-            <S.text>{item?.objeto.assunto}</S.text>
+            <S.text>{item?.objeto.descricao}</S.text>
           </S.boxDescription>
         </HStack>
       )}

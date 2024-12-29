@@ -16,7 +16,6 @@ interface I {
 }
 
 function ExtratoCompMemo({ item = [], day }: I) {
-  console.log(item)
   return (
     <S.content>
       <HStack alignItems={'center'} justifyContent={'space-between'} pr={4} >
