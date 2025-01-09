@@ -18,7 +18,7 @@ const dev = 'http://192.168.0.107:3333';
 const production = 'https://geb-server.appcom.dev'
 
 const api = axios.create({
-  baseURL: dev,
+  baseURL: production,
 })
 
 // let failedQuery: Array<PromiseType> = [];

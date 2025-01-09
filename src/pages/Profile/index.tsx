@@ -266,6 +266,7 @@ export function Profile() {
               name='apelido'
               control={userControl.control}
               error={userControl.formState.errors.apelido}
+              placeholder='Nome de acesso ao app'
             />
 
             <FormInput
@@ -273,6 +274,7 @@ export function Profile() {
               control={userControl.control}
               error={userControl.formState.errors.senha}
               autoCapitalize='none'
+              placeholder='Sua senha'
               secureTextEntry
             />
 
