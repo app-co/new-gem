@@ -29,12 +29,12 @@ export function Apadrinhar() {
   const { user } = useAuth();
 
 
-  const [selectUser, setSelectUser] = React.useState<I[]>([]);
+  const [selectUser, setSelectUser] = React.useState<I>();
   const [selectHub, setSelectHun] = React.useState(0)
 
   const { mutateAsync, isLoading } = mutations.registerRelation()
 
-  const { data, fetchNextPage, isFetchingNextPage } = querys.useUserByHub({ hub: selectHub, nome: '' })
+  const { data, fetchNextPage, isFetchingNextPage } = querys.useUserByHub({ hub: String(selectHub), nome: '' })
   const usersData = data?.pages.flatMap(h => h.records.filter(p => !p.apadrinhado).map(h => {
     return {
       value: h.id,
@@ -49,7 +49,7 @@ export function Apadrinhar() {
 
     const data = {
       objeto: {},
-      userRecptorId: selectUser,
+      userReceptorId: selectUser,
       type: 8,
     };
 

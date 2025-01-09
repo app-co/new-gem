@@ -4,26 +4,24 @@ import axios, { AxiosError, AxiosInstance } from 'axios';
 import { AppError } from '../utils/AppError';
 import Toast from '../components/toast/handler';
 
+type PromiseType = {
+  onSucess: (token: string) => void;
+  onFail: (error: AxiosError) => void;
+};
 type SignOut = () => void;
 
 type APIInstaceProps = AxiosInstance & {
   registerIntercepTokenManager: (signOut: SignOut) => () => void;
 };
 
-const dev = 'http://192.168.0.66:3333';
+const dev = 'http://192.168.0.107:3333';
 const production = 'https://geb-server.appcom.dev'
 
-
-type PromiseType = {
-  onSucess: (token: string) => void;
-  onFail: (error: AxiosError) => void;
-};
-
 const api = axios.create({
-  baseURL: production,
+  baseURL: dev,
 })
 
-let failedQuery: Array<PromiseType> = [];
+// let failedQuery: Array<PromiseType> = [];
 let isRefreshing = false;
 
 
@@ -44,91 +42,6 @@ function statusCode(code: number, error: string) {
       return code;
   }
 }
-
-// api.registerIntercepTokenManager = signOut => {
-//   const registerIntercepToken = api.interceptors.response.use(
-//     config => config,
-//     async requesRrror => {
-//       const erro = requesRrror?.response?.data;
-//       console.log('api', requesRrror?.response)
-
-//       statusCode(requesRrror.status)
-
-//       // if (requesRrror?.response && erro) {
-//       //   const { message } = erro;
-//       //   if (message === 'token inválido' || message === 'falta o token') {
-//       //     const originalRequest = requesRrror.config;
-
-//       //     // if (isRefreshing) {
-//       //     //   return new Promise((resolve, reject) => {
-//       //     //     failedQuery.push({
-//       //     //       onSucess: (token: string) => {
-//       //     //         originalRequest.headers = {
-//       //     //           Authorization: `Bearer ${token}`,
-//       //     //         };
-//       //     //         resolve(api(originalRequest));
-//       //     //       },
-//       //     //       onFail: (axioxError: AxiosError) => {
-//       //     //         reject(axioxError);
-//       //     //       },
-//       //     //     });
-//       //     //   });
-//       //     // }
-
-//       //     isRefreshing = true;
-
-//       //     return new Promise(async (resolve, reject) => {
-//       //       // try {
-//       //       //   const { data } = await api.post('/user/refresh-token');
-//       //       //   storageToken.setToken(data.token);
-
-//       //       //   if (originalRequest.data) {
-//       //       //     originalRequest.data = JSON.parse(originalRequest.data);
-//       //       //   }
-
-//       //       //   originalRequest.headers = {
-//       //       //     Authorization: `Bearer ${data.token}`,
-//       //       //   };
-
-//       //       //   api.defaults.headers.common.Authorization = `Bearer ${data.token}`;
-
-//       //       //   failedQuery.forEach(request => {
-//       //       //     request.onSucess(data.token);
-//       //       //   });
-
-//       //       //   console.log('TOKEN ATUALIZADO');
-//       //       // } catch (error: any) {
-//       //       //   failedQuery.forEach(h => {
-//       //       //     h.onFail(error);
-//       //       //   });
-//       //       //   signOut();
-//       //       //   console.log(error, 'promise');
-//       //       //   reject(error);
-//       //       // } finally {
-//       //       //   isRefreshing = false;
-//       //       //   failedQuery = [];
-//       //       // }
-//       //     });
-
-//       //     // return Promise.reject(requesRrror);
-//       //   }
-
-
-//       //   return Promise.reject(new AppError(message));
-//       // }
-
-//       return Promise.reject(erro);
-//     },
-//   );
-
-//   return () => {
-//     api.interceptors.response.eject(registerIntercepToken);
-//   };
-// };
-
-
-
-// export const socket = soketio(production);
 
 api.interceptors.response.use(
   res => {

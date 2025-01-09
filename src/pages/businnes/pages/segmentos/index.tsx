@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { Form } from '@unform/mobile'
-import { Avatar, Box, Center, HStack, ScrollView, TextArea, VStack } from 'native-base'
+import { Avatar, Box, Center, HStack, ScrollView, TextArea, VStack, Wrap } from 'native-base'
 import { ArrowLeft } from 'phosphor-react-native'
 import { useState } from 'react'
 import { Alert, TouchableOpacity } from 'react-native'
@@ -23,6 +23,7 @@ import { TRelationB2b, TRelationConsumo, TRelationIndication } from '../../../..
 import { FormInput } from '../../../../components/forms/FormInput'
 import { InputForm } from '../../../../components/forms/InputForm'
 import { make } from '../../../../hooks'
+import { _canva } from '../../../../utils/size'
 
 interface IParmans {
   name: string
@@ -161,6 +162,8 @@ export function Segments() {
     }
   }
 
+  const sizeSegmento = _canva * 4
+
 
   return (
     <S.container>
@@ -188,27 +191,30 @@ export function Segments() {
 
 
 
-        <VStack mt='4' space={3} p='4' >
-          <TouchableOpacity onPress={() => selecSegment('b2b')} >
-            <Center bg={segmenst === 'b2b' ? colors.focus[1] : colors.bg_color[1]} rounded={8} py='2' >
-              <TextStyle type='title' colorText={segmenst === 'b2b' ? colors.text[0] : colors.text[2]} >B2B</TextStyle>
+        <Box p={4} >
+          <HStack space={4} py={4}>
+            <TouchableOpacity style={{ flex: 1 }} onPress={() => selecSegment('b2b')} >
+              <Center flex={1} bg={segmenst === 'b2b' ? colors.focus[1] : colors.bg_color[1]} rounded={8} py='2' >
+                <TextStyle type='subtitle' colorText={segmenst === 'b2b' ? colors.text[2] : colors.text[0]} >B2B</TextStyle>
+              </Center>
+            </TouchableOpacity>
+
+
+            <TouchableOpacity style={{ flex: 1 }} onPress={() => selecSegment('consumo')} >
+              <Center flex={1} bg={segmenst === 'consumo' ? colors.focus[1] : colors.bg_color[1]} rounded={8} py='2' >
+                <TextStyle type='subtitle' colorText={segmenst === 'consumo' ? colors.text[2] : colors.text[0]} >CONSUMO</TextStyle>
+              </Center>
+            </TouchableOpacity>
+
+
+          </HStack>
+          <TouchableOpacity style={{ flex: 1 }} onPress={() => selecSegment('indication')} >
+            <Center w={''} bg={segmenst === 'indication' ? colors.focus[1] : colors.bg_color[1]} rounded={8} py='2' >
+              <TextStyle type='subtitle' colorText={segmenst === 'indication' ? colors.text[2] : colors.text[0]} >INDICAÇÃO</TextStyle>
             </Center>
           </TouchableOpacity>
 
-
-          <TouchableOpacity onPress={() => selecSegment('consumo')} >
-            <Center bg={segmenst === 'consumo' ? colors.focus[1] : colors.bg_color[1]} rounded={8} py='2' >
-              <TextStyle type='title' colorText={segmenst === 'consumo' ? colors.text[0] : colors.text[2]} >CONSUMO</TextStyle>
-            </Center>
-          </TouchableOpacity>
-
-
-          <TouchableOpacity onPress={() => selecSegment('indication')} >
-            <Center bg={segmenst === 'indication' ? colors.focus[1] : colors.bg_color[1]} rounded={8} py='2' >
-              <TextStyle type='title' colorText={segmenst === 'indication' ? colors.text[0] : colors.text[2]} >INDICAÇÃO</TextStyle>
-            </Center>
-          </TouchableOpacity>
-        </VStack>
+        </Box>
 
         <Box>
           {segmenst === 'b2b' && (

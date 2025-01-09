@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { api } from "../../services/api";
 import { IUser } from "../dto/interfaces";
-import { TProfile, TSession, TUser } from "../dto/types";
+import { TProfile, TRelationships, TSession, TUser } from "../dto/types";
 
 export class PostFetchs {
   public async registerUser(obj: Omit<TUser, 'id'>) {

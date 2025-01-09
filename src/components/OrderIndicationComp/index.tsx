@@ -46,6 +46,8 @@ export function OrderIndicationComp({
 
   const [value, setValue] = React.useState('not-yeat');
 
+  console.log(item)
+
   return (
     <S.Container>
       <TextStyle colorText={colors.focus[1]} type='title' >{_convertionType[item.type]}</TextStyle>
@@ -57,19 +59,19 @@ export function OrderIndicationComp({
           </TextStyle>
           <Box bg={colors.bg_color[3]} mt={4} p={2} rounded={'xl'} >
             <S.flex>
-              <TextStyle type='defaultSemiBold' >Nome do cliente: </TextStyle>
+              <TextStyle >Nome do cliente: </TextStyle>
               <S.text>{item?.objeto?.nomeCliente}</S.text>
             </S.flex>
             <S.flex>
-              <TextStyle type='defaultSemiBold' >Contato: </TextStyle>
+              <TextStyle >Contato: </TextStyle>
               <S.text>{item?.objeto?.contatoCliente}</S.text>
             </S.flex>
             <S.flex>
-              <TextStyle type='defaultSemiBold'>Descrição: </TextStyle>
+              <TextStyle>Descrição: </TextStyle>
               <S.text>{item?.objeto?.descricao}</S.text>
             </S.flex>
             <S.flex>
-              <TextStyle type='defaultSemiBold'>Data que foi indicado: </TextStyle>
+              <TextStyle>Data que foi indicado: </TextStyle>
               <S.text>{format(new Date(item?.created_at), 'dd/MM/yy')}</S.text>
             </S.flex>
 

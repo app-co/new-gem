@@ -29,7 +29,7 @@ export function ModalSolicitations({ openModal }: I) {
       visible={isOpen}
       transparent
     >
-      <Center bg={'#2a2a2af0'} p={4} flex={1}>
+      <Center bg={'#070707ef'} p={4} flex={1}>
         <Image style={{ width: imgSize, height: imgSize / 2 }} source={negocios} />
         <Box borderRadius={8}>
 
@@ -41,7 +41,7 @@ export function ModalSolicitations({ openModal }: I) {
               onPress={() => setIsOpen(false)}
               style={{
                 padding: 10,
-                backgroundColor: colors.focus[2],
+                backgroundColor: colors.bg_color[2],
                 borderRadius: 8,
                 alignItems: 'center'
               }}

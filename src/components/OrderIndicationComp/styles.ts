@@ -50,8 +50,8 @@ export const flexButton = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  width: ${w * 0.8}px;
   margin: 20px 0;
+  gap: 10px
 `;
 
 export const buttonOk = styled.TouchableOpacity`
@@ -61,10 +61,11 @@ export const buttonOk = styled.TouchableOpacity`
 
   background-color: ${h => h.theme.colors.button.bg.approved};
   border-radius: 8px;
+  flex: 1;
 `;
 export const buttonRe = styled.TouchableOpacity`
   border-radius: 8px;
-
+  flex: 1;
   padding: 10px;
   align-items: center;
   justify-content: center;
