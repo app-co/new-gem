@@ -9,6 +9,7 @@ import { Box } from 'native-base';
 
 import * as S from './styles';
 import { colors } from '../../../global/hub-colors';
+import { TextStyle } from '../topograph';
 
 export interface TypeInput extends TextInputProps {
   icon?: React.ComponentProps<typeof Feather>['name'];
@@ -31,7 +32,7 @@ export function Input({ value, error, label, icon, ...rest }: TypeInput) {
 
   return (
     <Box w="full">
-      {label && <S.title>{label}</S.title>}
+      {label && <TextStyle style={{ marginBottom: 5 }} >{label}</TextStyle>}
       <S.Container focus={isFocused} filed={isFiled} error={!!error}>
         <S.input
           value={value}
@@ -47,13 +48,13 @@ export function Input({ value, error, label, icon, ...rest }: TypeInput) {
             <Feather
               name={icon}
               size={25}
-              color={isFiled || isFocused ? colors.focus[1] : colors.focus[3]}
+              color={isFiled || isFocused ? colors.focus[1] : colors.focus[2]}
             />
           </S.boxIcon>
         )}
       </S.Container>
       {error && (
-        <S.title style={{ color: '#ff0000', fontFamily: 'regular' }}>
+        <S.title style={{ color: colors.error[0], fontFamily: 'regular' }}>
           {error}
         </S.title>
       )}

@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { api } from "../../services/api";
 import { IUser } from "../dto/interfaces";
-import { TProfile, TRelationships, TSession, TUser } from "../dto/types";
+import { TMidia, TProfile, TRelationships, TSession, TUser } from "../dto/types";
 
 export class PostFetchs {
   public async registerUser(obj: Omit<TUser, 'id'>) {
@@ -44,6 +44,11 @@ export class PostFetchs {
   public async registerStar(obj: { userId: string, star: number }) {
     const { data } = await api.post('/user/avaliation', obj)
 
+    return data
+  }
+
+  public async registerMidia(obj: TMidia) {
+    const { data } = await api.post('/user/midia', obj)
     return data
   }
 

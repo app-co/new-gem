@@ -2,6 +2,9 @@ import { TRelationships, TUser } from "./types";
 
 export interface IUser extends TUser {
   profile: IProfile
+  avalicaoes: number
+  midia: IMidia[]
+  Stars: IStar[]
   created_at: string | Date
   updated_at: string | Date
 }
@@ -21,6 +24,24 @@ export interface IProfile {
   logoPath: string
   created_at: string | Date
   updated_at: string | Date
+  userId: string
+}
+
+export interface IMidia {
+  id: number
+  nome: string
+  link: string
+  type_midia: number
+  userId: string
+  created_at: string | Date
+  updated_at: string | Date
+}
+
+export interface IStar {
+  id: number
+  star: number
+  updated_at: string | Date
+  created_at: string | Date
   userId: string
 }
 

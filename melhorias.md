@@ -13,8 +13,8 @@
 ** 45 
 
 ## CORRECOES
-** verificar estrelas de avaliacao
-** alterar perfil da adriana admin, retirar o ranking
+[] verificar estrelas de avaliacao
+[x] alterar perfil da adriana admin, retirar o ranking
 ** add google meu negocio
 ** validar corrida mediante imagem
 ** ajustar hubs de apadrinhamento

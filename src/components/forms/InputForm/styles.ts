@@ -9,5 +9,6 @@ export const error = styled.Text`
   font-size: ${_text}px;
   font-family: regular;
   color: ${colors.error[0]};
-  margin-top: -5px;
+  margin-top: 70px;
+  position: absolute;
 `;

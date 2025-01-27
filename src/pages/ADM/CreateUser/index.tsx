@@ -6,7 +6,7 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
-import { Box, Center } from 'native-base';
+import { Box, Center, HStack, VStack } from 'native-base';
 import React, { useCallback, useRef, useState } from 'react';
 import {
   ActivityIndicator,
@@ -28,6 +28,17 @@ import { useAuth } from '../../../hooks/useAuth';
 import { api } from '../../../services/api';
 import getValidationErrors from '../../../utils/getValidationsErrors';
 import * as S from './styles';
+import { InputForm } from '../../../components/forms/InputForm';
+import { useForm } from 'react-hook-form';
+import { TUser } from '../../../hooks/dto/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { validation } from '../../../hooks/dto/validations';
+import { FormInput } from '../../../components/forms/FormInput';
+import { TextStyle } from '../../../components/forms/topograph';
+import { InputSelect } from '../../../components/forms/input-select';
+import { make } from '../../../hooks';
+import { Loading } from '../../../components/Loading';
+import Toast from '../../../components/toast/handler';
 
 interface FormData {
   nome: string;
@@ -43,199 +54,137 @@ interface FormData {
   adm: true;
 }
 
-const hubList = ['GEB', 'CLUB_MENTORIA'];
+const { querys, mutations } = make()
 
 export function SingUp() {
-  const { navigate } = useNavigation();
-  const formRef = useRef<FormHandles>(null);
-  const { user } = useAuth();
-  const { users } = useData();
+  const { navigate, goBack } = useNavigation();
 
-  const [loading, setLoading] = React.useState(false);
+  const [userSelected, setUserSelected] = React.useState()
 
-  const [adm, setAdm] = useState(false);
-  const [idAdm, setIsAdm] = useState('user');
+  const { data, isLoading, fetchNextPage } = querys.useUserByHub({
+    nome: '',
+    hub: '0,1'
+  })
 
-  // TODO MODAL
-  const [enquadramento, setEnquadramento] = useState('');
-  const [ramo, setRamo] = useState('');
-  const [modalUser, setModalUser] = useState(false);
-  const [idUserModal, setIdUserModal] = useState('');
-  const [nomeUserModa, setNomeUserModal] = useState('');
-  const modalizeRefRamo = useRef<Modalize>(null);
-  const modalizeRefEnquadramento = useRef<Modalize>(null);
-  const [isOpenHub, setIsOpenHub] = React.useState<boolean>(false);
-  const [hub, setHub] = React.useState<string>('');
+  const { mutateAsync, isLoading: loadSaveUser } = mutations.registerUser()
 
-  const OpenModalUser = useCallback(() => {
-    setModalUser(true);
-  }, []);
+  const users = data?.pages.flatMap(h => h.records) ?? []
 
-  const CloseModalUser = useCallback((id: string, nome: string) => {
-    setIdUserModal(id);
-    setNomeUserModal(nome);
-    setModalUser(false);
-  }, []);
+  const { control, formState: { errors }, setValue, handleSubmit: submit } = useForm<TUser>({
+    resolver: zodResolver(validation.user.omit({ id: true })),
+    mode: 'onChange',
+  })
+
+  console.log(errors)
 
   const handleSubmit = useCallback(
-    async (data: any) => {
-
+    async (obj: Omit<TUser, 'id'>) => {
       try {
-        formRef.current?.setErrors({});
+        await mutateAsync(obj)
+        Toast.show({
+          description: 'Usuário cadastrado com sucesso',
+          title: "Cadastro",
+          tipo: 'success'
+        })
+        goBack()
+      } catch (error) {
 
-        if (!hub) {
-          Alert.alert('Escolha um hub para cadastro');
-        }
-
-        const shema = Yup.object().shape({
-          nome: Yup.string().required('Nome obrigatorio'),
-          membro: Yup.string().required('membro obrigatório'),
-          senha: Yup.string().min(4, 'Senha no minimo 6 digitos'),
-        });
-
-        await shema.validate(data, {
-          abortEarly: false,
-        });
-
-        const dados = {
-          ...data,
-          hub,
-          adm,
-        };
-
-        await api
-          .post('/user/create-user', dados)
-          .then(h => {
-            Alert.alert('Usuário cadastrado');
-            navigate('INÍCIO');
-          })
-          .catch(h => {
-            console.log('erro para criar usuario', h);
-            Alert.alert('Erro', h.response.data.message);
-          });
-      } catch (err: any) {
-        console.log('erro ao criar usuario', err);
-        if (err instanceof Yup.ValidationError) {
-          const errors = getValidationErrors(err);
-          formRef.current?.setErrors(errors);
-          Alert.alert('Cadastro', err.message);
-        }
       }
     },
-    [adm, enquadramento, idUserModal, navigate, nomeUserModa, ramo, hub],
+    [],
   );
 
-  const handleAdm = useCallback(() => {
-    setAdm(true);
-    setIsAdm('adm');
-  }, []);
+  React.useEffect(() => {
+    if (userSelected) {
+      setValue('apadrinhado', true)
+    }
 
-  const handleUser = useCallback(() => {
-    setAdm(false);
-    setIsAdm('user');
-  }, []);
+    if (!userSelected) {
+      setValue('apadrinhado', false)
+    }
+  }, [])
 
-  const listUser = (users.data as IUserDtos[]) || [];
 
-  useFocusEffect(
-    useCallback(() => {
-      users.refetch();
-    }, []),
-  );
+  if (isLoading) return <Loading />
 
-  if (users.isLoading) {
-    return (
-      <Center flex="1">
-        <ActivityIndicator />
-      </Center>
-    );
-  }
 
   return (
     <S.Container>
       <Header />
 
-      <Modal animationType="fade" visible={modalUser}>
-        <View style={{ flex: 1 }}>
 
-        </View>
-      </Modal>
+      <S.boxForm>
+        <TextStyle type='title' style={{ marginBottom: 30 }} >Castro de Membro</TextStyle>
 
-      <Modal animationType="fade" visible={isOpenHub}>
-        <View style={{ flex: 1 }}>
-          <FlatList
-            data={hubList}
-            keyExtractor={h => h}
-            renderItem={({ item: h }) => (
-              <TouchableOpacity
-                onPress={() => {
-                  setHub(h);
-                  setIsOpenHub(false);
-                }}
-              >
-                <Box mt="2" p="4" bg="gray.700">
-                  <S.Title style={{ fontSize: 20 }}>{h}</S.Title>
-                </Box>
-              </TouchableOpacity>
-            )}
-          />
-        </View>
-      </Modal>
+        <FormInput
+          name='nome'
+          placeholder='Nome do membro'
+          control={control}
+          error={errors.nome}
+        />
 
-      <View
-        style={{
-          flexDirection: 'row',
-          alignSelf: 'center',
-          marginBottom: 10,
-          marginTop: 20,
-        }}
-      >
-        <S.Title>adm</S.Title>
-        <S.BoxAdm isAdm={idAdm === 'adm'} onPress={handleAdm} />
-        <S.Title style={{ marginLeft: 40 }}>usuário</S.Title>
-        <S.BoxAdm isAdm={idAdm === 'user'} onPress={handleUser} />
-      </View>
 
-      <S.BxPadrinho onPress={OpenModalUser}>
-        {nomeUserModa ? (
-          <S.Title>padrinho: {nomeUserModa} </S.Title>
-        ) : (
-          <S.Title>Escolher padrinho</S.Title>
-        )}
-      </S.BxPadrinho>
+        <FormInput
+          name='apelido'
+          placeholder='Apelido para o acesso'
+          control={control}
+          error={errors.apelido}
+        />
 
-      <S.Bxub onPress={() => setIsOpenHub(true)}>
-        {hub ? <S.Title>{hub} </S.Title> : <S.Title>Escolha um HUB</S.Title>}
-      </S.Bxub>
 
-      <Form ref={formRef} onSubmit={handleSubmit}>
-        <S.Box>
-          <View>
-            <S.TextInpu>NOME COMPLETO</S.TextInpu>
-            <Input name="nome" icon="user" />
-          </View>
+        <FormInput
+          name='senha'
+          placeholder='senha'
+          control={control}
+          error={errors.senha}
+        />
 
-          <View>
-            <S.TextInpu>MEMBRO</S.TextInpu>
-            <Input name="membro" icon="user" />
-          </View>
+        <HStack alignItems={'center'} justifyContent={'space-between'} space={3} >
 
-          <View>
-            <S.TextInpu>SENHA</S.TextInpu>
-            <Input name="senha" autoCapitalize="none" icon="user" />
-          </View>
-        </S.Box>
-        <Center p="2" alignSelf="center" mt="10" w="200">
-          {loading ? (
-            <ActivityIndicator size="large" />
-          ) : (
-            <Button
-              pres={() => formRef.current?.submitForm()}
-              title="CADASTRAR"
+          <Box flex={1} >
+            <InputForm
+              name='hub'
+              control={control}
+              error={errors.hub}
+              render={({ value, onChange }) => (
+                <InputSelect
+                  options={[{ value: '0', label: 'GEB Networking' }, { value: '1', label: 'CLUB da Mentoria' }]}
+                  isMultiple
+                  onChange={h => onChange(h.map(h => Number(h.value)))}
+                  value={value ?? []}
+                  label='Selecione um Hub'
+                />
+
+              )}
             />
-          )}
+          </Box>
+
+          <Box flex={1} >
+            <InputForm
+              name='apadrinhado'
+              control={control}
+              error={errors.apadrinhado}
+              render={({ value, onChange }) => (
+                <InputSelect
+                  options={users.map(h => ({ value: h.id, label: h.nome }))}
+                  onChange={h => setUserSelected(h)}
+                  nexPage={fetchNextPage}
+                  value={userSelected}
+                  label='Selecione um Padrinho'
+                />
+
+              )}
+            />
+          </Box>
+        </HStack>
+
+
+        <Center mt={8}>
+          <Button loading={isLoading} title='Salvar' pres={submit(handleSubmit)} />
         </Center>
-      </Form>
+
+
+      </S.boxForm>
     </S.Container>
   );
 }

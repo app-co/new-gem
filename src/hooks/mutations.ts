@@ -153,4 +153,19 @@ export class Mutations {
     })
   }
 
+  public registerMidia() {
+    const client = useQueryClient()
+    return useMutation(this.post.registerMidia, {
+      onError: (error) => showMessage(error),
+      onSuccess: () => {
+        client.invalidateQueries('userByHub')
+        Toast.show({
+          tipo: 'success',
+          title: 'Sucesso!',
+          description: 'Midia cadastrada com sucesso!',
+        })
+      }
+    })
+  }
+
 }

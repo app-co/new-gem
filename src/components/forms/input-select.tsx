@@ -73,12 +73,16 @@ export function InputSelect({ onChange, label, refetch, searching, error = false
 
 
   function color() {
-    if (lista.length > 0) {
+    if (isMultiple && lista?.length > 0) {
       return colors.focus[1];
     }
 
     if (!!error) {
       return colors.error[0];
+    }
+
+    if (valueLabel) {
+      return colors.focus[1];
     }
 
     return colors.bg_color[1]
@@ -98,13 +102,10 @@ export function InputSelect({ onChange, label, refetch, searching, error = false
 
   return (
     <>
-      {/* <Modal transparent visible={load} >
-        <Loading />
-      </Modal> */}
 
       {isMultiple ? (
         <Box w='full' >
-          <TextStyle colorText={colors.text[1]} style={{ marginBottom: 5 }} >{label}</TextStyle>
+          <TextStyle colorText={colors.text[0]} style={{ marginBottom: 5 }} >{label}</TextStyle>
 
           <TouchableOpacity
             onPress={() => setOpen(true)}
@@ -145,14 +146,40 @@ export function InputSelect({ onChange, label, refetch, searching, error = false
         </Box>
       ) : (
 
-        <TouchableOpacity onPress={() => setOpen(true)} >
-          <Input icon='arrow-down-circle' placeholderTextColor={colors.bg_color[1]} placeholder={placeholder} editable={false} label={label} value={valueLabel} />
-        </TouchableOpacity >
+        <Box w='full'>
+          <TextStyle colorText={colors.text[0]} style={{ marginBottom: 5 }} >{label}</TextStyle>
+
+          <TouchableOpacity
+            onPress={() => setOpen(true)}
+            style={{
+              borderWidth: 1,
+              borderColor: color(),
+              borderRadius: 10,
+              backgroundColor: colors.bg_color[2],
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              overflow: 'hidden',
+              paddingVertical: 10,
+              paddingHorizontal: 10
+            }}
+          >
+            <Box style={{ gap: 10 }} flexWrap={'wrap'} flexDirection={'row'} >
+              <Box rounded={'lg'} px={3} bg={colors.bg_color[3]} p={1} >
+                <TextStyle colorText={colors.text[0]} >{valueLabel}</TextStyle>
+              </Box>
+            </Box>
+
+            <MaterialIcons color={colors.focus[0]} size={25} name="arrow-drop-down-circle" />
+          </TouchableOpacity>
+
+        </Box>
+
 
       )
       }
       <Actionsheet onClose={() => setOpen(false)} w={_width} isOpen={open} >
-        <Box borderTopRadius={20} style={{ gap: 8 }} p={4} w={_width} h={hight} bgColor={colors.bg_color[1]} >
+        <Box borderTopRadius={20} style={{ gap: 8 }} p={4} w={_width} h={hight} bgColor={colors.bg_color[2]} >
 
           <Input
             label="Pesquisar"
@@ -176,7 +203,7 @@ export function InputSelect({ onChange, label, refetch, searching, error = false
                   {isMultiple ? (
                     <TouchableOpacity style={{ backgroundColor: select ? colors.bg_color[3] : 'transparent', borderRadius: 6 }}
                       onPress={() => onItemSelect(h)} >
-                      <HStack p={2} alignItems={'center'} justifyContent={'space-between'} >
+                      <HStack w={'full'} p={2} alignItems={'center'} justifyContent={'space-between'} >
                         <TextStyle type="defaultSemiBold" colorText={colors.text[0]} >{h?.label}</TextStyle>
                         {select && (
                           <CheckCircle weight="fill" color={colors.focus[0]} />
@@ -185,9 +212,9 @@ export function InputSelect({ onChange, label, refetch, searching, error = false
                     </TouchableOpacity>
                   ) : (
 
-                    <TouchableOpacity style={{ backgroundColor: select ? colors.bg_color[2] : 'transparent' }}
+                    <TouchableOpacity style={{ backgroundColor: select ? colors.bg_color[3] : 'transparent', borderRadius: 5 }}
                       onPress={() => onItemSelect(h)} >
-                      <HStack p={2} >
+                      <HStack w={'full'} p={2} alignItems={'center'} justifyContent={'space-between'}>
                         <TextStyle colorText={colors.text[0]} >{h?.label}</TextStyle>
                         {select && (
                           <CheckCircle weight="fill" color={colors.focus[0]} />

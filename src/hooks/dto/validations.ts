@@ -7,10 +7,10 @@ export const validation = {
     nome: z.string({ message: '* campo obrigatório' }).transform(h => h.trim()),
     apelido: z.string({ message: '* campo obrigatório' }).transform(h => h.trim()),
     token: z.string({ message: '* campo obrigatório' }).optional(),
-    senha: z.string().optional().nullable().transform(h => h ? h.trim() : ''),
+    senha: z.string().transform(h => h ? h.trim() : ''),
     adm: z.boolean().default(false),
     apadrinhado: z.boolean(),
-    hub: z.array(z.number().default(0)),
+    hub: z.array(z.number()).min(1, '* campo obrigatório'),
   }),
   profile: z.object({
     id: z.string({ message: '* campo obrigatório' }).optional(),
@@ -26,12 +26,8 @@ export const validation = {
     userId: z.string({ message: '* campo obrigatório' })
   }),
   midia: z.object({
-    id: z.number(),
-    nome: z.string({ message: '* campo obrigatório' }),
-    link: z.string({ message: '* campo obrigatório' }),
-    type_midia: z.string({ message: '* campo obrigatório' }),
-    created_at: z.string({ message: '* campo obrigatório' }),
-    updated_at: z.string({ message: '* campo obrigatório' }),
+    id: z.number().optional(),
+    link: z.string({ message: '* campo obrigatório' }).url({ message: 'url inválida' }),
     user_id: z.string({ message: '* campo obrigatório' }),
   }),
   relationships: z.object({

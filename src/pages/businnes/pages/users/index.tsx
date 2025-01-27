@@ -34,7 +34,6 @@ export function Businnes() {
     hub
   });
 
-  console.log(data?.pages)
 
   const users = data?.pages.flatMap(h => h.records)
 
@@ -82,7 +81,9 @@ export function Businnes() {
             keyExtractor={h => h?.id}
             renderItem={({ item: h }) => (
               <MembrosComponents
-                star={h?.media}
+                whats={h?.profile?.whats ?? "0"}
+                google={h.midia[0]?.link ?? 'https://www.google.com.br/'}
+                star={h?.avalicaoes}
                 icon="necociar"
                 pres={() => navigate('segments', { providerId: h?.id, avatar: h?.profile?.avatar, name: h?.nome, workname: h?.profile?.workName })}
                 userName={h?.nome}

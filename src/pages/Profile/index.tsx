@@ -42,7 +42,7 @@ import {
 } from './styles';
 import { useForm } from 'react-hook-form';
 import { FormInput } from '../../components/forms/FormInput';
-import { TProfile, TUser } from '../../hooks/dto/types';
+import { TMidia, TProfile, TUser } from '../../hooks/dto/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { validation } from '../../hooks/dto/validations';
 import { make } from '../../hooks';
@@ -56,8 +56,7 @@ const { mutations } = make()
 export function Profile() {
   const { user, updateUser } = useAuth();
   const { profile } = user
-  const { navigate, goBack } = useNavigation();
-  const formRef = useRef<FormHandles>(null);
+
   const modalizeRefRamo = useRef<Modalize>(null);
   const modalizeRefEnquadramento = useRef<Modalize>(null);
 
@@ -66,6 +65,7 @@ export function Profile() {
 
   const { mutateAsync: updateProfile, isLoading: loadProfile } = mutations.updateProfile()
   const { mutateAsync: upeUser, isLoading: loadUser } = mutations.updateUser()
+  const { mutateAsync: upMidate, isLoading: loadMida } = mutations.registerMidia()
 
   const userControl = useForm<TUser>({
     resolver: zodResolver(validation.user),
@@ -98,11 +98,13 @@ export function Profile() {
     }
   })
 
-  // TODO MODAL
-  const [ramo, setRamo] = useState(user?.profile?.ramo);
-  const [enquadramento, setEnquadramento] = useState(
-    user?.profile?.enquadramento,
-  );
+  const midiaControl = useForm<TMidia>({
+    resolver: zodResolver(validation.midia),
+    defaultValues: {
+      user_id: user.id,
+    }
+  })
+
   const [modal, setModal] = useState(false);
 
   const handleModalOpenRamo = useCallback(() => {
@@ -178,7 +180,6 @@ export function Profile() {
 
   }, [user]);
 
-  console.log(profileControl.formState.errors)
 
   async function handleSaveUser(obj: TUser) {
     try {
@@ -194,6 +195,14 @@ export function Profile() {
       await updateProfile(obj)
       updateUser()
 
+    } catch (error) {
+
+    }
+  }
+
+  async function handleSaveMidia(obj: TMidia) {
+    try {
+      await upMidate(obj)
     } catch (error) {
 
     }
@@ -359,6 +368,19 @@ export function Profile() {
 
 
             <Button loading={loadProfile} pres={profileControl.handleSubmit(handleSaveProfile)} title='SALVAR PERFIL' />
+          </BoxFormularios>
+
+          <BoxFormularios>
+            <TextStyle type='subtitle' >Informações adicionais</TextStyle>
+
+            <FormInput
+              name='link'
+              control={midiaControl.control}
+              error={midiaControl.formState.errors.link}
+              label='URL Google Meus Negócios'
+            />
+
+            <Button loading={loadMida} title='SALVAR LINK' pres={midiaControl.handleSubmit(handleSaveMidia)} />
           </BoxFormularios>
 
           <View
